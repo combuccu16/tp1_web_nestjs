@@ -1,0 +1,164 @@
+# NestJS – TP1 RT4 : Todo API
+
+Projet réalisé en équipe dans le cadre du TP1 RT4 (NestJS) – année universitaire 2026 / 2027.
+Sujet par **Aymen Sellaouti** : voir [topic.md](./topic.md).
+
+---
+
+## Les règles du jeu
+
+1. Si l'on nous demande d'expliquer le code et qu'on le lit sans le comprendre, ce n'est pas notre code : la note est **0**.
+2. Toujours **réfléchir avant** de coder ou de parler à l'IA.
+3. Architecture cohérente, code propre, lisible et factorisé, design patterns appliqués : c'est un **devoir**.
+4. La validation est un entretien : **chacun doit pouvoir expliquer tout le projet**, pas seulement sa partie.
+
+---
+
+## Règles de collaboration
+
+1. **Ordre imposé** : chaque personne ne commence qu'après que la précédente ait terminé.
+2. **Chacun ne touche qu'à ses propres fichiers.**
+3. Seules exceptions (ajouts minimaux, uniquement après que le propriétaire ait fini) :
+   - Ben Fraj enregistre TypeORM / `TodoModule` dans `app.module.ts` (une ligne, fichier d'Akram).
+   - Alaa configure le `ValidationPipe` global dans `main.ts` (fichier d'Akram).
+   - Akram ajoute sa route de stats dans `todo.controller.ts` / `todo.service.ts` **en tout dernier** (après Adab).
+4. Chaque membre doit être capable d'expliquer **l'intégralité de son code** à la validation.
+
+---
+
+## Équipe et répartition
+
+| Membre | Parties du TP | Résumé |
+| --- | --- | --- |
+| **Akram** | 1 + 7 | Setup, `CommonModule`, provider `uuid`, injection de dépendances, statistiques |
+| **Ben Fraj** | 2 & 4 | TypeORM, `StatusEnum`, `TodoEntity`, champs de suivi, timestamps réutilisables |
+| **Alaa** | 3 | Validation, messages d'erreurs centralisés, DTOs |
+| **Dalcon** | 5 & 6 | CRUD (add / update / delete), soft delete, restore |
+| **Adab** | 8 | Récupération, recherche, pagination |
+
+---
+
+## Akram – Mise en place et statistiques *(Parties 1 & 7)*
+
+### Tâches
+- [x] **A1** — Créer le projet NestJS (`nest new`) et pousser le squelette **en premier** (les autres en dépendent).
+- [x] **A2** — Créer le module `CommonModule` :
+  - [x] Le déclarer `@Global()` et l'exporter, car il sera utilisé partout.
+  - [x] Provider la bibliothèque `uuid` avec le **bon type de provider** — pouvoir justifier le choix (`useFactory` vs `useValue` vs `useClass`).
+- [x] **A3** — Créer un module et un service de test (`src/test-injection/`) pour démontrer l'injection de dépendance du provider `uuid`.
+- [ ] **A4** — **Statistiques** : endpoint qui renvoie, en **une seule requête SQL** (`COUNT ... GROUP BY`), le nombre de todos pour chacun des trois statuts — en incluant aussi les statuts à 0.
+
+### Fichiers
+`package.json`, `tsconfig.json`, `nest-cli.json`, `src/main.ts`, `src/app.module.ts`, `src/common/**` (hors `entities/` et `messages/`), `src/test-injection/**`, route de stats dans `todo.controller.ts` / `todo.service.ts` (en dernier).
+
+### À préparer pour la validation
+Le provider `uuid` : pourquoi un custom provider, différence entre `useFactory` / `useValue` / `useClass`, injection tokens. La requête unique des stats : pourquoi pas 3 requêtes séparées.
+
+---
+
+## Ben Fraj – Entité et base de données *(Parties 2 & 4)*
+
+### Tâches
+- [ ] **B1** — Configurer **TypeORM** dans l'application (connexion + variables d'environnement).
+- [ ] **B2** — Définir `StatusEnum` (les trois statuts).
+- [ ] **B3** — Créer `TodoEntity` :
+
+  | Champ | Type |
+  | --- | --- |
+  | `id` | entier auto-incrémenté |
+  | `name` | string |
+  | `description` | string |
+  | `createdAt` | date de création |
+  | `status` | `StatusEnum` |
+
+- [ ] **B4** — Ajouter `updatedAt` et `deletedAt`, **gérés automatiquement par TypeORM** (`@UpdateDateColumn`, `@DeleteDateColumn`).
+- [ ] **B5** — Rendre `createdAt` **non modifiable** une fois créé.
+- [ ] **B6** — Rendre `createdAt`, `updatedAt` et `deletedAt` **réutilisables** : créer une classe abstraite de base (ex. `TimestampEntity`) et l'étendre dans `TodoEntity`.
+- [ ] **B7** — Créer le module `TodoModule` avec `TypeOrmModule.forFeature([TodoEntity])` et l'enregistrer dans `AppModule`.
+- [ ] **B8** — Insérer quelques todos de test pour débloquer Dalcon et Adab.
+
+### Fichiers
+`data-source.ts`, `.env`, `src/todo/todo.module.ts`, `src/todo/entity/**`, `src/common/entities/**` (+ une ligne dans `app.module.ts`).
+
+### À préparer pour la validation
+Pourquoi `@DeleteDateColumn` plutôt qu'un `deleted: boolean`. Le principe d'une classe abstraite réutilisable (DRY).
+
+---
+
+## Alaa – Validation des données *(Partie 3)*
+
+### Tâches
+- [ ] **C1** — Créer un fichier **centralisé** de messages d'erreurs de validation (`src/common/messages/`) — optimiser la réutilisation et la maintenance.
+- [ ] **C2** — `CreateTodoDto` :
+  - [ ] `description` : obligatoire, minimum **10** caractères.
+  - [ ] `name` : obligatoire, entre **3** et **10** caractères.
+  - [ ] Messages d'erreurs personnalisés via le fichier centralisé.
+- [ ] **C3** — `UpdateTodoDto` (DTO **propre à la mise à jour**) :
+  - [ ] **Aucun champ obligatoire.**
+  - [ ] Mêmes contraintes de taille que l'ajout.
+  - [ ] `status` doit appartenir aux valeurs de `StatusEnum`.
+- [ ] **C4** — Configurer le `ValidationPipe` global (avec `whitelist` et `transform`).
+
+### Fichiers
+`src/todo/dto/**`, `src/common/messages/**` (+ configuration du pipe dans `main.ts`).
+
+### À préparer pour la validation
+Différence entre un DTO de création et un DTO de mise à jour. Le rôle du `ValidationPipe` et où il s'insère dans le cycle de requête NestJS.
+
+---
+
+## Dalcon – Opérations d'écriture *(Parties 5 & 6)*
+
+### Tâches
+- [ ] **D1** — `addTodo` : ajouter un todo en base. **Garder les deux versions du code.**
+- [ ] **D2** — `updateTodo` : mettre à jour un todo via son `id`.
+- [ ] **D3** — `deleteTodo` : supprimer **définitivement** un todo via son `id`.
+- [ ] **D4** — `softDeleteTodo` : suppression logique via son `id` (utilise `deletedAt`).
+- [ ] **D5** — `restoreTodo` : restaurer un todo supprimé logiquement.
+- [ ] **D6** — Exposer toutes ces méthodes via les routes du `TodoController`.
+
+### Fichiers
+`src/todo/todo.service.ts`, `src/todo/todo.controller.ts`.
+
+### À préparer pour la validation
+La différence entre les deux versions d'`addTodo`. Pourquoi la suppression logique et comment TypeORM l'applique (`findOne` ignore les todos soft-deletés).
+
+---
+
+## Adab – Récupération, recherche et pagination *(Partie 8)*
+
+### Tâches
+- [ ] **E1** — `GET /todos` : récupérer l'ensemble des todos.
+- [ ] **E2** — `GET /todos/:id` : récupérer un todo par son `id`.
+  - [ ] Gérer le cas où le todo n'existe pas (404 `NotFoundException`).
+- [ ] **E3** — Recherche : modifier l'API `GET` pour récupérer les todos dont le `name` **ou** la `description` contiennent la chaîne passée en paramètre, **et** ayant le statut passé en paramètre. Les deux critères restent **optionnels**.
+- [ ] **E4** — Pagination : ajouter le traitement nécessaire pour paginer `getAll` (page / limit).
+
+### Fichiers
+`src/todo/todo.service.ts`, `src/todo/todo.controller.ts` *(travailler sur une branche séparée, la lecture n'a pas besoin d'attendre Dalcon ; merger après lui)*.
+
+### À préparer pour la validation
+La construction de la requête de recherche (`Like`, `Or`, critères optionnels). Le calcul de l'offset en pagination.
+
+---
+
+## Dépendances entre membres
+
+```
+Akram (A1–A3, squelette)  ─►  Ben Fraj (entité)  ─►  Alaa (DTOs)
+                                                  ─►  Dalcon (écriture)  ─►  Adab (lecture)
+                                                  ─►  Akram (A4, stats — en dernier)
+```
+
+## Organisation Git
+
+- Une branche par personne (`feat/akram-setup`, `feat/benfraj-entity`, etc.).
+- Dalcon et Adab modifient les mêmes fichiers (`todo.service.ts`, `todo.controller.ts`) : **merger souvent** pour éviter les conflits ; Adab attend la fin de Dalcon avant de merger.
+- Akram n'ajoute sa route de stats qu'**après** le merge final d'Adab.
+- Aucune fusion sans relecture par un autre membre.
+
+## Checklist finale (équipe entière)
+
+- [ ] Toute la couverture de [topic.md](./topic.md) (parties 1 à 8) est implémentée
+- [ ] L'application démarre sans erreur et tous les endpoints sont testés
+- [ ] Chaque membre présente sa partie aux autres, puis on fait tourner les rôles pour que **tout le monde sache défendre l'ensemble du projet**

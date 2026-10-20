@@ -1,0 +1,17 @@
+# compiled output
+/dist
+/tsconfig.build.tsbuildinfo
+
+# dependencies
+/node_modules
+
+# logs
+*.log
+npm-debug.log*
+
+# environment
+.env
+
+# IDE / editor
+.idea
+.vscode/
