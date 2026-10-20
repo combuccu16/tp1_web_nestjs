@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto.js';
 import { UpdateTodoDto } from './dto/update-todo.dto.js';
 import { TodoEntity } from './entity/todo.entity.js';
+import { StatusEnum } from './entity/status.enum.js';
 
 /**
  * Service des opérations d'écriture sur les todos (parties 5 & 6 du TP) :
@@ -24,6 +25,50 @@ export class TodoService {
 		@InjectRepository(TodoEntity)
 		private readonly todoRepository: Repository<TodoEntity>,
 	) {}
+
+	/** E1/E3/E4 — List todos with optional text/status filters and pagination. */
+	async getAll(
+		search?: string,
+		status?: StatusEnum,
+		page = 1,
+		limit = 10,
+	): Promise<{ data: TodoEntity[]; page: number; limit: number; total: number }> {
+		if (!Number.isInteger(page) || page < 1) {
+			throw new BadRequestException('page must be a positive integer');
+		}
+		if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+			throw new BadRequestException('limit must be an integer between 1 and 100');
+		}
+		if (status !== undefined && !Object.values(StatusEnum).includes(status)) {
+			throw new BadRequestException(`status must be one of: ${Object.values(StatusEnum).join(', ')}`);
+		}
+
+		const where = search
+			? [
+					{ name: Like(`%${search}%`), ...(status ? { status } : {}) },
+					{ description: Like(`%${search}%`), ...(status ? { status } : {}) },
+				]
+			: status
+				? { status }
+				: {};
+		const [data, total] = await this.todoRepository.findAndCount({
+			where,
+			order: { id: 'ASC' },
+			skip: (page - 1) * limit,
+			take: limit,
+		});
+
+		return { data, page, limit, total };
+	}
+
+	/** E2 — Find one active todo, returning 404 when it does not exist. */
+	async getById(id: number): Promise<TodoEntity> {
+		const todo = await this.todoRepository.findOne({ where: { id } });
+		if (!todo) {
+			throw new NotFoundException(`Todo #${id} not found`);
+		}
+		return todo;
+	}
 
 	/**
 	 * D1 — Ajoute un todo en base.
