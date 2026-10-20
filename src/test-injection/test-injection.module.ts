@@ -7,7 +7,7 @@ import { TestInjectionService } from './test-injection.service.js';
  * (global) CommonModule resolves correctly via dependency injection.
  */
 @Module({
-  controllers: [TestInjectionController],
-  providers: [TestInjectionService],
+	controllers: [TestInjectionController],
+	providers: [TestInjectionService],
 })
 export class TestInjectionModule {}

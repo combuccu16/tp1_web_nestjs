@@ -59,9 +59,9 @@ Le provider `uuid` : pourquoi un custom provider, différence entre `useFactory`
 ## Ben Fraj – Entité et base de données *(Parties 2 & 4)*
 
 ### Tâches
-- [ ] **B1** — Configurer **TypeORM** dans l'application (connexion + variables d'environnement).
-- [ ] **B2** — Définir `StatusEnum` (les trois statuts).
-- [ ] **B3** — Créer `TodoEntity` :
+- [x] **B1** — Configurer **TypeORM** dans l'application (connexion + variables d'environnement).
+- [x] **B2** — Définir `StatusEnum` (les trois statuts).
+- [x] **B3** — Créer `TodoEntity` :
 
   | Champ | Type |
   | --- | --- |
@@ -71,14 +71,16 @@ Le provider `uuid` : pourquoi un custom provider, différence entre `useFactory`
   | `createdAt` | date de création |
   | `status` | `StatusEnum` |
 
-- [ ] **B4** — Ajouter `updatedAt` et `deletedAt`, **gérés automatiquement par TypeORM** (`@UpdateDateColumn`, `@DeleteDateColumn`).
-- [ ] **B5** — Rendre `createdAt` **non modifiable** une fois créé.
-- [ ] **B6** — Rendre `createdAt`, `updatedAt` et `deletedAt` **réutilisables** : créer une classe abstraite de base (ex. `TimestampEntity`) et l'étendre dans `TodoEntity`.
-- [ ] **B7** — Créer le module `TodoModule` avec `TypeOrmModule.forFeature([TodoEntity])` et l'enregistrer dans `AppModule`.
-- [ ] **B8** — Insérer quelques todos de test pour débloquer Dalcon et Adab.
+- [x] **B4** — Ajouter `updatedAt` et `deletedAt`, **gérés automatiquement par TypeORM** (`@UpdateDateColumn`, `@DeleteDateColumn`).
+- [x] **B5** — Rendre `createdAt` **non modifiable** une fois créé.
+- [x] **B6** — Rendre `createdAt`, `updatedAt` et `deletedAt` **réutilisables** : créer une classe abstraite de base (ex. `TimestampEntity`) et l'étendre dans `TodoEntity`.
+- [x] **B7** — Créer le module `TodoModule` avec `TypeOrmModule.forFeature([TodoEntity])` et l'enregistrer dans `AppModule`.
+- [x] **B8** — Insérer quelques todos de test pour débloquer Dalcon et Adab.
 
 ### Fichiers
-`data-source.ts`, `.env`, `src/todo/todo.module.ts`, `src/todo/entity/**`, `src/common/entities/**` (+ une ligne dans `app.module.ts`).
+`src/data-source.ts`, `.env`, `src/todo/todo.module.ts`, `src/todo/entity/**`, `src/common/entities/**` (+ une ligne dans `app.module.ts`).
+
+Ajouts hors périmètre initial : `scripts/seed.ts` (jeu de données, idempotent), `src/todo/entity/todo.entity.spec.ts` (tests de l'entité), `db.sqlite` et `.env` et suivis par Git pour éviter toute configuration locale.
 
 ### À préparer pour la validation
 Pourquoi `@DeleteDateColumn` plutôt qu'un `deleted: boolean`. Le principe d'une classe abstraite réutilisable (DRY).

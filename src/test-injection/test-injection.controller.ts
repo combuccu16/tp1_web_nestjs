@@ -3,10 +3,10 @@ import { TestInjectionService } from './test-injection.service.js';
 
 @Controller('test-injection')
 export class TestInjectionController {
-  constructor(private readonly testInjectionService: TestInjectionService) {}
+	constructor(private readonly testInjectionService: TestInjectionService) {}
 
-  @Get('uuid')
-  getUuid(): { id: string } {
-    return { id: this.testInjectionService.generateId() };
-  }
+	@Get('uuid')
+	getUuid(): { id: string } {
+		return { id: this.testInjectionService.generateId() };
+	}
 }

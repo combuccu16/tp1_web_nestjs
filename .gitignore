@@ -1,6 +1,6 @@
 # compiled output
 /dist
-/tsconfig.build.tsbuildinfo
+*.tsbuildinfo
 
 # dependencies
 /node_modules
@@ -9,8 +9,14 @@
 *.log
 npm-debug.log*
 
-# environment
-.env
+# test coverage output
+/coverage
+
+# transient SQLite journal files (db.sqlite itself is tracked on purpose)
+/db.sqlite-*
+
+# NOTE: .env and db.sqlite are intentionally tracked so every collaborator
+# runs the same SQLite setup without any local configuration.
 
 # IDE / editor
 .idea

@@ -52,7 +52,7 @@ Créer une entité `TodoEntity` qui représente votre todo au niveau de la base 
 
 ### Configuration
 
-- [ ] Configurer **TypeORM** au niveau de votre application.
+- [x] Configurer **TypeORM** au niveau de votre application.
 
 ## 3. Validation des données
 
@@ -77,10 +77,10 @@ Appliquer les contraintes suivantes :
 
 ## 4. Champs de suivi et réutilisabilité
 
-- [ ] Mettre à jour `TodoEntity` en y ajoutant deux champs : `updatedAt` et `deletedAt`.
+- [x] Mettre à jour `TodoEntity` en y ajoutant deux champs : `updatedAt` et `deletedAt`.
   - Ces deux champs doivent être **automatiquement gérés par TypeORM**.
-- [ ] Faire la modification nécessaire pour que le champ `createdAt` **ne puisse pas être modifié** une fois créé.
-- [ ] Les champs `createdAt`, `updatedAt` et `deletedAt` pouvant être utilisés plusieurs fois, **proposer une méthode pour les rendre réutilisables**.
+- [x] Faire la modification nécessaire pour que le champ `createdAt` **ne puisse pas être modifié** une fois créé.
+- [x] Les champs `createdAt`, `updatedAt` et `deletedAt` pouvant être utilisés plusieurs fois, **proposer une méthode pour les rendre réutilisables**.
 
 ## 5. Opérations CRUD
 
