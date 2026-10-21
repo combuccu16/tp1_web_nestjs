@@ -21,6 +21,7 @@ export interface ApiIndex {
 	readonly description: string;
 	readonly version: string;
 	readonly status: 'ok';
+	readonly ui: string;
 	readonly stack: {
 		readonly framework: string;
 		readonly orm: string;
@@ -51,6 +52,11 @@ const API_ENDPOINTS: readonly ApiEndpoint[] = [
 		method: 'GET',
 		path: '/todos/stats',
 		description: 'Statistiques par statut (COUNT + GROUP BY, requête unique)',
+	},
+	{
+		method: 'GET',
+		path: '/todos/trash',
+		description: 'Todos supprimés logiquement, prêts à être restaurés',
 	},
 	{
 		method: 'GET',
@@ -101,6 +107,8 @@ export class AppService {
 			description: 'API REST de gestion de todos — NestJS + TypeORM + SQLite',
 			version: '0.0.1', // synchronisé avec la version de package.json
 			status: 'ok',
+			// Le tableau de bord statique, servi par l'API elle-même.
+			ui: '/ui/',
 			stack: {
 				framework: 'NestJS',
 				orm: 'TypeORM',

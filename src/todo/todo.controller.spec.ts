@@ -17,6 +17,7 @@ describe('TodoController read routes', () => {
 		getAll: vi.fn(),
 		getById: vi.fn(),
 		getStats: vi.fn(),
+		getDeletedTodos: vi.fn(),
 		restoreTodo: vi.fn(),
 	};
 
@@ -25,6 +26,7 @@ describe('TodoController read routes', () => {
 		todoService.getAll.mockResolvedValue({ data: [todo], page: 1, limit: 10, total: 1 });
 		todoService.getById.mockResolvedValue(todo);
 		todoService.getStats.mockResolvedValue(stats);
+		todoService.getDeletedTodos.mockResolvedValue([{ id: 9, name: 'Trashed' }]);
 		todoService.restoreTodo.mockResolvedValue({ restored: true, id: 7 });
 		const moduleRef = await Test.createTestingModule({
 			controllers: [TodoController],
@@ -66,6 +68,18 @@ describe('TodoController read routes', () => {
 		// La route littérale doit gagner contre `@Get(':id')` : si l'ordre
 		// de déclaration changeait, ParseIntPipe renverrait 400 sur "stats".
 		expect(todoService.getStats).toHaveBeenCalled();
+		expect(todoService.getById).not.toHaveBeenCalled();
+	});
+
+	it('serves GET /todos/trash instead of swallowing it with the :id route', async () => {
+		await request(app.getHttpServer())
+			.get('/todos/trash')
+			.expect(200)
+			.expect([{ id: 9, name: 'Trashed' }]);
+
+		// Même piège que pour `/todos/stats` : la route littérale doit être
+		// déclarée avant `@Get(':id')`, sinon ParseIntPipe renverrait 400.
+		expect(todoService.getDeletedTodos).toHaveBeenCalled();
 		expect(todoService.getById).not.toHaveBeenCalled();
 	});
 

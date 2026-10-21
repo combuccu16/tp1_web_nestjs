@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { IsNull, Like, Not, Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto.js';
 import { UpdateTodoDto } from './dto/update-todo.dto.js';
 import { TodoEntity } from './entity/todo.entity.js';
@@ -235,6 +235,26 @@ export class TodoService {
 			throw new NotFoundException(`Todo #${id} not found`);
 		}
 		return { restored: true, id };
+	}
+
+	/**
+	 * D6 — Liste les todos supprimés logiquement (la « corbeille »).
+	 *
+	 * Toutes les lectures normales ignorent les lignes soft-deletées : il
+	 * faut `withDeleted: true` pour les voir, puis filtrer sur
+	 * `deletedAt IS NOT NULL` pour ne garder que celles qui le sont
+	 * réellement (une ligne active porte `deletedAt = NULL`).
+	 *
+	 * Sans cette méthode, un todo supprimé logiquement disparaît totalement
+	 * de l'API : plus aucun moyen de savoir qu'il existe, donc plus aucun
+	 * moyen de le restaurer. Cette liste rend la partie 6 utilisable.
+	 */
+	async getDeletedTodos(): Promise<TodoEntity[]> {
+		return this.todoRepository.find({
+			withDeleted: true,
+			where: { deletedAt: Not(IsNull()) },
+			order: { id: 'ASC' },
+		});
 	}
 
 	/**

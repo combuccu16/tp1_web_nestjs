@@ -64,6 +64,16 @@ export class TodoController {
 		return this.todoService.getStats();
 	}
 
+	// D6 — GET /todos/trash : les todos supprimés logiquement.
+	//
+	// ⚠️ Comme `@Get('stats')`, cette route littérale DOIT être déclarée
+	// AVANT `@Get(':id')` : sinon `:id` absorberait "trash" et
+	// `ParseIntPipe` renverrait un 400 au lieu de la liste.
+	@Get('trash')
+	getDeletedTodos(): Promise<TodoEntity[]> {
+		return this.todoService.getDeletedTodos();
+	}
+
 	// E2 — GET /todos/:id; ParseIntPipe returns 400 for a non-integer id.
 	@Get(':id')
 	getById(@Param('id', ParseIntPipe) id: number): Promise<TodoEntity> {

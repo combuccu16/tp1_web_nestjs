@@ -8,7 +8,7 @@ describe('TodoService read operations', () => {
 	const todo = { id: 7, name: 'Read me' } as TodoEntity;
 	let repository: Pick<
 		Repository<TodoEntity>,
-		'findAndCount' | 'findOne' | 'createQueryBuilder' | 'restore'
+		'findAndCount' | 'findOne' | 'find' | 'createQueryBuilder' | 'restore'
 	>;
 	let queryBuilder: {
 		select: ReturnType<typeof vi.fn>;
@@ -30,6 +30,7 @@ describe('TodoService read operations', () => {
 		repository = {
 			findAndCount: vi.fn().mockResolvedValue([[todo], 1]),
 			findOne: vi.fn().mockResolvedValue(todo),
+			find: vi.fn().mockResolvedValue([]),
 			createQueryBuilder: vi.fn().mockReturnValue(queryBuilder),
 			restore: vi.fn().mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] }),
 		};
@@ -114,5 +115,18 @@ describe('TodoService read operations', () => {
 		vi.mocked(repository.restore).mockResolvedValue({ affected: 0, raw: [], generatedMaps: [] });
 
 		await expect(service.restoreTodo(7)).rejects.toBeInstanceOf(NotFoundException);
+	});
+
+	it('lists the soft-deleted todos, including the rows normal reads hide', async () => {
+		const trashed = { id: 9, name: 'Trashed' } as TodoEntity;
+		vi.mocked(repository.find).mockResolvedValue([trashed]);
+
+		await expect(service.getDeletedTodos()).resolves.toEqual([trashed]);
+
+		// `withDeleted` est indispensable : sans lui, TypeORM ajoute
+		// `deletedAt IS NULL` et la corbeille serait toujours vide.
+		expect(repository.find).toHaveBeenCalledWith(
+			expect.objectContaining({ withDeleted: true, order: { id: 'ASC' } }),
+		);
 	});
 });

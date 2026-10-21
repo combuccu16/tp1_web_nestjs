@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Todo board — TP1 RT4</title>
+		<link
+			rel="icon"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231b2733'/%3E%3Cpath d='M8 16.5l5 5 11-11' fill='none' stroke='%234e7a55' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"
+		/>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="shell">
+			<header class="masthead">
+				<div class="masthead__identity">
+					<h1 class="masthead__title">Todo board</h1>
+					<p class="masthead__stack">
+						Propulsé par NestJS, TypeORM et SQLite
+					</p>
+				</div>
+				<a class="masthead__api" href="/">Index de l'API</a>
+			</header>
+
+			<section class="overview" aria-label="Répartition des todos">
+				<div class="overview__head">
+					<span class="overview__label">Répartition globale</span>
+					<span class="overview__total"><span data-total>0</span> todos</span>
+				</div>
+				<div
+					class="overview__bar"
+					data-meter
+					role="img"
+					aria-label="Répartition des todos par statut"
+				>
+					<span class="overview__segment overview__segment--todo"></span>
+					<span class="overview__segment overview__segment--progress"></span>
+					<span class="overview__segment overview__segment--done"></span>
+				</div>
+				<ul class="legend">
+					<li class="legend__item legend__item--todo">
+						<span data-legend="TODO">0</span> à faire
+					</li>
+					<li class="legend__item legend__item--progress">
+						<span data-legend="IN_PROGRESS">0</span> en cours
+					</li>
+					<li class="legend__item legend__item--done">
+						<span data-legend="DONE">0</span> terminés
+					</li>
+				</ul>
+			</section>
+
+			<section class="toolbar" aria-label="Filtres et actions">
+				<div class="field field--grow">
+					<label class="field__label" for="search">Recherche</label>
+					<input
+						class="field__input"
+						id="search"
+						type="search"
+						placeholder="dans le nom ou la description"
+						autocomplete="off"
+					/>
+				</div>
+				<div class="field">
+					<label class="field__label" for="status">Statut</label>
+					<select class="field__input" id="status">
+						<option value="">Tous les statuts</option>
+						<option value="TODO">TODO</option>
+						<option value="IN_PROGRESS">IN_PROGRESS</option>
+						<option value="DONE">DONE</option>
+					</select>
+				</div>
+				<button class="button button--primary" id="new-todo" type="button">
+					Nouveau todo
+				</button>
+			</section>
+
+			<main class="board" data-board>
+				<section class="lane" data-lane="TODO">
+					<header class="lane__head">
+						<h2 class="lane__title">TODO</h2>
+						<span class="lane__count" data-lane-count>0</span>
+					</header>
+					<ul class="lane__list" data-lane-list></ul>
+					<p class="lane__empty" data-lane-empty>Aucun todo</p>
+				</section>
+
+				<section class="lane" data-lane="IN_PROGRESS">
+					<header class="lane__head">
+						<h2 class="lane__title">IN_PROGRESS</h2>
+						<span class="lane__count" data-lane-count>0</span>
+					</header>
+					<ul class="lane__list" data-lane-list></ul>
+					<p class="lane__empty" data-lane-empty>Aucun todo</p>
+				</section>
+
+				<section class="lane" data-lane="DONE">
+					<header class="lane__head">
+						<h2 class="lane__title">DONE</h2>
+						<span class="lane__count" data-lane-count>0</span>
+					</header>
+					<ul class="lane__list" data-lane-list></ul>
+					<p class="lane__empty" data-lane-empty>Aucun todo</p>
+				</section>
+			</main>
+
+			<nav class="pager" aria-label="Pagination">
+				<button class="button button--ghost" id="prev-page" type="button">
+					Précédent
+				</button>
+				<p class="pager__status" data-page-status>Aucun todo</p>
+				<button class="button button--ghost" id="next-page" type="button">
+					Suivant
+				</button>
+			</nav>
+
+			<section class="trash" data-trash hidden>
+				<header class="trash__head">
+					<h2 class="trash__title">Corbeille</h2>
+					<span class="trash__count" data-trash-count>0</span>
+					<p class="trash__hint">
+						Supprimés logiquement — ils n'apparaissent plus dans l'API, mais
+						peuvent être restaurés.
+					</p>
+				</header>
+				<ul class="trash__list" data-trash-list></ul>
+			</section>
+		</div>
+
+		<div class="scrim" data-scrim hidden></div>
+
+		<aside class="drawer" data-drawer hidden aria-labelledby="drawer-title">
+			<div class="drawer__panel" role="dialog" aria-modal="true">
+				<header class="drawer__head">
+					<h2 class="drawer__title" id="drawer-title">Nouveau todo</h2>
+					<button class="drawer__close" type="button" data-close aria-label="Fermer">
+						&times;
+					</button>
+				</header>
+
+				<form class="form" data-form novalidate>
+					<div class="form__error" data-form-error hidden role="alert"></div>
+
+					<div class="form__field">
+						<label class="form__label" for="field-name">Nom</label>
+						<input
+							class="form__input"
+							id="field-name"
+							name="name"
+							type="text"
+							autocomplete="off"
+						/>
+						<p class="form__hint">Entre 3 et 10 caractères.</p>
+					</div>
+
+					<div class="form__field">
+						<label class="form__label" for="field-description">Description</label>
+						<textarea
+							class="form__input form__input--area"
+							id="field-description"
+							name="description"
+							rows="4"
+						></textarea>
+						<p class="form__hint">Au moins 10 caractères.</p>
+					</div>
+
+					<div class="form__field" data-status-field hidden>
+						<label class="form__label" for="field-status">Statut</label>
+						<select class="form__input" id="field-status" name="status">
+							<option value="TODO">TODO</option>
+							<option value="IN_PROGRESS">IN_PROGRESS</option>
+							<option value="DONE">DONE</option>
+						</select>
+					</div>
+
+					<footer class="form__actions">
+						<button class="button button--ghost" type="button" data-close>
+							Annuler
+						</button>
+						<button class="button button--primary" type="submit" data-submit>
+							Enregistrer
+						</button>
+					</footer>
+				</form>
+			</div>
+		</aside>
+
+		<div class="toasts" data-toasts role="status" aria-live="polite"></div>
+
+		<script type="module" src="app.js"></script>
+	</body>
+</html>
