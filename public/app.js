@@ -1,40 +1,24 @@
-/**
- * Tableau de bord du Todo board.
- *
- * Ce module ne fait **jamais** d'appel réseau lui-même : il passe par
- * `api.js`. Il tient l'état de l'interface, redessine le board et relaie
- * les actions de l'utilisateur.
- *
- * Le board est un tableau à trois colonnes — TODO, IN_PROGRESS, DONE —
- * parce que les trois statuts de `StatusEnum` *sont* trois colonnes. Les
- * todos d'une page sont répartis entre les colonnes selon leur statut.
- */
+
 
 import { ApiError, api } from './api.js';
 
-/** Les trois statuts, dans l'ordre d'affichage. */
+
 const STATUSES = ['TODO', 'IN_PROGRESS', 'DONE'];
 
-/** Libellés lisibles, utilisés pour les messages de l'interface. */
+
 const STATUS_LABELS = {
 	TODO: 'à faire',
 	IN_PROGRESS: 'en cours',
 	DONE: 'terminé',
 };
 
-/** Nombre de todos affichés par page. */
+
 const PAGE_SIZE = 10;
 
-/** Délai avant de relancer une recherche (évite une requête par frappe). */
+
 const SEARCH_DELAY = 250;
 
-/**
- * État de l'interface.
- *
- * `todos` ne contient que la page courante ; `total` le nombre de todos
- * correspondant aux filtres (tous statuts confondus) ; `stats` la
- * répartition globale, qui ignore les filtres.
- */
+
 const state = {
 	todos: [],
 	total: 0,
@@ -47,12 +31,12 @@ const state = {
 	editing: null,
 };
 
-/* ------------------------------------------------------------------- outils */
+
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 
-/** Formate une date ISO en date lisible, en heure locale. */
+
 function formatDate(iso) {
 	const date = new Date(iso);
 	if (Number.isNaN(date.getTime())) return '';
@@ -65,7 +49,7 @@ function formatDate(iso) {
 	}).format(date);
 }
 
-/** Crée un élément avec ses attributs et ses enfants. */
+
 function el(tag, attributes = {}, children = []) {
 	const node = document.createElement(tag);
 	for (const [name, value] of Object.entries(attributes)) {
@@ -78,23 +62,18 @@ function el(tag, attributes = {}, children = []) {
 	return node;
 }
 
-/* ------------------------------------------------------------------ toasts */
 
-/**
- * Affiche un message temporaire en bas de l'écran.
- *
- * @param {string} message
- * @param {'success'|'error'|'info'} [tone]
- */
+
+
 function toast(message, tone = 'info') {
 	const node = el('div', { class: `toast toast--${tone}`, text: message });
 	$('[data-toasts]').append(node);
 	setTimeout(() => node.remove(), 4200);
 }
 
-/* ------------------------------------------------------------- rendu global */
 
-/** Redessine le tableau de bord : les trois colonnes. */
+
+
 function renderBoard() {
 	for (const status of STATUSES) {
 		const lane = $(`.lane[data-lane="${status}"]`);
@@ -108,12 +87,7 @@ function renderBoard() {
 	}
 }
 
-/**
- * Construit une ligne de todo.
- *
- * @param {object} todo
- * @returns {HTMLElement}
- */
+
 function renderEntry(todo) {
 	const entry = el('li', { class: 'entry', draggable: 'true', 'data-id': todo.id });
 
@@ -154,7 +128,7 @@ function renderEntry(todo) {
 	return entry;
 }
 
-/** Redessine la répartition globale (barre segmentée + légende). */
+
 function renderOverview() {
 	const { byStatus, total } = state.stats;
 	const share = (value) => (total > 0 ? (value / total) * 100 : 0);
@@ -169,7 +143,7 @@ function renderOverview() {
 	}
 }
 
-/** Redessine la pagination. */
+
 function renderPager() {
 	const pages = Math.max(1, Math.ceil(state.total / state.limit));
 	const label = state.total === 0 ? 'Aucun todo' : `${state.total} todo${state.total > 1 ? 's' : ''}`;
@@ -179,7 +153,7 @@ function renderPager() {
 	$('#next-page').disabled = state.page >= pages;
 }
 
-/** Redessine la corbeille (todos supprimés logiquement). */
+
 function renderTrash() {
 	const section = $('[data-trash]');
 	section.hidden = state.trash.length === 0;
@@ -207,15 +181,9 @@ function renderTrash() {
 	);
 }
 
-/* ------------------------------------------------------------------ chargements */
 
-/**
- * Recharge tout ce qui dépend de l'API.
- *
- * Les statistiques et la corbeille ignorent les filtres de recherche : la
- * barre de répartition décrit la base entière, et la corbeille n'a pas
- * vocation à être filtrée.
- */
+
+
 async function refresh() {
 	try {
 		const [list, stats, trash] = await Promise.all([
@@ -238,7 +206,7 @@ async function refresh() {
 	}
 }
 
-/** Traduit une erreur en message affiché à l'utilisateur. */
+
 function reportError(error) {
 	if (error instanceof ApiError) {
 		toast(error.messages.join(' ') || error.message, 'error');
@@ -247,9 +215,9 @@ function reportError(error) {
 	}
 }
 
-/* ------------------------------------------------------------------ drawer */
 
-/** Ouvre le panneau latéral, en création ou en édition. */
+
+
 function openDrawer(todo = null) {
 	state.editing = todo;
 	const form = $('[data-form]');
@@ -267,7 +235,7 @@ function openDrawer(todo = null) {
 	$('#field-name').focus();
 }
 
-/** Ferme le panneau latéral. */
+
 function closeDrawer() {
 	$('[data-drawer]').hidden = true;
 	$('[data-scrim]').hidden = true;
@@ -275,21 +243,14 @@ function closeDrawer() {
 	state.editing = null;
 }
 
-/** Affiche les messages d'erreur renvoyés par l'API dans le formulaire. */
+
 function showFormError(messages) {
 	const box = $('[data-form-error]');
 	box.replaceChildren(...messages.map((message) => el('p', { text: message })));
 	box.hidden = false;
 }
 
-/**
- * Envoie le formulaire.
- *
- * La validation est **délibérément** laissée au serveur : le formulaire
- * n'impose rien, et les messages d'erreur affichés sont ceux de
- * `VALIDATION_MESSAGES` (partie 3 de l'énoncé), ce qui montre le travail
- * de validation côté API.
- */
+
 async function submitForm(event) {
 	event.preventDefault();
 
@@ -324,9 +285,9 @@ async function submitForm(event) {
 	}
 }
 
-/* ------------------------------------------------------------------- actions */
 
-/** Change le statut d'un todo (glisser-déposer ou édition). */
+
+
 async function moveTodo(id, status) {
 	const todo = state.todos.find((item) => item.id === id);
 	if (!todo || todo.status === status) return;
@@ -340,7 +301,7 @@ async function moveTodo(id, status) {
 	await refresh();
 }
 
-/** Supprime un todo définitivement. */
+
 async function deleteTodo(id) {
 	const todo = state.todos.find((item) => item.id === id);
 	if (!todo) return;
@@ -356,7 +317,7 @@ async function deleteTodo(id) {
 	await refresh();
 }
 
-/** Supprime un todo logiquement : il part en corbeille. */
+
 async function softDeleteTodo(id) {
 	const todo = state.todos.find((item) => item.id === id);
 	if (!todo) return;
@@ -370,7 +331,7 @@ async function softDeleteTodo(id) {
 	await refresh();
 }
 
-/** Restaure un todo depuis la corbeille. */
+
 async function restoreTodo(id) {
 	try {
 		await api.restore(id);
@@ -381,23 +342,23 @@ async function restoreTodo(id) {
 	await refresh();
 }
 
-/* ------------------------------------------------------------------- events */
+
 
 function wireEvents() {
-	// Création.
+	
 	$('#new-todo').addEventListener('click', () => openDrawer());
 
-	// Fermeture du panneau.
+	
 	$$('[data-close]').forEach((button) => button.addEventListener('click', closeDrawer));
 	$('[data-scrim]').addEventListener('click', closeDrawer);
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape' && !$('[data-drawer]').hidden) closeDrawer();
 	});
 
-	// Formulaire.
+	
 	$('[data-form]').addEventListener('submit', submitForm);
 
-	// Recherche (différée) et filtre de statut.
+	
 	let searchTimer;
 	$('#search').addEventListener('input', (event) => {
 		clearTimeout(searchTimer);
@@ -415,7 +376,7 @@ function wireEvents() {
 		refresh();
 	});
 
-	// Pagination.
+	
 	$('#prev-page').addEventListener('click', () => {
 		if (state.page > 1) {
 			state.page -= 1;
@@ -427,7 +388,7 @@ function wireEvents() {
 		refresh();
 	});
 
-	// Actions sur les todos (délégation d'événement : un seul écouteur).
+	
 	document.addEventListener('click', (event) => {
 		const button = event.target.closest('[data-action]');
 		if (!button) return;
@@ -449,7 +410,7 @@ function wireEvents() {
 		}
 	});
 
-	// Glisser-déposer entre colonnes : le statut est mis à jour par l'API.
+	
 	let draggedId = null;
 
 	document.addEventListener('dragstart', (event) => {
@@ -489,7 +450,7 @@ function wireEvents() {
 	});
 }
 
-/* ---------------------------------------------------------------- démarrage */
+
 
 wireEvents();
 refresh();

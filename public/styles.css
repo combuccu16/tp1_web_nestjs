@@ -1,31 +1,17 @@
-/* ==========================================================================
-   Todo board — feuille de style unique (aucun framework, aucun build)
-   --------------------------------------------------------------------------
-   Direction visuelle : un atelier plutôt qu'un tableau de bord SaaS.
-   - Le fond est un plan de travail froid (--board), les colonnes sont des
-     zones de travail légèrement plus claires.
-   - La couleur n'est porteuse d'information que lorsqu'elle encode un
-     statut : bleu ardoise = à faire, terre de Sienne = en cours, mousse =
-     terminé. La couleur d'accent d'une colonne vient donc de la même
-     variable que son bandeau, et rien d'autre n'est coloré.
-   - Deux familles seulement : une serif ancien style pour les titres (le
-     caractère « carnet »), une sans-serif humaniste pour l'interface.
-   - Les nombres sont alignés en chiffres tabulaires plutôt qu'en police à
-     chasse fixe.
-   ========================================================================== */
+
 
 :root {
-	/* Surfaces */
+	
 	--board: #e8ebef;
 	--lane: #f7f8fa;
 	--surface: #ffffff;
 
-	/* Encre */
+	
 	--ink: #1b2733;
 	--muted: #6b7a88;
 	--rule: #cbd3da;
 
-	/* Statuts */
+	
 	--slate: #3e6b8c;
 	--sienna: #c2703d;
 	--moss: #4e7a55;
@@ -72,7 +58,7 @@ ul {
 	outline-offset: 2px;
 }
 
-/* --------------------------------------------------------------- structure */
+
 
 .shell {
 	max-width: 1440px;
@@ -80,7 +66,7 @@ ul {
 	padding: 40px 32px 80px;
 }
 
-/* ---------------------------------------------------------------- masthead */
+
 
 .masthead {
 	display: flex;
@@ -120,7 +106,7 @@ ul {
 	border-bottom-color: var(--ink);
 }
 
-/* ---------------------------------------------------------------- overview */
+
 
 .overview {
 	margin-bottom: 28px;
@@ -210,7 +196,7 @@ ul {
 	font-variant-numeric: tabular-nums;
 }
 
-/* ----------------------------------------------------------------- toolbar */
+
 
 .toolbar {
 	display: flex;
@@ -253,7 +239,7 @@ ul {
 	outline-offset: 1px;
 }
 
-/* ------------------------------------------------------------------ button */
+
 
 .button {
 	padding: 9px 16px;
@@ -290,7 +276,7 @@ ul {
 	cursor: not-allowed;
 }
 
-/* ------------------------------------------------------------------- board */
+
 
 .board {
 	display: grid;
@@ -352,7 +338,7 @@ ul {
 	display: none;
 }
 
-/* ------------------------------------------------------------------ entry */
+
 
 .entry {
 	padding: 13px 16px;
@@ -436,7 +422,7 @@ ul {
 	color: var(--danger);
 }
 
-/* ------------------------------------------------------------------- pager */
+
 
 .pager {
 	display: flex;
@@ -452,7 +438,7 @@ ul {
 	font-variant-numeric: tabular-nums;
 }
 
-/* ------------------------------------------------------------------- trash */
+
 
 .trash {
 	margin-top: 40px;
@@ -514,7 +500,7 @@ ul {
 	font-variant-numeric: tabular-nums;
 }
 
-/* ------------------------------------------------------------------ drawer */
+
 
 .scrim {
 	position: fixed;
@@ -573,7 +559,7 @@ ul {
 	color: var(--ink);
 }
 
-/* -------------------------------------------------------------------- form */
+
 
 .form {
 	display: flex;
@@ -648,7 +634,7 @@ ul {
 	border-top: 1px solid var(--rule);
 }
 
-/* ------------------------------------------------------------------ toasts */
+
 
 .toasts {
 	position: fixed;
@@ -679,7 +665,7 @@ ul {
 	border-left-color: var(--danger);
 }
 
-/* -------------------------------------------------------------- animations */
+
 
 @keyframes fade-in {
 	from {
@@ -710,7 +696,7 @@ ul {
 	}
 }
 
-/* -------------------------------------------------------------- responsive */
+
 
 @media (max-width: 1000px) {
 	.board {
