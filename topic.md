@@ -29,12 +29,12 @@
 
 ## 1. Mise en place du projet
 
-- [ ] Créer un nouveau projet Nest.
-- [ ] Créer un module `CommonModule`.
+- [x] Créer un nouveau projet Nest.
+- [x] Créer un module `CommonModule`.
   - Ce module sera souvent utilisé : pensez-y lors de sa création.
-- [ ] Provider la bibliothèque [`uuid`](https://www.npmjs.com/package/uuid).
+- [x] Provider la bibliothèque [`uuid`](https://www.npmjs.com/package/uuid).
   - **Il faudra identifier le bon type de provider.**
-- [ ] Créer un module et un service afin de tester l'injection via un petit exemple.
+- [x] Créer un module et un service afin de tester l'injection via un petit exemple.
 
 ## 2. Entité et base de données
 
@@ -65,12 +65,12 @@ Appliquer les contraintes suivantes :
 | `description` | Obligatoire, au moins **10** caractères                      |
 | `name`        | Obligatoire, minimum **3** caractères, maximum **10** caractères |
 
-- [ ] Créer vos propres messages d'erreurs.
-- [ ] Les centraliser dans un même fichier pour optimiser la réutilisation et faciliter la maintenance de l'application.
+- [x] Créer vos propres messages d'erreurs.
+- [x] Les centraliser dans un même fichier pour optimiser la réutilisation et faciliter la maintenance de l'application.
 
 ### 3.2 Mise à jour d'un Todo
 
-- [ ] Créer un **DTO propre à la méthode de mise à jour**.
+- [x] Créer un **DTO propre à la méthode de mise à jour**.
   - Aucun champ n'est obligatoire pour l'update.
   - Garder les contraintes de la partie ajout (taille).
   - Le statut doit être une des valeurs de vos status.
@@ -84,38 +84,38 @@ Appliquer les contraintes suivantes :
 
 ## 5. Opérations CRUD
 
-- [ ] **`addTodo`** : ajouter un todo dans la base de données.
+- [x] **`addTodo`** : ajouter un todo dans la base de données.
   - Garder les deux versions de votre code.
-- [ ] **`updateTodo`** : mettre à jour un todo dans la base de données via son `id`.
-- [ ] **`deleteTodo`** : supprimer un todo dans la base de données via son `id`.
+- [x] **`updateTodo`** : mettre à jour un todo dans la base de données via son `id`.
+- [x] **`deleteTodo`** : supprimer un todo dans la base de données via son `id`.
 
 ## 6. Suppression logique (soft delete)
 
-- [ ] **`softDeleteTodo`** : supprimer un todo dans la base de données via son `id`, de façon *soft*.
-- [ ] Implémenter aussi la méthode permettant de **restaurer** votre todo.
+- [x] **`softDeleteTodo`** : supprimer un todo dans la base de données via son `id`, de façon *soft*.
+- [x] Implémenter aussi la méthode permettant de **restaurer** votre todo.
 
 ## 7. Statistiques
 
-- [ ] Préparer une API permettant d'obtenir, en **une seule requête**, le nombre de todos pour chacun des trois statuts.
+- [x] Préparer une API permettant d'obtenir, en **une seule requête**, le nombre de todos pour chacun des trois statuts.
 
 ## 8. Récupération, recherche et pagination
 
 ### 8.1 Récupération de tous les todos
 
-- [ ] Créer un endpoint permettant de récupérer l'ensemble des todos.
+- [x] Créer un endpoint permettant de récupérer l'ensemble des todos.
 
 ### 8.2 Récupération par identifiant
 
-- [ ] Créer l'endpoint permettant de récupérer un todo par son `id`.
-- [ ] Gérer le cas où le todo n'existe pas.
+- [x] Créer l'endpoint permettant de récupérer un todo par son `id`.
+- [x] Gérer le cas où le todo n'existe pas.
 
 ### 8.3 Recherche
 
-- [ ] Modifier l'API `GET` afin de pouvoir récupérer les todos :
+- [x] Modifier l'API `GET` afin de pouvoir récupérer les todos :
   - dont le `name` **ou** la `description` contiennent la chaîne passée en paramètre,
   - **et** ayant le statut passé en paramètre.
-- [ ] Les deux critères de recherche restent **optionnels**.
+- [x] Les deux critères de recherche restent **optionnels**.
 
 ### 8.4 Pagination
 
-- [ ] Ajouter le traitement nécessaire pour paginer la fonction `getAll`.
+- [x] Ajouter le traitement nécessaire pour paginer la fonction `getAll`.
