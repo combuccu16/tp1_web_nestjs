@@ -209,12 +209,25 @@ export class TodoService {
 	/**
 	 * D5 — Restaure un todo supprimé logiquement.
 	 *
-	 * `restore(id)` génère `UPDATE todos SET deletedAt = NULL WHERE id = :id`
-	 * : la ligne redevient visible par les lectures normales.
+	 * `restore(id)` génère en réalité :
+	 * `UPDATE todos SET deletedAt = NULL, updatedAt = :now
+	 *  WHERE id = :id AND deletedAt IS NOT NULL`
 	 *
-	 * Si la row n'existe pas du tout, `affected` vaut 0 → 404.
-	 * (Restaurer un todo déjà actif ne change rien : il est simplement
-	 * réécrit avec `deletedAt = NULL`.)
+	 * TypeORM ajoute **systématiquement** la condition `deletedAt IS NOT NULL`
+	 * à l'UPDATE d'une entité soft-deletable : on ne restaure donc que les
+	 * lignes qui sont *effectivement* marquées comme supprimées logiquement.
+	 * (C'est le symétrique du `AND deletedAt IS NULL` que `softDelete` ajoute.)
+	 *
+	 * Conséquence : `affected` vaut 0 — et l'on renvoie donc un 404 — dans
+	 * deux cas :
+	 * - la ligne n'existe pas du tout ;
+	 * - la ligne existe mais n'est PAS soft-deletée, c'est-à-dire qu'elle est
+	 *   déjà active. Restaurer un todo déjà actif n'est donc **pas** un no-op
+	 *   qui renvoie 200 : c'est un 404, car « il n'y a rien à restaurer ».
+	 *
+	 * Quand la restauration réussit, la ligne redevient visible par les
+	 * lectures normales (`findOne` / `find` / `count`), qui filtrent sur
+	 * `deletedAt IS NULL`.
 	 */
 	async restoreTodo(id: number): Promise<{ restored: true; id: number }> {
 		const { affected } = await this.todoRepository.restore(id);

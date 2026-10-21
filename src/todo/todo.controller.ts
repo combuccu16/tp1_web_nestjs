@@ -4,6 +4,7 @@ import {
 	DefaultValuePipe,
 	Delete,
 	Get,
+	HttpCode,
 	Param,
 	ParseIntPipe,
 	Patch,
@@ -101,7 +102,14 @@ export class TodoController {
 	}
 
 	// D5 — POST /todos/:id/restore : restaure un todo soft-deleté.
+	//
+	// `@HttpCode(200)` : NestJS répond 201 Created par défaut sur un POST,
+	// or cette route ne *crée* aucune ressource — elle change l'état d'une
+	// ligne existante. 200 OK décrit donc la réponse plus fidèlement.
+	// (À l'inverse, `POST /todos` garde bien son 201 : là, une ressource
+	// est réellement créée.)
 	@Post(':id/restore')
+	@HttpCode(200)
 	restoreTodo(@Param('id', ParseIntPipe) id: number): Promise<{ restored: true; id: number }> {
 		return this.todoService.restoreTodo(id);
 	}
