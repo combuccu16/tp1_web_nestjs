@@ -17,6 +17,7 @@ describe('TodoController read routes', () => {
 		getAll: vi.fn(),
 		getById: vi.fn(),
 		getStats: vi.fn(),
+		restoreTodo: vi.fn(),
 	};
 
 	beforeEach(async () => {
@@ -24,6 +25,7 @@ describe('TodoController read routes', () => {
 		todoService.getAll.mockResolvedValue({ data: [todo], page: 1, limit: 10, total: 1 });
 		todoService.getById.mockResolvedValue(todo);
 		todoService.getStats.mockResolvedValue(stats);
+		todoService.restoreTodo.mockResolvedValue({ restored: true, id: 7 });
 		const moduleRef = await Test.createTestingModule({
 			controllers: [TodoController],
 			providers: [{ provide: TodoService, useValue: todoService }],
@@ -65,5 +67,15 @@ describe('TodoController read routes', () => {
 		// de déclaration changeait, ParseIntPipe renverrait 400 sur "stats".
 		expect(todoService.getStats).toHaveBeenCalled();
 		expect(todoService.getById).not.toHaveBeenCalled();
+	});
+
+	it('serves POST /todos/:id/restore with 200 rather than the default 201', async () => {
+		// La restauration ne crée rien : elle change l'état d'une ligne
+		// existante, donc 200 OK est le code le plus juste.
+		await request(app.getHttpServer())
+			.post('/todos/7/restore')
+			.expect(200)
+			.expect({ restored: true, id: 7 });
+		expect(todoService.restoreTodo).toHaveBeenCalledWith(7);
 	});
 });

@@ -6,7 +6,10 @@ import { TodoService } from './todo.service.js';
 
 describe('TodoService read operations', () => {
 	const todo = { id: 7, name: 'Read me' } as TodoEntity;
-	let repository: Pick<Repository<TodoEntity>, 'findAndCount' | 'findOne' | 'createQueryBuilder'>;
+	let repository: Pick<
+		Repository<TodoEntity>,
+		'findAndCount' | 'findOne' | 'createQueryBuilder' | 'restore'
+	>;
 	let queryBuilder: {
 		select: ReturnType<typeof vi.fn>;
 		addSelect: ReturnType<typeof vi.fn>;
@@ -28,6 +31,7 @@ describe('TodoService read operations', () => {
 			findAndCount: vi.fn().mockResolvedValue([[todo], 1]),
 			findOne: vi.fn().mockResolvedValue(todo),
 			createQueryBuilder: vi.fn().mockReturnValue(queryBuilder),
+			restore: vi.fn().mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] }),
 		};
 		service = new TodoService(repository as Repository<TodoEntity>);
 	});
@@ -97,5 +101,18 @@ describe('TodoService read operations', () => {
 			total: 0,
 			byStatus: { TODO: 0, IN_PROGRESS: 0, DONE: 0 },
 		});
+	});
+
+	it('restores a soft-deleted todo', async () => {
+		await expect(service.restoreTodo(7)).resolves.toEqual({ restored: true, id: 7 });
+		expect(repository.restore).toHaveBeenCalledWith(7);
+	});
+
+	it('returns 404 when restoring a todo that is not soft-deleted', async () => {
+		// TypeORM ajoute `deletedAt IS NOT NULL` à l'UPDATE de restauration :
+		// un todo déjà actif n'est jamais restauré, donc `affected` vaut 0.
+		vi.mocked(repository.restore).mockResolvedValue({ affected: 0, raw: [], generatedMaps: [] });
+
+		await expect(service.restoreTodo(7)).rejects.toBeInstanceOf(NotFoundException);
 	});
 });
