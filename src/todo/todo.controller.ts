@@ -1,7 +1,19 @@
-import { Body, Controller, Delete, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	DefaultValuePipe,
+	Delete,
+	Get,
+	Param,
+	ParseIntPipe,
+	Patch,
+	Post,
+	Query,
+} from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto.js';
 import { UpdateTodoDto } from './dto/update-todo.dto.js';
 import { TodoEntity } from './entity/todo.entity.js';
+import { StatusEnum } from './entity/status.enum.js';
 import { TodoService } from './todo.service.js';
 
 /**
@@ -22,6 +34,24 @@ import { TodoService } from './todo.service.js';
 @Controller('todos')
 export class TodoController {
 	constructor(private readonly todoService: TodoService) {}
+
+	// E1/E3/E4 — GET /todos?q=...&status=...&page=1&limit=10.
+	// `q` matches name OR description; status is combined with that OR filter.
+	@Get()
+	getAll(
+		@Query('q') search?: string,
+		@Query('status') status?: StatusEnum,
+		@Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+		@Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+	): ReturnType<TodoService['getAll']> {
+		return this.todoService.getAll(search, status, page, limit);
+	}
+
+	// E2 — GET /todos/:id; ParseIntPipe returns 400 for a non-integer id.
+	@Get(':id')
+	getById(@Param('id', ParseIntPipe) id: number): Promise<TodoEntity> {
+		return this.todoService.getById(id);
+	}
 
 	// D1 — POST /todos : ajoute un todo.
 	// Répond 201 Created avec le todo créé (id, createdAt, updatedAt, status...).
