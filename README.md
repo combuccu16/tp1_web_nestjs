@@ -46,7 +46,7 @@ Sujet par **Aymen Sellaouti** : voir [topic.md](./topic.md).
   - [x] Le déclarer `@Global()` et l'exporter, car il sera utilisé partout.
   - [x] Provider la bibliothèque `uuid` avec le **bon type de provider** — pouvoir justifier le choix (`useFactory` vs `useValue` vs `useClass`).
 - [x] **A3** — Créer un module et un service de test (`src/test-injection/`) pour démontrer l'injection de dépendance du provider `uuid`.
-- [ ] **A4** — **Statistiques** : endpoint qui renvoie, en **une seule requête SQL** (`COUNT ... GROUP BY`), le nombre de todos pour chacun des trois statuts — en incluant aussi les statuts à 0.
+- [x] **A4** — **Statistiques** : endpoint qui renvoie, en **une seule requête SQL** (`COUNT ... GROUP BY`), le nombre de todos pour chacun des trois statuts — en incluant aussi les statuts à 0.
 
 ### Fichiers
 `package.json`, `tsconfig.json`, `nest-cli.json`, `src/main.ts`, `src/app.module.ts`, `src/common/**` (hors `entities/` et `messages/`), `src/test-injection/**`, route de stats dans `todo.controller.ts` / `todo.service.ts` (en dernier).
@@ -90,16 +90,16 @@ Pourquoi `@DeleteDateColumn` plutôt qu'un `deleted: boolean`. Le principe d'une
 ## Alaa – Validation des données *(Partie 3)*
 
 ### Tâches
-- [ ] **C1** — Créer un fichier **centralisé** de messages d'erreurs de validation (`src/common/messages/`) — optimiser la réutilisation et la maintenance.
-- [ ] **C2** — `CreateTodoDto` :
-  - [ ] `description` : obligatoire, minimum **10** caractères.
-  - [ ] `name` : obligatoire, entre **3** et **10** caractères.
-  - [ ] Messages d'erreurs personnalisés via le fichier centralisé.
-- [ ] **C3** — `UpdateTodoDto` (DTO **propre à la mise à jour**) :
-  - [ ] **Aucun champ obligatoire.**
-  - [ ] Mêmes contraintes de taille que l'ajout.
-  - [ ] `status` doit appartenir aux valeurs de `StatusEnum`.
-- [ ] **C4** — Configurer le `ValidationPipe` global (avec `whitelist` et `transform`).
+- [x] **C1** — Créer un fichier **centralisé** de messages d'erreurs de validation (`src/common/messages/`) — optimiser la réutilisation et la maintenance.
+- [x] **C2** — `CreateTodoDto` :
+  - [x] `description` : obligatoire, minimum **10** caractères.
+  - [x] `name` : obligatoire, entre **3** et **10** caractères.
+  - [x] Messages d'erreurs personnalisés via le fichier centralisé.
+- [x] **C3** — `UpdateTodoDto` (DTO **propre à la mise à jour**) :
+  - [x] **Aucun champ obligatoire.**
+  - [x] Mêmes contraintes de taille que l'ajout.
+  - [x] `status` doit appartenir aux valeurs de `StatusEnum`.
+- [x] **C4** — Configurer le `ValidationPipe` global (avec `whitelist` et `transform`).
 
 ### Fichiers
 `src/todo/dto/**`, `src/common/messages/**` (+ configuration du pipe dans `main.ts`).
@@ -112,12 +112,12 @@ Différence entre un DTO de création et un DTO de mise à jour. Le rôle du `Va
 ## Dalcon – Opérations d'écriture *(Parties 5 & 6)*
 
 ### Tâches
-- [ ] **D1** — `addTodo` : ajouter un todo en base. **Garder les deux versions du code.**
-- [ ] **D2** — `updateTodo` : mettre à jour un todo via son `id`.
-- [ ] **D3** — `deleteTodo` : supprimer **définitivement** un todo via son `id`.
-- [ ] **D4** — `softDeleteTodo` : suppression logique via son `id` (utilise `deletedAt`).
-- [ ] **D5** — `restoreTodo` : restaurer un todo supprimé logiquement.
-- [ ] **D6** — Exposer toutes ces méthodes via les routes du `TodoController`.
+- [x] **D1** — `addTodo` : ajouter un todo en base. **Garder les deux versions du code.**
+- [x] **D2** — `updateTodo` : mettre à jour un todo via son `id`.
+- [x] **D3** — `deleteTodo` : supprimer **définitivement** un todo via son `id`.
+- [x] **D4** — `softDeleteTodo` : suppression logique via son `id` (utilise `deletedAt`).
+- [x] **D5** — `restoreTodo` : restaurer un todo supprimé logiquement.
+- [x] **D6** — Exposer toutes ces méthodes via les routes du `TodoController`.
 
 ### Fichiers
 `src/todo/todo.service.ts`, `src/todo/todo.controller.ts`.
@@ -130,11 +130,11 @@ La différence entre les deux versions d'`addTodo`. Pourquoi la suppression logi
 ## Adab – Récupération, recherche et pagination *(Partie 8)*
 
 ### Tâches
-- [ ] **E1** — `GET /todos` : récupérer l'ensemble des todos.
-- [ ] **E2** — `GET /todos/:id` : récupérer un todo par son `id`.
-  - [ ] Gérer le cas où le todo n'existe pas (404 `NotFoundException`).
-- [ ] **E3** — Recherche : modifier l'API `GET` pour récupérer les todos dont le `name` **ou** la `description` contiennent la chaîne passée en paramètre, **et** ayant le statut passé en paramètre. Les deux critères restent **optionnels**.
-- [ ] **E4** — Pagination : ajouter le traitement nécessaire pour paginer `getAll` (page / limit).
+- [x] **E1** — `GET /todos` : récupérer l'ensemble des todos.
+- [x] **E2** — `GET /todos/:id` : récupérer un todo par son `id`.
+  - [x] Gérer le cas où le todo n'existe pas (404 `NotFoundException`).
+- [x] **E3** — Recherche : modifier l'API `GET` pour récupérer les todos dont le `name` **ou** la `description` contiennent la chaîne passée en paramètre, **et** ayant le statut passé en paramètre. Les deux critères restent **optionnels**.
+- [x] **E4** — Pagination : ajouter le traitement nécessaire pour paginer `getAll` (page / limit).
 
 ### Fichiers
 `src/todo/todo.service.ts`, `src/todo/todo.controller.ts` *(travailler sur une branche séparée, la lecture n'a pas besoin d'attendre Dalcon ; merger après lui)*.
@@ -161,6 +161,6 @@ Akram (A1–A3, squelette)  ─►  Ben Fraj (entité)  ─►  Alaa (DTOs)
 
 ## Checklist finale (équipe entière)
 
-- [ ] Toute la couverture de [topic.md](./topic.md) (parties 1 à 8) est implémentée
-- [ ] L'application démarre sans erreur et tous les endpoints sont testés
+- [x] Toute la couverture de [topic.md](./topic.md) (parties 1 à 8) est implémentée
+- [x] L'application démarre sans erreur et tous les endpoints sont testés
 - [ ] Chaque membre présente sa partie aux autres, puis on fait tourner les rôles pour que **tout le monde sache défendre l'ensemble du projet**
