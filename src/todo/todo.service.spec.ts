@@ -6,13 +6,28 @@ import { TodoService } from './todo.service.js';
 
 describe('TodoService read operations', () => {
 	const todo = { id: 7, name: 'Read me' } as TodoEntity;
-	let repository: Pick<Repository<TodoEntity>, 'findAndCount' | 'findOne'>;
+	let repository: Pick<Repository<TodoEntity>, 'findAndCount' | 'findOne' | 'createQueryBuilder'>;
+	let queryBuilder: {
+		select: ReturnType<typeof vi.fn>;
+		addSelect: ReturnType<typeof vi.fn>;
+		where: ReturnType<typeof vi.fn>;
+		groupBy: ReturnType<typeof vi.fn>;
+		getRawMany: ReturnType<typeof vi.fn>;
+	};
 	let service: TodoService;
 
 	beforeEach(() => {
+		queryBuilder = {
+			select: vi.fn().mockReturnThis(),
+			addSelect: vi.fn().mockReturnThis(),
+			where: vi.fn().mockReturnThis(),
+			groupBy: vi.fn().mockReturnThis(),
+			getRawMany: vi.fn().mockResolvedValue([]),
+		};
 		repository = {
 			findAndCount: vi.fn().mockResolvedValue([[todo], 1]),
 			findOne: vi.fn().mockResolvedValue(todo),
+			createQueryBuilder: vi.fn().mockReturnValue(queryBuilder),
 		};
 		service = new TodoService(repository as Repository<TodoEntity>);
 	});
@@ -52,5 +67,35 @@ describe('TodoService read operations', () => {
 		await expect(service.getById(7)).resolves.toBe(todo);
 		vi.mocked(repository.findOne).mockResolvedValueOnce(null);
 		await expect(service.getById(999)).rejects.toBeInstanceOf(NotFoundException);
+	});
+
+	it('groups the todos by status in a single query and zero-fills missing statuses', async () => {
+		vi.mocked(queryBuilder.getRawMany).mockResolvedValue([
+			{ status: StatusEnum.TODO, count: 2 },
+			{ status: StatusEnum.DONE, count: 1 },
+		]);
+
+		const stats = await service.getStats();
+
+		expect(stats).toEqual({
+			total: 3,
+			// IN_PROGRESS n'apparaît pas dans le GROUP BY (aucun todo) : il doit rester à 0.
+			byStatus: { TODO: 2, IN_PROGRESS: 0, DONE: 1 },
+		});
+		// Une seule requête, avec un GROUP BY : pas de COUNT séparé par statut.
+		expect(repository.createQueryBuilder).toHaveBeenCalledTimes(1);
+		expect(queryBuilder.groupBy).toHaveBeenCalledWith('todo.status');
+		expect(queryBuilder.addSelect).toHaveBeenCalledWith('COUNT(*)', 'count');
+	});
+
+	it('returns a zero count for every status when there is no todo', async () => {
+		vi.mocked(queryBuilder.getRawMany).mockResolvedValue([]);
+
+		const stats = await service.getStats();
+
+		expect(stats).toEqual({
+			total: 0,
+			byStatus: { TODO: 0, IN_PROGRESS: 0, DONE: 0 },
+		});
 	});
 });

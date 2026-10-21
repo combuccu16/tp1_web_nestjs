@@ -7,6 +7,19 @@ import { TodoEntity } from './entity/todo.entity.js';
 import { StatusEnum } from './entity/status.enum.js';
 
 /**
+ * Réponse de l'API de statistiques (partie 7).
+ *
+ * `byStatus` contient **toujours** les trois statuts de `StatusEnum`,
+ * y compris ceux qui n'ont aucun todo : leur compte vaut 0.
+ */
+export interface TodoStats {
+	/** Nombre total de todos (non soft-deletés). */
+	total: number;
+	/** Nombre de todos par statut. */
+	byStatus: Record<StatusEnum, number>;
+}
+
+/**
  * Service des opérations d'écriture sur les todos (parties 5 & 6 du TP) :
  * ajout, mise à jour, suppression physique, suppression logique et restauration.
  *
@@ -209,5 +222,56 @@ export class TodoService {
 			throw new NotFoundException(`Todo #${id} not found`);
 		}
 		return { restored: true, id };
+	}
+
+	/**
+	 * Partie 7 — Statistiques.
+	 *
+	 * Objectif : obtenir le nombre de todos pour chacun des trois statuts
+	 * en **une seule requête SQL** (un `COUNT ... GROUP BY`).
+	 *
+	 * Pourquoi ne pas faire trois requêtes `COUNT` séparées (une par statut) ?
+	 * - **Performance** : 3 allers-retours base de données au lieu d'un seul
+	 *   (la latence réseau est multipliée par 3).
+	 * - **Cohérence** : les trois comptages ne sont pas atomiques. Entre deux
+	 *   requêtes, un todo peut être ajouté ou modifié : le total affiché
+	 *   serait alors incohérent avec la somme des statuts.
+	 * - Le `GROUP BY` existe précisément pour ça : le SGBD fait l'agrégation
+	 *   en une seule passe sur la table.
+	 *
+	 * Cas des statuts à 0 : le `GROUP BY` ne renvoie **que** les statuts
+	 * présents en base. Un statut sans aucun todo n'apparaît donc pas dans
+	 * le résultat SQL : on le complète avec la valeur 0 pour toujours
+	 * exposer les trois statuts de `StatusEnum`.
+	 *
+	 * Note sur le soft delete : TypeORM ajoute automatiquement
+	 * `deletedAt IS NULL` sur l'alias principal d'un `QueryBuilder`
+	 * (les todos supprimés logiquement sont donc ignorés). On l'écrit
+	 * explicitement pour que la requête reste lisible et ne dépende pas
+	 * de ce comportement implicite.
+	 */
+	async getStats(): Promise<TodoStats> {
+		const rows = await this.todoRepository
+			.createQueryBuilder('todo')
+			.select('todo.status', 'status')
+			.addSelect('COUNT(*)', 'count')
+			.where('todo.deletedAt IS NULL')
+			.groupBy('todo.status')
+			.getRawMany<{ status: StatusEnum; count: number }>();
+
+		// On part de zéro pour chaque statut : les statuts absents du
+		// GROUP BY (aucun todo) restent donc à 0 dans la réponse.
+		const byStatus = Object.fromEntries(
+			Object.values(StatusEnum).map((status) => [status, 0]),
+		) as Record<StatusEnum, number>;
+
+		let total = 0;
+		for (const row of rows) {
+			const count = Number(row.count);
+			byStatus[row.status] = count;
+			total += count;
+		}
+
+		return { total, byStatus };
 	}
 }

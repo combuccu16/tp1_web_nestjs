@@ -17,7 +17,8 @@ import { StatusEnum } from './entity/status.enum.js';
 import { TodoService } from './todo.service.js';
 
 /**
- * Routes d'écriture sur les todos (D1 → D6).
+ * Routes sur les todos : écriture (D1 → D6), lecture (E1 → E4) et
+ * statistiques (partie 7).
  *
  * Méthode HTTP choisie selon l'intention :
  * - POST    → créer une ressource            (addTodo)
@@ -30,6 +31,10 @@ import { TodoService } from './todo.service.js';
  * automatiquement un 400 si l'id n'est pas un entier.
  * La validation du body (CreateTodoDto / UpdateTodoDto) est assurée par le
  * `ValidationPipe` global configuré dans `main.ts`.
+ *
+ * ⚠️ L'ordre de déclaration des routes GET compte : Express les teste dans
+ * l'ordre. Les routes littérales (`/todos/stats`) doivent donc précéder les
+ * routes paramétrées (`/todos/:id`), sinon `:id` les absorbe et renvoie 400.
  */
 @Controller('todos')
 export class TodoController {
@@ -45,6 +50,17 @@ export class TodoController {
 		@Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
 	): ReturnType<TodoService['getAll']> {
 		return this.todoService.getAll(search, status, page, limit);
+	}
+
+	// Partie 7 — GET /todos/stats.
+	//
+	// ⚠️ Cette route DOIT être déclarée AVANT `@Get(':id')` :
+	// Express teste les routes dans l'ordre de déclaration, donc `:id`
+	// absorberait `/todos/stats` et `ParseIntPipe` renverrait un 400
+	// (au lieu de 200 avec les statistiques).
+	@Get('stats')
+	getStats(): ReturnType<TodoService['getStats']> {
+		return this.todoService.getStats();
 	}
 
 	// E2 — GET /todos/:id; ParseIntPipe returns 400 for a non-integer id.
