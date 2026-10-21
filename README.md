@@ -159,6 +159,36 @@ Akram (A1–A3, squelette)  ─►  Ben Fraj (entité)  ─►  Alaa (DTOs)
 - Akram n'ajoute sa route de stats qu'**après** le merge final d'Adab.
 - Aucune fusion sans relecture par un autre membre.
 
+## Frontend (tableau de bord)
+
+Un tableau de bord statique, en **HTML, CSS et JavaScript purs** — sans framework, sans bundler, sans étape de build. Il est servi par l'API elle-même (`express.static`), sur le préfixe `/ui` :
+
+| URL | Contenu |
+| --- | --- |
+| `http://localhost:3000/` | index JSON de l'API (`GET /`) |
+| `http://localhost:3000/ui/` | le tableau de bord |
+
+```bash
+npm run start:dev     # puis ouvrir http://localhost:3000/ui/
+```
+
+Les fichiers sont dans `public/` :
+
+| Fichier | Rôle |
+| --- | --- |
+| `index.html` | structure de la page |
+| `styles.css` | jetons de design (couleurs, typographie, mise en page) |
+| `api.js` | client HTTP — une fonction par endpoint, **aucune** manipulation du DOM |
+| `app.js` | état de l'interface, rendu, événements — **aucun** appel réseau direct |
+
+Le tableau de bord est un board à trois colonnes — `TODO`, `IN_PROGRESS`, `DONE` — parce que les trois statuts de `StatusEnum` *sont* trois colonnes. Une carte se déplace d'une colonne à l'autre par **glisser-déposer**, ce qui déclenche un `PATCH /todos/:id`.
+
+Points notables :
+
+- l'API et le frontend sont servis par **le même processus et la même origine** : les requêtes sont relatives et **aucune configuration CORS n'est nécessaire** ;
+- la validation est **déléguée au serveur** : les messages d'erreur affichés sont ceux de `VALIDATION_MESSAGES` (partie 3), ce qui montre le travail de validation côté API ;
+- `GET /todos/trash` complète la partie 6 : sans elle, un todo supprimé logiquement disparaît totalement de l'API et ne peut plus être restauré.
+
 ## Checklist finale (équipe entière)
 
 - [x] Toute la couverture de [topic.md](./topic.md) (parties 1 à 8) est implémentée

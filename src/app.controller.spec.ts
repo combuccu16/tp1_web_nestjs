@@ -34,6 +34,7 @@ describe('AppController', () => {
 				'GET /test-injection/uuid',
 				'GET /todos',
 				'GET /todos/stats',
+				'GET /todos/trash',
 				'GET /todos/:id',
 				'POST /todos',
 				'PATCH /todos/:id',
