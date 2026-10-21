@@ -7,13 +7,13 @@ import { UUID } from '../common/uuid/token.js';
  */
 @Injectable()
 export class TestInjectionService {
-  // The injection token declared in CommonModule's provider definition.
-  constructor(
-    @Inject(UUID)
-    private readonly uuid: () => string,
-  ) {}
+	// The injection token declared in CommonModule's provider definition.
+	constructor(
+		@Inject(UUID)
+		private readonly uuid: () => string,
+	) {}
 
-  generateId(): string {
-    return this.uuid();
-  }
+	generateId(): string {
+		return this.uuid();
+	}
 }
