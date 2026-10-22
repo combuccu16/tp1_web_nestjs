@@ -275,8 +275,10 @@ async function submitForm(event) {
 		closeDrawer();
 		await refresh();
 	} catch (error) {
-		if (error instanceof ApiError && error.messages.length > 0) {
-			showFormError(error.messages);
+		if (error instanceof ApiError) {
+			showFormError(
+				error.messages.length > 0 ? error.messages : [error.message],
+			);
 		} else {
 			showFormError(["L'API n'a pas répondu."]);
 		}
