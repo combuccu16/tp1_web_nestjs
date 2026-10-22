@@ -33,7 +33,7 @@ Sujet par **Aymen Sellaouti** : voir [topic.md](./topic.md).
 | **Akram** | 1 + 7 | Setup, `CommonModule`, provider `uuid`, injection de dépendances, statistiques |
 | **Ben Fraj** | 2 & 4 | TypeORM, `StatusEnum`, `TodoEntity`, champs de suivi, timestamps réutilisables |
 | **Alaa** | 3 | Validation, messages d'erreurs centralisés, DTOs |
-| **Dalcon** | 5 & 6 | CRUD (add / update / delete), soft delete, restore |
+| **Ayachi** | 5 & 6 | CRUD (add / update / delete), soft delete, restore |
 | **Adab** | 8 | Récupération, recherche, pagination |
 
 ---
@@ -109,7 +109,7 @@ Différence entre un DTO de création et un DTO de mise à jour. Le rôle du `Va
 
 ---
 
-## Dalcon – Opérations d'écriture *(Parties 5 & 6)*
+## Ayachi – Opérations d'écriture *(Parties 5 & 6)*
 
 ### Tâches
 - [x] **D1** — `addTodo` : ajouter un todo en base. **Garder les deux versions du code.**
