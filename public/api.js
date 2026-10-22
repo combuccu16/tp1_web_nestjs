@@ -5,13 +5,28 @@ const API_ROOT = '';
 
 
 export class ApiError extends Error {
-	
+
 	constructor(message, status, messages) {
 		super(message);
 		this.name = 'ApiError';
 		this.status = status;
 		this.messages = messages;
 	}
+}
+
+
+function absoluteUrl(path) {
+	const base = globalThis.location?.href;
+	return base ? new URL(path, base).href : path;
+}
+
+
+function unexpectedResponseMessage(status, contentType, isJson) {
+	if (isJson) {
+		return `L'API a répondu ${status} sans message.`;
+	}
+	const type = contentType ? ` (${contentType})` : '';
+	return `Réponse ${status}${type} non-JSON : ce n'est pas l'API Todo. Vérifiez que le serveur est démarré sur le bon port.`;
 }
 
 
@@ -23,16 +38,59 @@ async function request(path, { method = 'GET', body } = {}) {
 		options.body = JSON.stringify(body);
 	}
 
-	const response = await fetch(API_ROOT + path, options);
-	const payload = response.status === 204 ? null : await response.json().catch(() => null);
+	let response;
+	try {
+		response = await fetch(API_ROOT + path, options);
+	} catch {
+		throw new ApiError(
+			`Aucune réponse de l'API sur ${absoluteUrl(path)}. Vérifiez que le serveur est démarré (npm run start:dev).`,
+			0,
+			[],
+		);
+	}
+
+	const raw = response.status === 204 ? '' : await response.text();
+	let payload = null;
+	let isJson = true;
+
+	if (raw) {
+		try {
+			payload = JSON.parse(raw);
+		} catch {
+			isJson = false;
+		}
+	}
 
 	if (!response.ok) {
-		const raw = payload && payload.message;
-		const messages = Array.isArray(raw) ? raw : typeof raw === 'string' ? [raw] : [];
+		const serverMessage = payload && payload.message;
+		const messages = Array.isArray(serverMessage)
+			? serverMessage
+			: typeof serverMessage === 'string'
+				? [serverMessage]
+				: [];
+
 		throw new ApiError(
-			messages.join(' ') || `Erreur ${response.status}`,
+			messages.length > 0
+				? messages.join(' ')
+				: unexpectedResponseMessage(
+						response.status,
+						response.headers.get('content-type'),
+						isJson,
+					),
 			response.status,
 			messages,
+		);
+	}
+
+	if (raw && !isJson) {
+		throw new ApiError(
+			unexpectedResponseMessage(
+				response.status,
+				response.headers.get('content-type'),
+				false,
+			),
+			response.status,
+			[],
 		);
 	}
 
