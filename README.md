@@ -1,7 +1,7 @@
 # NestJS – TP RT4 : Todo API + gestionnaire de CVs
 
 Projet réalisé en équipe dans le cadre des TP NestJS RT4 – année universitaire 2026 / 2027.
-Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP2 → PDF « nestJs RT4 2026 2027 TP2 » (en cours, résumé ci-dessous).
+Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP2 → [tasks2.md](./tasks2.md) (en cours, résumé ci-dessous).
 
 ---
 
@@ -16,7 +16,7 @@ Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP
 
 # TP2 — Middleware, gestionnaire de CVs, seed, authentification
 
-## Sujet (résumé du PDF)
+## Sujet (résumé — énoncé complet dans [tasks2.md](./tasks2.md))
 
 | # | Exercice |
 | --- | --- |
