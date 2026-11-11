@@ -74,18 +74,26 @@ Akram 0 (setup) ─┬─► Dalcon (middleware, ex.1)  ────────
 ## Akram — Mise en place + seed *(étape 0 & exercice 3)*
 
 ### Tâches
-- [ ] **A0.1** — Installer **en une seule fois** toutes les dépendances du TP2 :
+- [x] **A0.1** — Installer **en une seule fois** toutes les dépendances du TP2 :
   - `jsonwebtoken`, `@types/jsonwebtoken` (ex. 1)
   - `@ngneat/falso` (ex. 3)
   - `@nestjs/passport`, `passport`, `passport-jwt`, `@types/passport-jwt`, `@nestjs/jwt` (ex. 5)
-  - `bcrypt` + `@types/bcrypt` (hash des mots de passe, ex. 4)
-- [ ] **A0.2** — Ajouter `JWT_SECRET=...` (et `JWT_EXPIRES_IN=1h`) dans `.env`.
-- [ ] **A0.3** — `nest generate resource` pour `user`, `cv`, `skill` + `nest g module auth`, `nest g service auth`, `nest g controller auth`. Renommer les classes au format du projet (`UserEntity`, `CvEntity`, `SkillEntity`, dossiers `entities/`), imports **relatifs avec extension `.js`** (projet ESM). Les squelettes doivent compiler mais rester vides : le contenu appartient aux autres.
-- [ ] **A0.4** — Enregistrer `UserModule`, `CvModule`, `SkillModule`, `AuthModule` dans `app.module.ts` et les 3 entités dans `data-source.ts`.
-- [ ] **A0.5** — **Factorisation** : créer `src/common/generic/crud.service.ts`, un service générique `CrudService<T>` (`create`, `findAll`, `findOne` → 404, `update`, `remove`) que les services `User`, `Skill` et `Cv` étendront.
-- [ ] **A0.6** — Vérifier `npm run build`, merger dans `main`, **prévenir l'équipe**.
-- [ ] **A3.1** — `src/commands/cv.seeder.ts` : standalone application (`NestFactory.createApplicationContext(AppModule)`), récupérer les repositories / services avec `app.get(...)`, générer avec `falso` des users, des skills et des CVs reliés (owner + skills), puis `app.close()`.
-- [ ] **A3.2** — Script `"seed:cvs"` dans `package.json` (prévu dès l'étape 0 pour ne pas y revenir). ⚠️ Projet ESM + décorateurs : `ts-node` pur pose problème ; solution sûre : `nest build && node dist/commands/cv.seeder.js`.
+  - `bcryptjs` (hash des mots de passe, ex. 4) — version pur JavaScript de `bcrypt`, même API, pas de compilation native sous Windows ; types inclus.
+- [x] **A0.2** — Ajouter `JWT_SECRET=...` (et `JWT_EXPIRES_IN=1h`) dans `.env`.
+- [x] **A0.3** — Squelettes `user`, `cv`, `skill` (module, service, contrôleur, DTOs, entité) et `auth` (module, service, contrôleur), au format du projet : classes `UserEntity` / `CvEntity` / `SkillEntity` (dossiers `entities/`, chaque entité a déjà son `id` et étend `TimestampEntity`), imports **relatifs avec extension `.js`** (projet ESM). Les squelettes compilent mais restent vides : le contenu appartient aux autres.
+- [x] **A0.4** — Enregistrer `UserModule`, `CvModule`, `SkillModule`, `AuthModule` dans `app.module.ts` et les 3 entités dans `data-source.ts`.
+- [x] **A0.5** — **Factorisation** : `src/common/generic/crud.service.ts`, service générique abstrait `CrudService<T>` (`create`, `findAll`, `findOne` → 404, `update`, `remove` en soft delete) que les services `User`, `Skill` et `Cv` étendront :
+  ```ts
+  @Injectable()
+  export class SkillService extends CrudService<SkillEntity> {
+      constructor(@InjectRepository(SkillEntity) repository: Repository<SkillEntity>) {
+          super(repository);
+      }
+  }
+  ```
+- [x] **A0.6** — `npm run build` et `npm test` passent, mergé dans `main`, **équipe prévenue**.
+- [ ] **A3.1** — `src/commands/cv.seeder.ts` : la standalone application est en place (`createApplicationContext` / `app.close()`) ; reste à générer avec `falso` des users, des skills et des CVs reliés (owner + skills) **après le merge de Ben Fraj**.
+- [x] **A3.2** — Script `"seed:cvs"` dans `package.json`. Projet ESM + décorateurs : `ts-node` pur pose problème, donc on compile puis on exécute : `nest build && node dist/commands/cv.seeder.js`.
 - [ ] **A3.3** — Le seed doit être **idempotent** (ne pas dupliquer si la base est déjà remplie) et, après le merge d'Amine, hasher les mots de passe générés.
 
 ### Fichiers
@@ -169,8 +177,8 @@ Cycle de vie d'une requête Nest (middleware → guard → interceptor → pipe 
 - [ ] **M1** — Après le merge de Dalcon : créer la branche **`auth`** depuis `main` et la pousser. Travailler sur `feat/amine-auth`, merger dans `auth`.
 - [ ] **M2** — **Désactiver le middleware** de Dalcon (exception : commenter/retirer la ligne `consumer.apply(...)` dans `todo.module.ts`, uniquement sur la branche `auth`).
 - [ ] **M3** — DTOs `RegisterDto` (username, email, password) et `LoginDto` (username ou email + password).
-- [ ] **M4** — `AuthService.register` : vérifier l'unicité (→ `ConflictException`), hasher le mot de passe avec `bcrypt`, rôle `USER` par défaut, ne jamais renvoyer le mot de passe.
-- [ ] **M5** — `AuthService.login` : vérifier le mot de passe (`bcrypt.compare`), sinon `UnauthorizedException` ; signer un JWT (`JwtService`) avec `{ sub: id, username, role }` et le renvoyer. Vérifier le token sur jwt.io.
+- [ ] **M4** — `AuthService.register` : vérifier l'unicité (→ `ConflictException`), hasher le mot de passe avec `bcryptjs`, rôle `USER` par défaut, ne jamais renvoyer le mot de passe.
+- [ ] **M5** — `AuthService.login` : vérifier le mot de passe (`compare` de `bcryptjs`), sinon `UnauthorizedException` ; signer un JWT (`JwtService`) avec `{ sub: id, username, role }` et le renvoyer. Vérifier le token sur jwt.io.
 - [ ] **M6** — Passport : `JwtStrategy` (`passport-jwt`, Bearer token) qui place le user dans `req.user` ; `JwtAuthGuard`.
 - [ ] **M7** — Décorateur `@CurrentUser()` pour récupérer le user connecté dans un contrôleur.
 - [ ] **M8** — **Guard de rôles** : décorateur `@Roles(...roles)` (`SetMetadata`) + `RolesGuard` (`Reflector`) qui vérifie `requiredRoles.includes(user.role)`. Ajouter un rôle ne doit demander **aucune** modification du guard. Exemple d'usage : `@Roles(RoleEnum.ADMIN)`.
