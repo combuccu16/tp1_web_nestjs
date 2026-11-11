@@ -1,7 +1,7 @@
-# NestJS – TP1 RT4 : Todo API
+# NestJS – TP RT4 : Todo API + gestionnaire de CVs
 
-Projet réalisé en équipe dans le cadre du TP1 RT4 (NestJS) – année universitaire 2026 / 2027.
-Sujet par **Aymen Sellaouti** : voir [topic.md](./topic.md).
+Projet réalisé en équipe dans le cadre des TP NestJS RT4 – année universitaire 2026 / 2027.
+Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP2 → PDF « nestJs RT4 2026 2027 TP2 » (en cours, résumé ci-dessous).
 
 ---
 
@@ -14,19 +14,235 @@ Sujet par **Aymen Sellaouti** : voir [topic.md](./topic.md).
 
 ---
 
-## Règles de collaboration
+# TP2 — Middleware, gestionnaire de CVs, seed, authentification
 
-1. **Ordre imposé** : chaque personne ne commence qu'après que la précédente ait terminé.
-2. **Chacun ne touche qu'à ses propres fichiers.**
-3. Seules exceptions (ajouts minimaux, uniquement après que le propriétaire ait fini) :
-   - Ben Fraj enregistre TypeORM / `TodoModule` dans `app.module.ts` (une ligne, fichier d'Akram).
-   - Alaa configure le `ValidationPipe` global dans `main.ts` (fichier d'Akram).
-   - Akram ajoute sa route de stats dans `todo.controller.ts` / `todo.service.ts` **en tout dernier** (après Adab).
-4. Chaque membre doit être capable d'expliquer **l'intégralité de son code** à la validation.
+## Sujet (résumé du PDF)
+
+| # | Exercice |
+| --- | --- |
+| 1 | **Middleware** d'authentification simulée sur le contrôleur Todo : lire le header `auth-user` (un JWT), le décoder avec `jsonwebtoken`, extraire `userId`, l'injecter dans `request`. À l'ajout on enregistre le user ; seul le créateur peut modifier / supprimer son todo. Sans token ou sans `userId` → réponse `res.json(...)` refusant l'accès. |
+| 2 | **Gestionnaire de CVs** : entités `Cv` (id, name, firstname, age, cin, job, path), `User` (id, username, email, password), `Skill` (id, designation). Relations : `Cv *–1 User`, `Cv *–* Skill`. Modules, contrôleurs, services, DTOs (`nest generate resource`). **Factoriser le code.** |
+| 3 | **Seed** de la base avec une *standalone application* (`NestFactory.createApplicationContext`) et la bibliothèque `@ngneat/falso`. Imports **relatifs**. Script npm `seed:cvs`. |
+| 4 | Branche **`auth`** créée depuis `main` : désactiver le middleware, créer `AuthModule`, `User` = username (unique), password, email (unique), role. Inscription + login avec DTOs. |
+| 5 | **Passport** : le login crée et renvoie un JWT (à vérifier sur jwt.io). |
+| 6 | Le user connecté devient propriétaire du CV ; il ne voit, ne modifie et ne supprime que **ses** CVs ; protéger les routes réservées aux connectés et les tester. |
+| 7 | **Guard admin** maison — de nouveaux rôles peuvent être ajoutés à tout moment, le guard doit le supporter sans modification. |
+| 8 | Un **admin** récupère **tous** les CVs, un **user** seulement les siens. |
+
+> Le PDF dit « Un user **non** connecté peut seulement voir ses cvs » : c'est très probablement une coquille pour « connecté » (un non-connecté n'a pas de CVs). On l'implémente ainsi — à confirmer avec l'enseignant.
 
 ---
 
-## Équipe et répartition
+## Règles de collaboration (anti-conflits)
+
+1. **Un fichier = un propriétaire.** Le tableau [Propriété des fichiers](#propriété-des-fichiers) fait foi. On ne modifie pas le fichier d'un autre ; on lui demande.
+2. **Akram passe en premier (étape 0)** : il installe **toutes** les dépendances du TP2, génère tous les squelettes et câble `app.module.ts` / `data-source.ts`. Après son merge, **personne d'autre ne touche à `package.json`, `package-lock.json`, `app.module.ts` ni `data-source.ts`**. Besoin d'une dépendance oubliée ? → on la demande à Akram.
+3. **Ne jamais committer `db.sqlite`** (fichier binaire suivi par Git = conflit garanti). Avant chaque commit : `git restore db.sqlite`. Option : `git update-index --skip-worktree db.sqlite` une fois pour toutes.
+4. **Une branche par personne**, toujours créée depuis un `main` à jour (`git pull` avant). On ne pousse jamais directement sur `main` : on merge sa branche après relecture par un autre membre.
+5. Exceptions autorisées (une ligne, uniquement **après** le merge du propriétaire) — listées dans les tâches concernées.
+6. Chaque membre doit être capable d'expliquer **l'intégralité de son code** (et des grandes lignes du reste) à la validation.
+
+---
+
+## Équipe et répartition TP2
+
+| Membre | Exercices | Résumé | Branche(s) |
+| --- | --- | --- | --- |
+| **Akram** | 0 + 3 | Dépendances, squelettes, câblage, service CRUD générique ; puis seed standalone | `feat/akram-tp2-setup`, `feat/akram-seeder` |
+| **Ben Fraj** | 2 (entités) + 4 (user) | Entités `User` / `Cv` / `Skill`, relations, `RoleEnum` | `feat/benfraj-cv-entities` |
+| **Dalcon** | 1 | Middleware JWT `auth-user` + propriétaire des todos | `feat/dalcon-auth-middleware` |
+| **Alaa** | 2 (DTOs, User, Skill) | Tous les DTOs + services/contrôleurs `User` et `Skill` | `feat/alaa-user-skill` |
+| **Amine Brahim** | 4, 5, 7 | Branche `auth`, `AuthModule`, inscription/login, Passport JWT, guard de rôles | `auth`, `feat/amine-auth` |
+| **Adab** | 2 (Cv) + 6 + 8 | Service/contrôleur `Cv`, propriétaire, admin voit tout | `feat/adab-cv`, `feat/adab-cv-ownership` |
+
+### Ordre / dépendances
+
+```
+Akram 0 (setup) ─┬─► Dalcon (middleware, ex.1)  ──────────────► merge main
+                 └─► Ben Fraj (entités) ─┬─► Alaa (DTOs + User/Skill) ─┐
+                                         ├─► Amine (auth, ex.4/5/7) ───┼─► Adab (Cv + propriétaire, ex.6/8)
+                                         └─► Akram (seeder, ex.3) ◄────┘  (Cv CRUD dès que Alaa a fini les DTOs)
+```
+
+- Dalcon peut commencer **dès** l'étape 0 d'Akram : il est indépendant des CVs.
+- Amine crée la branche `auth` depuis `main` **après** le merge de Dalcon (il doit désactiver son middleware).
+- Adab fait le CRUD Cv sur `main` (phase 1), puis l'ownership sur une branche partant de `auth` (phase 2).
+- À la fin, `auth` est mergée dans `main`.
+
+---
+
+## Akram — Mise en place + seed *(étape 0 & exercice 3)*
+
+### Tâches
+- [ ] **A0.1** — Installer **en une seule fois** toutes les dépendances du TP2 :
+  - `jsonwebtoken`, `@types/jsonwebtoken` (ex. 1)
+  - `@ngneat/falso` (ex. 3)
+  - `@nestjs/passport`, `passport`, `passport-jwt`, `@types/passport-jwt`, `@nestjs/jwt` (ex. 5)
+  - `bcrypt` + `@types/bcrypt` (hash des mots de passe, ex. 4)
+- [ ] **A0.2** — Ajouter `JWT_SECRET=...` (et `JWT_EXPIRES_IN=1h`) dans `.env`.
+- [ ] **A0.3** — `nest generate resource` pour `user`, `cv`, `skill` + `nest g module auth`, `nest g service auth`, `nest g controller auth`. Renommer les classes au format du projet (`UserEntity`, `CvEntity`, `SkillEntity`, dossiers `entities/`), imports **relatifs avec extension `.js`** (projet ESM). Les squelettes doivent compiler mais rester vides : le contenu appartient aux autres.
+- [ ] **A0.4** — Enregistrer `UserModule`, `CvModule`, `SkillModule`, `AuthModule` dans `app.module.ts` et les 3 entités dans `data-source.ts`.
+- [ ] **A0.5** — **Factorisation** : créer `src/common/generic/crud.service.ts`, un service générique `CrudService<T>` (`create`, `findAll`, `findOne` → 404, `update`, `remove`) que les services `User`, `Skill` et `Cv` étendront.
+- [ ] **A0.6** — Vérifier `npm run build`, merger dans `main`, **prévenir l'équipe**.
+- [ ] **A3.1** — `src/commands/cv.seeder.ts` : standalone application (`NestFactory.createApplicationContext(AppModule)`), récupérer les repositories / services avec `app.get(...)`, générer avec `falso` des users, des skills et des CVs reliés (owner + skills), puis `app.close()`.
+- [ ] **A3.2** — Script `"seed:cvs"` dans `package.json` (prévu dès l'étape 0 pour ne pas y revenir). ⚠️ Projet ESM + décorateurs : `ts-node` pur pose problème ; solution sûre : `nest build && node dist/commands/cv.seeder.js`.
+- [ ] **A3.3** — Le seed doit être **idempotent** (ne pas dupliquer si la base est déjà remplie) et, après le merge d'Amine, hasher les mots de passe générés.
+
+### Fichiers
+`package.json`, `package-lock.json`, `.env`, `src/app.module.ts`, `src/data-source.ts`, `src/main.ts`, `src/common/generic/**`, `src/commands/**`, `public/**`.
+
+Exception : après le merge de Dalcon, ajouter le header `auth-user` dans `public/api.js` pour que le tableau de bord `/ui` continue de fonctionner.
+
+### À préparer pour la validation
+Qu'est-ce qu'une standalone application et pourquoi les imports doivent être relatifs. Le service générique : héritage + génériques TypeScript, et en quoi il évite la duplication (DRY / template method).
+
+---
+
+## Ben Fraj — Entités et relations *(exercice 2, partie entités + exercice 4, entité User)*
+
+### Tâches
+- [ ] **B1** — `RoleEnum` (`ADMIN`, `USER`) dans `src/user/enums/role.enum.ts`. Penser **extensible** : ajouter un rôle = ajouter une ligne.
+- [ ] **B2** — `UserEntity` : `id`, `username` (**unique**), `email` (**unique**), `password` (ne jamais le renvoyer : `select: false` ou `@Exclude`), `role` (défaut `USER`), étend `TimestampEntity`.
+- [ ] **B3** — `SkillEntity` : `id`, `designation`.
+- [ ] **B4** — `CvEntity` : `id`, `name`, `firstname`, `age`, `cin`, `job`, `path`, étend `TimestampEntity`.
+- [ ] **B5** — Relations :
+  - `CvEntity` `@ManyToOne` → `UserEntity` (le propriétaire) / `UserEntity` `@OneToMany` → `cvs`.
+  - `CvEntity` `@ManyToMany` ↔ `SkillEntity` avec `@JoinTable` côté Cv.
+  - Choisir et justifier `eager`, `cascade`, `onDelete`.
+- [ ] **B6** — Vérifier avec `synchronize` que les tables + la table de jointure sont créées correctement (ne pas committer `db.sqlite`).
+
+### Fichiers
+`src/user/entities/**`, `src/user/enums/**`, `src/cv/entities/**`, `src/skill/entities/**`.
+
+### À préparer pour la validation
+Owning side d'une relation, rôle de `@JoinTable`, différence `eager` / `lazy` / `relations: [...]`, `unique: true` vs validation applicative.
+
+---
+
+## Dalcon — Middleware d'authentification simulée *(exercice 1)*
+
+### Tâches
+- [ ] **D1** — `src/common/middlewares/auth.middleware.ts` (`NestMiddleware`) :
+  - lire le header `auth-user` ;
+  - le vérifier/décoder avec `verify` de `jsonwebtoken` et `process.env.JWT_SECRET` ;
+  - extraire `userId` et l'injecter dans `req` (`req.userId`) ;
+  - si le token est absent, invalide ou sans `userId` → `res.status(403).json({ message: ... })` **sans** appeler `next()`.
+- [ ] **D2** — Typer la requête : `src/common/interfaces/request-with-user-id.interface.ts`.
+- [ ] **D3** — Brancher le middleware **uniquement** sur le contrôleur Todo : `TodoModule implements NestModule` → `consumer.apply(AuthMiddleware).forRoutes(TodoController)`.
+- [ ] **D4** — `TodoEntity` : ajouter `userId` (nullable, pour les todos existants).
+- [ ] **D5** — `addTodo` enregistre `userId` ; `updateTodo`, `deleteTodo`, `softDeleteTodo`, `restoreTodo` ne réussissent que si `todo.userId === req.userId`, sinon `ForbiddenException`.
+- [ ] **D6** — Tester avec un token généré sur jwt.io (même secret) : sans header, mauvais user, bon user.
+
+### Fichiers
+`src/common/middlewares/**`, `src/common/interfaces/**`, `src/todo/todo.module.ts`, `src/todo/todo.controller.ts`, `src/todo/todo.service.ts`, `src/todo/entity/todo.entity.ts`.
+
+⚠️ Des modifications locales non committées existent sur `todo.service.ts` (essais `addTodo` / `save`) : les intégrer ou les jeter **avant** de commencer.
+
+### À préparer pour la validation
+Cycle de vie d'une requête Nest (middleware → guard → interceptor → pipe → handler). Pourquoi `verify` et pas `decode`. Différence middleware / guard.
+
+---
+
+## Alaa — DTOs + modules User et Skill *(exercice 2, partie DTOs / services)*
+
+### Tâches
+- [ ] **C1** — DTOs avec `class-validator`, messages pris dans `src/common/messages/validation-messages.ts` (fichier d'Alaa depuis le TP1) :
+  - `CreateUserDto` / `UpdateUserDto` (`PartialType`).
+  - `CreateSkillDto` / `UpdateSkillDto`.
+  - `CreateCvDto` (dont `skillIds?: number[]`) / `UpdateCvDto`. `age` positif, `cin` au bon format.
+- [ ] **C2** — `SkillService` et `UserService` **étendent `CrudService<T>`** d'Akram (pas de CRUD réécrit).
+- [ ] **C3** — `SkillController` et `UserController` : routes REST complètes, `ParseIntPipe` sur les `:id`.
+- [ ] **C4** — `UserModule` et `SkillModule` : `TypeOrmModule.forFeature([...])`, **exporter** les services (utilisés par l'auth et le seed).
+- [ ] **C5** — Ajouter les nouveaux messages d'erreurs dans le fichier centralisé.
+
+### Fichiers
+`src/user/dto/**`, `src/skill/dto/**`, `src/cv/dto/**`, `src/user/user.{module,service,controller}.ts`, `src/skill/skill.{module,service,controller}.ts`, `src/common/messages/**`.
+
+### À préparer pour la validation
+`PartialType` / `mapped-types`, pourquoi un DTO de création ≠ entité, comment l'héritage de `CrudService` évite la duplication.
+
+---
+
+## Amine Brahim — Authentification et autorisation *(exercices 4, 5, 7)*
+
+### Tâches
+- [ ] **M1** — Après le merge de Dalcon : créer la branche **`auth`** depuis `main` et la pousser. Travailler sur `feat/amine-auth`, merger dans `auth`.
+- [ ] **M2** — **Désactiver le middleware** de Dalcon (exception : commenter/retirer la ligne `consumer.apply(...)` dans `todo.module.ts`, uniquement sur la branche `auth`).
+- [ ] **M3** — DTOs `RegisterDto` (username, email, password) et `LoginDto` (username ou email + password).
+- [ ] **M4** — `AuthService.register` : vérifier l'unicité (→ `ConflictException`), hasher le mot de passe avec `bcrypt`, rôle `USER` par défaut, ne jamais renvoyer le mot de passe.
+- [ ] **M5** — `AuthService.login` : vérifier le mot de passe (`bcrypt.compare`), sinon `UnauthorizedException` ; signer un JWT (`JwtService`) avec `{ sub: id, username, role }` et le renvoyer. Vérifier le token sur jwt.io.
+- [ ] **M6** — Passport : `JwtStrategy` (`passport-jwt`, Bearer token) qui place le user dans `req.user` ; `JwtAuthGuard`.
+- [ ] **M7** — Décorateur `@CurrentUser()` pour récupérer le user connecté dans un contrôleur.
+- [ ] **M8** — **Guard de rôles** : décorateur `@Roles(...roles)` (`SetMetadata`) + `RolesGuard` (`Reflector`) qui vérifie `requiredRoles.includes(user.role)`. Ajouter un rôle ne doit demander **aucune** modification du guard. Exemple d'usage : `@Roles(RoleEnum.ADMIN)`.
+- [ ] **M9** — `AuthModule` : `PassportModule`, `JwtModule.register({ secret: process.env.JWT_SECRET, signOptions: { expiresIn } })`, `TypeOrmModule.forFeature([UserEntity])` (ou import de `UserModule`) ; exporter les guards.
+
+### Fichiers
+`src/auth/**` (`auth.module.ts`, `auth.service.ts`, `auth.controller.ts`, `dto/`, `strategies/`, `guards/`, `decorators/`, `interfaces/jwt-payload.interface.ts`).
+
+### À préparer pour la validation
+Stratégie Passport et `AuthGuard('jwt')`, structure d'un JWT (header / payload / signature), pourquoi hasher (et saler), comment le `RolesGuard` lit les métadonnées.
+
+---
+
+## Adab — Module Cv, propriétaire et admin *(exercice 2 partie Cv, exercices 6 & 8)*
+
+### Tâches
+- [ ] **E1** — *(phase 1, sur `main`, après Alaa)* `CvService` **étend `CrudService<CvEntity>`** ; `create` / `update` résolvent `skillIds` en `SkillEntity` (relation many-to-many).
+- [ ] **E2** — `CvController` : routes REST complètes ; `CvModule` avec `TypeOrmModule.forFeature([CvEntity, SkillEntity])`.
+- [ ] **E3** — *(phase 2, branche depuis `auth`, après Amine)* À la création, le user connecté (`@CurrentUser()`) devient **propriétaire** du CV.
+- [ ] **E4** — Protéger les routes Cv avec `JwtAuthGuard`.
+- [ ] **E5** — `update` / `remove` : uniquement si le CV appartient au user connecté, sinon `ForbiddenException`.
+- [ ] **E6** — `findAll` / `findOne` : un **ADMIN** voit **tous** les CVs, un **USER** seulement les siens.
+- [ ] **E7** — Tester chaque cas (sans token, user A vs user B, admin) — collection Postman / fichier `.http` dans `test/http/cv.http`.
+
+### Fichiers
+`src/cv/cv.module.ts`, `src/cv/cv.service.ts`, `src/cv/cv.controller.ts`, `test/http/**`.
+
+### À préparer pour la validation
+Charger une relation many-to-many (`relations`, `In(ids)`), où placer la règle de propriété (service vs guard) et pourquoi, filtrage selon le rôle.
+
+---
+
+## Propriété des fichiers
+
+| Fichier / dossier | Propriétaire |
+| --- | --- |
+| `package.json`, `package-lock.json`, `.env`, `src/app.module.ts`, `src/data-source.ts`, `src/main.ts`, `public/**` | Akram |
+| `src/common/generic/**`, `src/commands/**` | Akram |
+| `src/user/entities/**`, `src/user/enums/**`, `src/cv/entities/**`, `src/skill/entities/**` | Ben Fraj |
+| `src/common/middlewares/**`, `src/common/interfaces/**`, `src/todo/**` (hors `dto/`) | Dalcon |
+| `src/*/dto/**` (user, skill, cv, todo), `src/common/messages/**`, `src/user/user.*.ts`, `src/skill/skill.*.ts` | Alaa |
+| `src/auth/**` | Amine Brahim |
+| `src/cv/cv.*.ts`, `test/http/**` | Adab |
+| `README.md` | chacun coche **uniquement ses propres cases** (lignes différentes → pas de conflit) |
+| `db.sqlite` | personne — ne jamais le committer |
+
+## Organisation Git
+
+```bash
+git checkout main && git pull
+git checkout -b feat/<prenom>-<sujet>
+# ... travail ...
+git restore db.sqlite
+git add <mes fichiers uniquement>
+git commit -m "feat(<scope>): ..."
+git push -u origin feat/<prenom>-<sujet>
+# relecture par un autre membre, puis merge dans main (ou dans auth pour Amine / Adab phase 2)
+```
+
+## Checklist finale TP2 (équipe entière)
+
+- [ ] Les exercices 1 à 8 du PDF sont implémentés
+- [ ] `npm run build` passe, l'application démarre, `npm run seed:cvs` remplit la base
+- [ ] Tous les cas d'accès (anonyme, user, autre user, admin) sont testés
+- [ ] La branche `auth` est mergée dans `main`
+- [ ] Chaque membre présente sa partie aux autres — **tout le monde sait défendre l'ensemble du projet**
+
+---
+
+# TP1 — Todo API *(terminé)*
+
+## Répartition TP1
 
 | Membre | Parties du TP | Résumé |
 | --- | --- | --- |
@@ -36,132 +252,41 @@ Sujet par **Aymen Sellaouti** : voir [topic.md](./topic.md).
 | **Dalcon** | 5 & 6 | CRUD (add / update / delete), soft delete, restore |
 | **Adab** | 8 | Récupération, recherche, pagination |
 
----
+### Akram – Mise en place et statistiques *(Parties 1 & 7)*
+- [x] **A1** — Créer le projet NestJS (`nest new`) et pousser le squelette **en premier**.
+- [x] **A2** — `CommonModule` `@Global()` exporté ; provider `uuid` avec le **bon type de provider** (`useFactory` vs `useValue` vs `useClass`).
+- [x] **A3** — Module et service de test (`src/test-injection/`) pour démontrer l'injection du provider `uuid`.
+- [x] **A4** — **Statistiques** en **une seule requête SQL** (`COUNT ... GROUP BY`), statuts à 0 inclus.
 
-## Akram – Mise en place et statistiques *(Parties 1 & 7)*
+### Ben Fraj – Entité et base de données *(Parties 2 & 4)*
+- [x] **B1** — Configurer **TypeORM** (connexion + variables d'environnement).
+- [x] **B2** — `StatusEnum` (trois statuts).
+- [x] **B3** — `TodoEntity` : `id`, `name`, `description`, `createdAt`, `status`.
+- [x] **B4** — `updatedAt` / `deletedAt` gérés par TypeORM (`@UpdateDateColumn`, `@DeleteDateColumn`).
+- [x] **B5** — `createdAt` non modifiable.
+- [x] **B6** — Classe abstraite réutilisable `TimestampEntity`.
+- [x] **B7** — `TodoModule` avec `TypeOrmModule.forFeature([TodoEntity])`.
+- [x] **B8** — Todos de test (`scripts/seed.ts`).
 
-### Tâches
-- [x] **A1** — Créer le projet NestJS (`nest new`) et pousser le squelette **en premier** (les autres en dépendent).
-- [x] **A2** — Créer le module `CommonModule` :
-  - [x] Le déclarer `@Global()` et l'exporter, car il sera utilisé partout.
-  - [x] Provider la bibliothèque `uuid` avec le **bon type de provider** — pouvoir justifier le choix (`useFactory` vs `useValue` vs `useClass`).
-- [x] **A3** — Créer un module et un service de test (`src/test-injection/`) pour démontrer l'injection de dépendance du provider `uuid`.
-- [x] **A4** — **Statistiques** : endpoint qui renvoie, en **une seule requête SQL** (`COUNT ... GROUP BY`), le nombre de todos pour chacun des trois statuts — en incluant aussi les statuts à 0.
+### Alaa – Validation des données *(Partie 3)*
+- [x] **C1** — Messages d'erreurs centralisés (`src/common/messages/`).
+- [x] **C2** — `CreateTodoDto` : `description` ≥ 10, `name` entre 3 et 10.
+- [x] **C3** — `UpdateTodoDto` : rien d'obligatoire, mêmes tailles, `status` ∈ `StatusEnum`.
+- [x] **C4** — `ValidationPipe` global (`whitelist`, `transform`).
 
-### Fichiers
-`package.json`, `tsconfig.json`, `nest-cli.json`, `src/main.ts`, `src/app.module.ts`, `src/common/**` (hors `entities/` et `messages/`), `src/test-injection/**`, route de stats dans `todo.controller.ts` / `todo.service.ts` (en dernier).
+### Dalcon – Opérations d'écriture *(Parties 5 & 6)*
+- [x] **D1** — `addTodo` (deux versions conservées).
+- [x] **D2** — `updateTodo`. **D3** — `deleteTodo`. **D4** — `softDeleteTodo`. **D5** — `restoreTodo`.
+- [x] **D6** — Routes du `TodoController`.
 
-### À préparer pour la validation
-Le provider `uuid` : pourquoi un custom provider, différence entre `useFactory` / `useValue` / `useClass`, injection tokens. La requête unique des stats : pourquoi pas 3 requêtes séparées.
-
----
-
-## Ben Fraj – Entité et base de données *(Parties 2 & 4)*
-
-### Tâches
-- [x] **B1** — Configurer **TypeORM** dans l'application (connexion + variables d'environnement).
-- [x] **B2** — Définir `StatusEnum` (les trois statuts).
-- [x] **B3** — Créer `TodoEntity` :
-
-  | Champ | Type |
-  | --- | --- |
-  | `id` | entier auto-incrémenté |
-  | `name` | string |
-  | `description` | string |
-  | `createdAt` | date de création |
-  | `status` | `StatusEnum` |
-
-- [x] **B4** — Ajouter `updatedAt` et `deletedAt`, **gérés automatiquement par TypeORM** (`@UpdateDateColumn`, `@DeleteDateColumn`).
-- [x] **B5** — Rendre `createdAt` **non modifiable** une fois créé.
-- [x] **B6** — Rendre `createdAt`, `updatedAt` et `deletedAt` **réutilisables** : créer une classe abstraite de base (ex. `TimestampEntity`) et l'étendre dans `TodoEntity`.
-- [x] **B7** — Créer le module `TodoModule` avec `TypeOrmModule.forFeature([TodoEntity])` et l'enregistrer dans `AppModule`.
-- [x] **B8** — Insérer quelques todos de test pour débloquer Dalcon et Adab.
-
-### Fichiers
-`src/data-source.ts`, `.env`, `src/todo/todo.module.ts`, `src/todo/entity/**`, `src/common/entities/**` (+ une ligne dans `app.module.ts`).
-
-Ajouts hors périmètre initial : `scripts/seed.ts` (jeu de données, idempotent), `src/todo/entity/todo.entity.spec.ts` (tests de l'entité), `db.sqlite` et `.env` et suivis par Git pour éviter toute configuration locale.
-
-### À préparer pour la validation
-Pourquoi `@DeleteDateColumn` plutôt qu'un `deleted: boolean`. Le principe d'une classe abstraite réutilisable (DRY).
-
----
-
-## Alaa – Validation des données *(Partie 3)*
-
-### Tâches
-- [x] **C1** — Créer un fichier **centralisé** de messages d'erreurs de validation (`src/common/messages/`) — optimiser la réutilisation et la maintenance.
-- [x] **C2** — `CreateTodoDto` :
-  - [x] `description` : obligatoire, minimum **10** caractères.
-  - [x] `name` : obligatoire, entre **3** et **10** caractères.
-  - [x] Messages d'erreurs personnalisés via le fichier centralisé.
-- [x] **C3** — `UpdateTodoDto` (DTO **propre à la mise à jour**) :
-  - [x] **Aucun champ obligatoire.**
-  - [x] Mêmes contraintes de taille que l'ajout.
-  - [x] `status` doit appartenir aux valeurs de `StatusEnum`.
-- [x] **C4** — Configurer le `ValidationPipe` global (avec `whitelist` et `transform`).
-
-### Fichiers
-`src/todo/dto/**`, `src/common/messages/**` (+ configuration du pipe dans `main.ts`).
-
-### À préparer pour la validation
-Différence entre un DTO de création et un DTO de mise à jour. Le rôle du `ValidationPipe` et où il s'insère dans le cycle de requête NestJS.
-
----
-
-## Dalcon – Opérations d'écriture *(Parties 5 & 6)*
-
-### Tâches
-- [x] **D1** — `addTodo` : ajouter un todo en base. **Garder les deux versions du code.**
-- [x] **D2** — `updateTodo` : mettre à jour un todo via son `id`.
-- [x] **D3** — `deleteTodo` : supprimer **définitivement** un todo via son `id`.
-- [x] **D4** — `softDeleteTodo` : suppression logique via son `id` (utilise `deletedAt`).
-- [x] **D5** — `restoreTodo` : restaurer un todo supprimé logiquement.
-- [x] **D6** — Exposer toutes ces méthodes via les routes du `TodoController`.
-
-### Fichiers
-`src/todo/todo.service.ts`, `src/todo/todo.controller.ts`.
-
-### À préparer pour la validation
-La différence entre les deux versions d'`addTodo`. Pourquoi la suppression logique et comment TypeORM l'applique (`findOne` ignore les todos soft-deletés).
-
----
-
-## Adab – Récupération, recherche et pagination *(Partie 8)*
-
-### Tâches
-- [x] **E1** — `GET /todos` : récupérer l'ensemble des todos.
-- [x] **E2** — `GET /todos/:id` : récupérer un todo par son `id`.
-  - [x] Gérer le cas où le todo n'existe pas (404 `NotFoundException`).
-- [x] **E3** — Recherche : modifier l'API `GET` pour récupérer les todos dont le `name` **ou** la `description` contiennent la chaîne passée en paramètre, **et** ayant le statut passé en paramètre. Les deux critères restent **optionnels**.
-- [x] **E4** — Pagination : ajouter le traitement nécessaire pour paginer `getAll` (page / limit).
-
-### Fichiers
-`src/todo/todo.service.ts`, `src/todo/todo.controller.ts` *(travailler sur une branche séparée, la lecture n'a pas besoin d'attendre Dalcon ; merger après lui)*.
-
-### À préparer pour la validation
-La construction de la requête de recherche (`Like`, `Or`, critères optionnels). Le calcul de l'offset en pagination.
-
----
-
-## Dépendances entre membres
-
-```
-Akram (A1–A3, squelette)  ─►  Ben Fraj (entité)  ─►  Alaa (DTOs)
-                                                  ─►  Dalcon (écriture)  ─►  Adab (lecture)
-                                                  ─►  Akram (A4, stats — en dernier)
-```
-
-## Organisation Git
-
-- Une branche par personne (`feat/akram-setup`, `feat/benfraj-entity`, etc.).
-- Dalcon et Adab modifient les mêmes fichiers (`todo.service.ts`, `todo.controller.ts`) : **merger souvent** pour éviter les conflits ; Adab attend la fin de Dalcon avant de merger.
-- Akram n'ajoute sa route de stats qu'**après** le merge final d'Adab.
-- Aucune fusion sans relecture par un autre membre.
+### Adab – Récupération, recherche et pagination *(Partie 8)*
+- [x] **E1** — `GET /todos`. **E2** — `GET /todos/:id` (404 si absent).
+- [x] **E3** — Recherche `name` **ou** `description` + statut, critères optionnels.
+- [x] **E4** — Pagination (page / limit).
 
 ## Frontend (tableau de bord)
 
-Un tableau de bord statique, en **HTML, CSS et JavaScript purs** — sans framework, sans bundler, sans étape de build. Il est servi par l'API elle-même (`express.static`), sur le préfixe `/ui` :
+Tableau de bord statique en **HTML, CSS et JavaScript purs**, servi par l'API (`express.static`) sur `/ui` :
 
 | URL | Contenu |
 | --- | --- |
@@ -172,25 +297,11 @@ Un tableau de bord statique, en **HTML, CSS et JavaScript purs** — sans framew
 npm run start:dev     # puis ouvrir http://localhost:3000/ui/
 ```
 
-Les fichiers sont dans `public/` :
-
-| Fichier | Rôle |
+| Fichier (`public/`) | Rôle |
 | --- | --- |
 | `index.html` | structure de la page |
-| `styles.css` | jetons de design (couleurs, typographie, mise en page) |
-| `api.js` | client HTTP — une fonction par endpoint, **aucune** manipulation du DOM |
-| `app.js` | état de l'interface, rendu, événements — **aucun** appel réseau direct |
+| `styles.css` | jetons de design |
+| `api.js` | client HTTP — une fonction par endpoint, aucune manipulation du DOM |
+| `app.js` | état, rendu, événements — aucun appel réseau direct |
 
-Le tableau de bord est un board à trois colonnes — `TODO`, `IN_PROGRESS`, `DONE` — parce que les trois statuts de `StatusEnum` *sont* trois colonnes. Une carte se déplace d'une colonne à l'autre par **glisser-déposer**, ce qui déclenche un `PATCH /todos/:id`.
-
-Points notables :
-
-- l'API et le frontend sont servis par **le même processus et la même origine** : les requêtes sont relatives et **aucune configuration CORS n'est nécessaire** ;
-- la validation est **déléguée au serveur** : les messages d'erreur affichés sont ceux de `VALIDATION_MESSAGES` (partie 3), ce qui montre le travail de validation côté API ;
-- `GET /todos/trash` complète la partie 6 : sans elle, un todo supprimé logiquement disparaît totalement de l'API et ne peut plus être restauré.
-
-## Checklist finale (équipe entière)
-
-- [x] Toute la couverture de [topic.md](./topic.md) (parties 1 à 8) est implémentée
-- [x] L'application démarre sans erreur et tous les endpoints sont testés
-- [ ] Chaque membre présente sa partie aux autres, puis on fait tourner les rôles pour que **tout le monde sache défendre l'ensemble du projet**
+Board à trois colonnes (`TODO`, `IN_PROGRESS`, `DONE`), glisser-déposer → `PATCH /todos/:id`. Même origine que l'API (pas de CORS), validation déléguée au serveur, `GET /todos/trash` pour restaurer les todos soft-deletés.
