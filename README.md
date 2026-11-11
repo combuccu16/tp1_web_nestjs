@@ -249,7 +249,7 @@ git push -u origin feat/<prenom>-<sujet>
 | **Akram** | 1 + 7 | Setup, `CommonModule`, provider `uuid`, injection de dépendances, statistiques |
 | **Ben Fraj** | 2 & 4 | TypeORM, `StatusEnum`, `TodoEntity`, champs de suivi, timestamps réutilisables |
 | **Alaa** | 3 | Validation, messages d'erreurs centralisés, DTOs |
-| **Dalcon** | 5 & 6 | CRUD (add / update / delete), soft delete, restore |
+| **Ayachi** | 5 & 6 | CRUD (add / update / delete), soft delete, restore |
 | **Adab** | 8 | Récupération, recherche, pagination |
 
 ### Akram – Mise en place et statistiques *(Parties 1 & 7)*
@@ -274,7 +274,7 @@ git push -u origin feat/<prenom>-<sujet>
 - [x] **C3** — `UpdateTodoDto` : rien d'obligatoire, mêmes tailles, `status` ∈ `StatusEnum`.
 - [x] **C4** — `ValidationPipe` global (`whitelist`, `transform`).
 
-### Dalcon – Opérations d'écriture *(Parties 5 & 6)*
+### Ayachi – Opérations d'écriture *(Parties 5 & 6)*
 - [x] **D1** — `addTodo` (deux versions conservées).
 - [x] **D2** — `updateTodo`. **D3** — `deleteTodo`. **D4** — `softDeleteTodo`. **D5** — `restoreTodo`.
 - [x] **D6** — Routes du `TodoController`.
