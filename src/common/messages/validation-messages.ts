@@ -1,9 +1,3 @@
-/**
- * Centralisation des messages d'erreurs de validation.
- *
- * Un seul fichier à maintenir pour toute l'application : chaque message est
- * défini une fois ici, puis réutilisé par les DTOs qui l'ont besoin.
- */
 export const VALIDATION_MESSAGES = {
     name: {
         isNotEmpty: 'Le champ "name" est obligatoire.',
@@ -17,8 +11,7 @@ export const VALIDATION_MESSAGES = {
         minLength: 'Le champ "description" doit contenir au moins 10 caractères.',
     },
     status: {
-        isEnum: (values: readonly string[]): string =>
-            `Le champ "status" doit être l'une des valeurs suivantes : ${values.join(', ')}.`,
+        isEnum: (values: readonly string[]): string => `Le champ "status" doit être l'une des valeurs suivantes : ${values.join(', ')}.`,
     },
     username: {
         isNotEmpty: 'Le champ "username" est obligatoire.',
@@ -36,8 +29,7 @@ export const VALIDATION_MESSAGES = {
         minLength: 'Le champ "password" doit contenir au moins 6 caractères.',
     },
     role: {
-        isEnum: (values: readonly string[]): string =>
-            `Le champ "role" doit être l'une des valeurs suivantes : ${values.join(', ')}.`,
+        isEnum: (values: readonly string[]): string => `Le champ "role" doit être l'une des valeurs suivantes : ${values.join(', ')}.`,
     },
     designation: {
         isNotEmpty: 'Le champ "designation" est obligatoire.',
