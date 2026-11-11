@@ -13,5 +13,7 @@ export const dataSourceOptions: DataSourceOptions = {
     type: 'better-sqlite3',
     database: process.env.DB_DATABASE ?? 'db.sqlite',
     entities: [TodoEntity],
+    //autoloadEntities: true,
     synchronize: process.env.DB_SYNCHRONIZE !== 'false',
+
 };

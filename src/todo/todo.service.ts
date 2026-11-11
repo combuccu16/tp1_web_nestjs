@@ -52,9 +52,9 @@ export class TodoService {
         }
         return todo;
     }
-    async addTodo(dto: CreateTodoDto): Promise<TodoEntity> {
-        const todo = this.todoRepository.create(dto);
-        return await this.todoRepository.save(todo);
+     addTodo(dto: CreateTodoDto): Promise<TodoEntity> {
+        //const todo = this.todoRepository.create(dto);
+        return  this.todoRepository.save(dto);
     }
     async addTodoWithQueryBuilder(dto: CreateTodoDto): Promise<TodoEntity> {
         const { identifiers } = await this.todoRepository
@@ -76,7 +76,7 @@ export class TodoService {
             throw new NotFoundException(`Todo #${id} not found`);
         }
         Object.assign(todo, dto);
-        return await this.todoRepository.save(todo);
+        return this.todoRepository.save(todo);
     }
     async deleteTodo(id: number): Promise<{
         deleted: true;

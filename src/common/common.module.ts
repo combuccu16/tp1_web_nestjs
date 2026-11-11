@@ -6,7 +6,7 @@ import { UUID } from './uuid/token.js';
     providers: [
         {
             provide: UUID,
-            useFactory: () => uuidv4,
+            useValue:  uuidv4,
         },
     ],
     exports: [UUID],
