@@ -1,9 +1,9 @@
 import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Min } from 'class-validator';
 import { VALIDATION_MESSAGES } from '../../common/messages/validation-messages.js';
 export class CreateCvDto {
-    @IsNotEmpty({ message: VALIDATION_MESSAGES.name.isNotEmpty })
-    @IsString({ message: VALIDATION_MESSAGES.name.isString })
-    name: string;
+    @IsNotEmpty({ message: VALIDATION_MESSAGES.lastname.isNotEmpty })
+    @IsString({ message: VALIDATION_MESSAGES.lastname.isString })
+    lastname: string;
     @IsNotEmpty({ message: VALIDATION_MESSAGES.firstname.isNotEmpty })
     @IsString({ message: VALIDATION_MESSAGES.firstname.isString })
     firstname: string;
