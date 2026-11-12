@@ -155,14 +155,14 @@ Cycle de vie d'une requête Nest (middleware → guard → interceptor → pipe 
 ## Alaa — DTOs + modules User et Skill *(exercice 2, partie DTOs / services)*
 
 ### Tâches
-- [ ] **C1** — DTOs avec `class-validator`, messages pris dans `src/common/messages/validation-messages.ts` (fichier d'Alaa depuis le TP1) :
+- [x] **C1** — DTOs avec `class-validator`, messages pris dans `src/common/messages/validation-messages.ts` (fichier d'Alaa depuis le TP1) :
   - `CreateUserDto` / `UpdateUserDto` (`PartialType`).
   - `CreateSkillDto` / `UpdateSkillDto`.
   - `CreateCvDto` (dont `skillIds?: number[]`) / `UpdateCvDto`. `age` positif, `cin` au bon format.
-- [ ] **C2** — `SkillService` et `UserService` **étendent `CrudService<T>`** d'Akram (pas de CRUD réécrit).
-- [ ] **C3** — `SkillController` et `UserController` : routes REST complètes, `ParseIntPipe` sur les `:id`.
-- [ ] **C4** — `UserModule` et `SkillModule` : `TypeOrmModule.forFeature([...])`, **exporter** les services (utilisés par l'auth et le seed).
-- [ ] **C5** — Ajouter les nouveaux messages d'erreurs dans le fichier centralisé.
+- [x] **C2** — `SkillService` et `UserService` **étendent `CrudService<T>`** d'Akram (pas de CRUD réécrit).
+- [x] **C3** — `SkillController` et `UserController` : routes REST complètes, `ParseIntPipe` sur les `:id`.
+- [x] **C4** — `UserModule` et `SkillModule` : `TypeOrmModule.forFeature([...])`, **exporter** les services (utilisés par l'auth et le seed).
+- [x] **C5** — Ajouter les nouveaux messages d'erreurs dans le fichier centralisé.
 
 ### Fichiers
 `src/user/dto/**`, `src/skill/dto/**`, `src/cv/dto/**`, `src/user/user.{module,service,controller}.ts`, `src/skill/skill.{module,service,controller}.ts`, `src/common/messages/**`.
