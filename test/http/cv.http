@@ -1,0 +1,58 @@
+# Manual tests for auth + CVs (VS Code "REST Client" / JetBrains HTTP client).
+# Prerequisite: npm run seed:cvs  (admin / user1..user5, password: password123)
+
+@base = http://localhost:3000
+
+### Login as admin -> copy access_token into @adminToken
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "identifier": "admin", "password": "password123" }
+
+### Login as user1 -> copy access_token into @userToken
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{ "identifier": "user1", "password": "password123" }
+
+@adminToken = paste-admin-token-here
+@userToken = paste-user1-token-here
+
+### No token -> 401
+GET {{base}}/cvs
+
+### user1 sees only their own CVs
+GET {{base}}/cvs
+Authorization: Bearer {{userToken}}
+
+### admin sees every CV
+GET {{base}}/cvs
+Authorization: Bearer {{adminToken}}
+
+### user1 creates a CV (owner = user1)
+POST {{base}}/cvs
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{ "lastname": "Brahim", "firstname": "Amine", "age": 22, "cin": "12345678", "job": "Developer", "skillIds": [1, 2] }
+
+### user1 updates a CV of another user -> 403
+PATCH {{base}}/cvs/1
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{ "job": "Hacker" }
+
+### /users is admin only: user1 -> 403, admin -> 200
+GET {{base}}/users
+Authorization: Bearer {{userToken}}
+
+###
+GET {{base}}/users
+Authorization: Bearer {{adminToken}}
+
+### Register a new account
+POST {{base}}/auth/register
+Content-Type: application/json
+
+{ "username": "newbie", "email": "newbie@cv.tn", "password": "secret123" }

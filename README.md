@@ -131,16 +131,16 @@ Owning side d'une relation, rôle de `@JoinTable`, différence `eager` / `lazy` 
 ## Dalcon — Middleware d'authentification simulée *(exercice 1)*
 
 ### Tâches
-- [ ] **D1** — `src/common/middlewares/auth.middleware.ts` (`NestMiddleware`) :
+- [x] **D1** — `src/common/middlewares/auth.middleware.ts` (`NestMiddleware`) :
   - lire le header `auth-user` ;
   - le vérifier/décoder avec `verify` de `jsonwebtoken` et `process.env.JWT_SECRET` ;
   - extraire `userId` et l'injecter dans `req` (`req.userId`) ;
   - si le token est absent, invalide ou sans `userId` → `res.status(403).json({ message: ... })` **sans** appeler `next()`.
-- [ ] **D2** — Typer la requête : `src/common/interfaces/request-with-user-id.interface.ts`.
-- [ ] **D3** — Brancher le middleware **uniquement** sur le contrôleur Todo : `TodoModule implements NestModule` → `consumer.apply(AuthMiddleware).forRoutes(TodoController)`.
-- [ ] **D4** — `TodoEntity` : ajouter `userId` (nullable, pour les todos existants).
-- [ ] **D5** — `addTodo` enregistre `userId` ; `updateTodo`, `deleteTodo`, `softDeleteTodo`, `restoreTodo` ne réussissent que si `todo.userId === req.userId`, sinon `ForbiddenException`.
-- [ ] **D6** — Tester avec un token généré sur jwt.io (même secret) : sans header, mauvais user, bon user.
+- [x] **D2** — Typer la requête : `src/common/interfaces/request-with-user-id.interface.ts`.
+- [x] **D3** — Brancher le middleware **uniquement** sur le contrôleur Todo : `TodoModule implements NestModule` → `consumer.apply(AuthMiddleware).forRoutes(TodoController)`.
+- [x] **D4** — `TodoEntity` : ajouter `userId` (nullable, pour les todos existants).
+- [x] **D5** — `addTodo` enregistre `userId` ; `updateTodo`, `deleteTodo`, `softDeleteTodo`, `restoreTodo` ne réussissent que si `todo.userId === req.userId`, sinon `ForbiddenException`.
+- [x] **D6** — Tester avec un token généré sur jwt.io (même secret) : sans header, mauvais user, bon user.
 
 ### Fichiers
 `src/common/middlewares/**`, `src/common/interfaces/**`, `src/todo/todo.module.ts`, `src/todo/todo.controller.ts`, `src/todo/todo.service.ts`, `src/todo/entity/todo.entity.ts`.
@@ -175,15 +175,15 @@ Cycle de vie d'une requête Nest (middleware → guard → interceptor → pipe 
 ## Amine Brahim — Authentification et autorisation *(exercices 4, 5, 7)*
 
 ### Tâches
-- [ ] **M1** — Après le merge de Dalcon : créer la branche **`auth`** depuis `main` et la pousser. Travailler sur `feat/amine-auth`, merger dans `auth`.
-- [ ] **M2** — **Désactiver le middleware** de Dalcon (exception : commenter/retirer la ligne `consumer.apply(...)` dans `todo.module.ts`, uniquement sur la branche `auth`).
-- [ ] **M3** — DTOs `RegisterDto` (username, email, password) et `LoginDto` (username ou email + password).
-- [ ] **M4** — `AuthService.register` : vérifier l'unicité (→ `ConflictException`), hasher le mot de passe avec `bcryptjs`, rôle `USER` par défaut, ne jamais renvoyer le mot de passe.
-- [ ] **M5** — `AuthService.login` : vérifier le mot de passe (`compare` de `bcryptjs`), sinon `UnauthorizedException` ; signer un JWT (`JwtService`) avec `{ sub: id, username, role }` et le renvoyer. Vérifier le token sur jwt.io.
-- [ ] **M6** — Passport : `JwtStrategy` (`passport-jwt`, Bearer token) qui place le user dans `req.user` ; `JwtAuthGuard`.
-- [ ] **M7** — Décorateur `@CurrentUser()` pour récupérer le user connecté dans un contrôleur.
-- [ ] **M8** — **Guard de rôles** : décorateur `@Roles(...roles)` (`SetMetadata`) + `RolesGuard` (`Reflector`) qui vérifie `requiredRoles.includes(user.role)`. Ajouter un rôle ne doit demander **aucune** modification du guard. Exemple d'usage : `@Roles(RoleEnum.ADMIN)`.
-- [ ] **M9** — `AuthModule` : `PassportModule`, `JwtModule.register({ secret: process.env.JWT_SECRET, signOptions: { expiresIn } })`, `TypeOrmModule.forFeature([UserEntity])` (ou import de `UserModule`) ; exporter les guards.
+- [x] **M1** — Après le merge de Dalcon : créer la branche **`auth`** depuis `main` et la pousser. Travailler sur `feat/amine-auth`, merger dans `auth`.
+- [x] **M2** — **Désactiver le middleware** de Dalcon sur la branche d'auth. *Décision d'équipe : `feat/amine-auth` a été mergée directement dans `main` et le middleware y est **réactivé** pour les todos — les todos gardent l'auth simulée (`auth-user`, ex. 1), les CVs utilisent Passport (ex. 4–8). Les deux cohabitent sans conflit.*
+- [x] **M3** — DTOs `RegisterDto` (username, email, password) et `LoginDto` (username ou email + password).
+- [x] **M4** — `AuthService.register` : vérifier l'unicité (→ `ConflictException`), hasher le mot de passe avec `bcryptjs`, rôle `USER` par défaut, ne jamais renvoyer le mot de passe.
+- [x] **M5** — `AuthService.login` : vérifier le mot de passe (`compare` de `bcryptjs`), sinon `UnauthorizedException` ; signer un JWT (`JwtService`) avec `{ sub: id, username, role }` et le renvoyer. Vérifier le token sur jwt.io.
+- [x] **M6** — Passport : `JwtStrategy` (`passport-jwt`, Bearer token) qui place le user dans `req.user` ; `JwtAuthGuard`.
+- [x] **M7** — Décorateur `@CurrentUser()` pour récupérer le user connecté dans un contrôleur.
+- [x] **M8** — **Guard de rôles** : décorateur `@Roles(...roles)` (`SetMetadata`) + `RolesGuard` (`Reflector`) qui vérifie `requiredRoles.includes(user.role)`. Ajouter un rôle ne doit demander **aucune** modification du guard. Exemple d'usage : `@Roles(RoleEnum.ADMIN)`.
+- [x] **M9** — `AuthModule` : `PassportModule`, `JwtModule.register({ secret: process.env.JWT_SECRET, signOptions: { expiresIn } })`, `TypeOrmModule.forFeature([UserEntity])` (ou import de `UserModule`) ; exporter les guards.
 
 ### Fichiers
 `src/auth/**` (`auth.module.ts`, `auth.service.ts`, `auth.controller.ts`, `dto/`, `strategies/`, `guards/`, `decorators/`, `interfaces/jwt-payload.interface.ts`).
@@ -196,13 +196,13 @@ Stratégie Passport et `AuthGuard('jwt')`, structure d'un JWT (header / payload 
 ## Adab — Module Cv, propriétaire et admin *(exercice 2 partie Cv, exercices 6 & 8)*
 
 ### Tâches
-- [ ] **E1** — *(phase 1, sur `main`, après Alaa)* `CvService` **étend `CrudService<CvEntity>`** ; `create` / `update` résolvent `skillIds` en `SkillEntity` (relation many-to-many).
-- [ ] **E2** — `CvController` : routes REST complètes ; `CvModule` avec `TypeOrmModule.forFeature([CvEntity, SkillEntity])`.
-- [ ] **E3** — *(phase 2, branche depuis `auth`, après Amine)* À la création, le user connecté (`@CurrentUser()`) devient **propriétaire** du CV.
-- [ ] **E4** — Protéger les routes Cv avec `JwtAuthGuard`.
-- [ ] **E5** — `update` / `remove` : uniquement si le CV appartient au user connecté, sinon `ForbiddenException`.
-- [ ] **E6** — `findAll` / `findOne` : un **ADMIN** voit **tous** les CVs, un **USER** seulement les siens.
-- [ ] **E7** — Tester chaque cas (sans token, user A vs user B, admin) — collection Postman / fichier `.http` dans `test/http/cv.http`.
+- [x] **E1** — *(phase 1, sur `main`, après Alaa)* `CvService` **étend `CrudService<CvEntity>`** ; `create` / `update` résolvent `skillIds` en `SkillEntity` (relation many-to-many).
+- [x] **E2** — `CvController` : routes REST complètes ; `CvModule` avec `TypeOrmModule.forFeature([CvEntity, SkillEntity])`.
+- [x] **E3** — *(phase 2, branche depuis `auth`, après Amine)* À la création, le user connecté (`@CurrentUser()`) devient **propriétaire** du CV.
+- [x] **E4** — Protéger les routes Cv avec `JwtAuthGuard`.
+- [x] **E5** — `update` / `remove` : uniquement si le CV appartient au user connecté, sinon `ForbiddenException`.
+- [x] **E6** — `findAll` / `findOne` : un **ADMIN** voit **tous** les CVs, un **USER** seulement les siens.
+- [x] **E7** — Tester chaque cas (sans token, user A vs user B, admin) — collection Postman / fichier `.http` dans `test/http/cv.http`.
 
 ### Fichiers
 `src/cv/cv.module.ts`, `src/cv/cv.service.ts`, `src/cv/cv.controller.ts`, `test/http/**`.
@@ -226,6 +226,25 @@ Charger une relation many-to-many (`relations`, `In(ids)`), où placer la règle
 | `README.md` | chacun coche **uniquement ses propres cases** (lignes différentes → pas de conflit) |
 | `db.sqlite` | personne — ne jamais le committer |
 
+## Lancer et tester l'application (TP2)
+
+```bash
+npm install
+npm run seed:cvs        # idempotent : admin + user1..user5, mot de passe password123
+npm run start:dev       # http://localhost:3000
+```
+
+| Ressource | Authentification | Règles |
+| --- | --- | --- |
+| `POST /auth/register`, `POST /auth/login` | aucune | `login` prend `{ identifier, password }` (username **ou** email) et renvoie `access_token` |
+| `/cvs` (CRUD) | `Authorization: Bearer <access_token>` | le créateur devient propriétaire ; un USER ne voit / modifie / supprime que ses CVs ; un ADMIN **voit** tous les CVs |
+| `/users` (CRUD) | Bearer + rôle **ADMIN** (`RolesGuard`) | mots de passe hashés, jamais renvoyés |
+| `/skills` (CRUD) | aucune | — |
+| `/todos` | header `auth-user` (middleware, ex. 1) — token : `npm run token -- <userId>` | seul le créateur d'un todo peut le modifier / supprimer |
+| `/ui/` | le tableau de bord demande le token `auth-user` au premier 403 | — |
+
+Requêtes prêtes à l'emploi : [test/http/cv.http](./test/http/cv.http).
+
 ## Organisation Git
 
 ```bash
@@ -241,10 +260,10 @@ git push -u origin feat/<prenom>-<sujet>
 
 ## Checklist finale TP2 (équipe entière)
 
-- [ ] Les exercices 1 à 8 du PDF sont implémentés
-- [ ] `npm run build` passe, l'application démarre, `npm run seed:cvs` remplit la base
-- [ ] Tous les cas d'accès (anonyme, user, autre user, admin) sont testés
-- [ ] La branche `auth` est mergée dans `main`
+- [x] Les exercices 1 à 8 du PDF sont implémentés
+- [x] `npm run build` passe, l'application démarre, `npm run seed:cvs` remplit la base
+- [x] Tous les cas d'accès (anonyme, user, autre user, admin) sont testés
+- [x] Le travail d'authentification (`feat/amine-auth`) est mergé dans `main`
 - [ ] Chaque membre présente sa partie aux autres — **tout le monde sait défendre l'ensemble du projet**
 
 ---
