@@ -21,7 +21,7 @@ Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP
 | # | Exercice |
 | --- | --- |
 | 1 | **Middleware** d'authentification simulée sur le contrôleur Todo : lire le header `auth-user` (un JWT), le décoder avec `jsonwebtoken`, extraire `userId`, l'injecter dans `request`. À l'ajout on enregistre le user ; seul le créateur peut modifier / supprimer son todo. Sans token ou sans `userId` → réponse `res.json(...)` refusant l'accès. |
-| 2 | **Gestionnaire de CVs** : entités `Cv` (id, name, firstname, age, cin, job, path), `User` (id, username, email, password), `Skill` (id, designation). Relations : `Cv *–1 User`, `Cv *–* Skill`. Modules, contrôleurs, services, DTOs (`nest generate resource`). **Factoriser le code.** |
+| 2 | **Gestionnaire de CVs** : entités `Cv` (id, lastname, firstname, age, cin, job, path), `User` (id, username, email, password), `Skill` (id, designation). Relations : `Cv *–1 User`, `Cv *–* Skill`. Modules, contrôleurs, services, DTOs (`nest generate resource`). **Factoriser le code.** |
 | 3 | **Seed** de la base avec une *standalone application* (`NestFactory.createApplicationContext`) et la bibliothèque `@ngneat/falso`. Imports **relatifs**. Script npm `seed:cvs`. |
 | 4 | Branche **`auth`** créée depuis `main` : désactiver le middleware, créer `AuthModule`, `User` = username (unique), password, email (unique), role. Inscription + login avec DTOs. |
 | 5 | **Passport** : le login crée et renvoie un JWT (à vérifier sur jwt.io). |
@@ -109,15 +109,16 @@ Qu'est-ce qu'une standalone application et pourquoi les imports doivent être re
 ## Ben Fraj — Entités et relations *(exercice 2, partie entités + exercice 4, entité User)*
 
 ### Tâches
-- [ ] **B1** — `RoleEnum` (`ADMIN`, `USER`) dans `src/user/enums/role.enum.ts`. Penser **extensible** : ajouter un rôle = ajouter une ligne.
-- [ ] **B2** — `UserEntity` : `id`, `username` (**unique**), `email` (**unique**), `password` (ne jamais le renvoyer : `select: false` ou `@Exclude`), `role` (défaut `USER`), étend `TimestampEntity`.
-- [ ] **B3** — `SkillEntity` : `id`, `designation`.
-- [ ] **B4** — `CvEntity` : `id`, `name`, `firstname`, `age`, `cin`, `job`, `path`, étend `TimestampEntity`.
-- [ ] **B5** — Relations :
+- [x] **B1** — `RoleEnum` (`ADMIN`, `USER`) dans `src/user/enums/role.enum.ts`. Penser **extensible** : ajouter un rôle = ajouter une ligne.
+- [x] **B2** — `UserEntity` : `id`, `username` (**unique**), `email` (**unique**), `password` (ne jamais le renvoyer : `select: false` ou `@Exclude`), `role` (défaut `USER`), étend `TimestampEntity`.
+- [x] **B3** — `SkillEntity` : `id`, `designation`.
+- [x] **B4** — `CvEntity` : `id`, `lastname` (le `name` du sujet, renommé), `firstname`, `age`, `cin`, `job`, `path`, étend `TimestampEntity`.
+- [x] **B5** — Relations :
   - `CvEntity` `@ManyToOne` → `UserEntity` (le propriétaire) / `UserEntity` `@OneToMany` → `cvs`.
-  - `CvEntity` `@ManyToMany` ↔ `SkillEntity` avec `@JoinTable` côté Cv.
+  - `CvEntity` `@ManyToMany` ↔ `SkillEntity` avec `@JoinTable` côté Cv (table de jointure `cvs_skills`).
   - Choisir et justifier `eager`, `cascade`, `onDelete`.
-- [ ] **B6** — Vérifier avec `synchronize` que les tables + la table de jointure sont créées correctement (ne pas committer `db.sqlite`).
+- [x] **B6** — Vérifier avec `synchronize` que les tables + la table de jointure sont créées correctement (ne pas committer `db.sqlite`).
+  - Vérifié par `src/cv/entities/cv.entity.spec.ts` (7 tests) + `PRAGMA` sur la base réelle.
 
 ### Fichiers
 `src/user/entities/**`, `src/user/enums/**`, `src/cv/entities/**`, `src/skill/entities/**`.

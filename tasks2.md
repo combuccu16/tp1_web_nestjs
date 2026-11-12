@@ -48,7 +48,9 @@ Nous voulons reproduire le schéma d'un petit gestionnaire de CVs :
 
 | Entité | Champs |
 | --- | --- |
-| `Cv` | `id`, `name`, `firstname`, `age`, `cin`, `job`, `path` |
+| `Cv` | `id`, `lastname`, `firstname`, `age`, `cin`, `job`, `path` |
+
+> Renommage d'équipe : le champ `name` du sujet devient `lastname` (*nom de famille*) pour lever l'ambiguïté avec le nom complet ; `firstname` (*prénom*) est inchangé.
 | `User` | `id`, `username`, `email`, `password` |
 | `Skill` | `id`, `designation` |
 
@@ -106,7 +108,7 @@ Documentation : <https://docs.nestjs.com/standalone-applications#standalone-appl
 - [ ] Créer une autre branche à partir de la branche master, appelée **`auth`**.
 - [ ] **Désactiver** le middleware.
 - [ ] Créer un module **`AuthModule`**.
-- [ ] Mettre à jour l'entité `User` avec :
+- [x] Mettre à jour l'entité `User` avec :
   - `username` (**unique**)
   - `password`
   - `email` (**unique**)
