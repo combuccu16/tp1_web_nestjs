@@ -106,7 +106,7 @@ Documentation : <https://docs.nestjs.com/standalone-applications#standalone-appl
 - [ ] Créer une autre branche à partir de la branche master, appelée **`auth`**.
 - [ ] **Désactiver** le middleware.
 - [ ] Créer un module **`AuthModule`**.
-- [ ] Mettre à jour l'entité `User` avec :
+- [x] Mettre à jour l'entité `User` avec :
   - `username` (**unique**)
   - `password`
   - `email` (**unique**)
