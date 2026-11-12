@@ -2,6 +2,26 @@
 
 
 const API_ROOT = '';
+const AUTH_TOKEN_KEY = 'auth-user';
+
+
+export const authToken = {
+	get() {
+		try {
+			return localStorage.getItem(AUTH_TOKEN_KEY);
+		} catch {
+			return null;
+		}
+	},
+
+	set(token) {
+		try {
+			if (token) localStorage.setItem(AUTH_TOKEN_KEY, token);
+			else localStorage.removeItem(AUTH_TOKEN_KEY);
+		} catch {
+		}
+	},
+};
 
 
 export class ApiError extends Error {
@@ -32,6 +52,8 @@ function unexpectedResponseMessage(status, contentType, isJson) {
 
 async function request(path, { method = 'GET', body } = {}) {
 	const options = { method, headers: { Accept: 'application/json' } };
+	const token = authToken.get();
+	if (token) options.headers['auth-user'] = token;
 
 	if (body !== undefined) {
 		options.headers['Content-Type'] = 'application/json';

@@ -35,6 +35,10 @@ export const VALIDATION_MESSAGES = {
         isNotEmpty: 'Le champ "designation" est obligatoire.',
         isString: 'Le champ "designation" doit être une chaîne de caractères.',
     },
+    lastname: {
+        isNotEmpty: 'Le champ "lastname" est obligatoire.',
+        isString: 'Le champ "lastname" doit être une chaîne de caractères.',
+    },
     firstname: {
         isNotEmpty: 'Le champ "firstname" est obligatoire.',
         isString: 'Le champ "firstname" doit être une chaîne de caractères.',

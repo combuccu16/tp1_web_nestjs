@@ -92,14 +92,14 @@ Akram 0 (setup) ─┬─► Dalcon (middleware, ex.1)  ────────
   }
   ```
 - [x] **A0.6** — `npm run build` et `npm test` passent, mergé dans `main`, **équipe prévenue**.
-- [ ] **A3.1** — `src/commands/cv.seeder.ts` : la standalone application est en place (`createApplicationContext` / `app.close()`) ; reste à générer avec `falso` des users, des skills et des CVs reliés (owner + skills) **après le merge de Ben Fraj**.
+- [x] **A3.1** — `src/commands/cv.seeder.ts` : standalone application (`createApplicationContext`), récupère `DataSource` et le provider `UUID` du conteneur IoC avec `app.get(...)`, génère avec `falso` 12 skills, 1 admin + 5 users et 1 à 3 CVs par user reliés à 1–4 skills, le tout dans **une transaction**, puis `app.close()`.
 - [x] **A3.2** — Script `"seed:cvs"` dans `package.json`. Projet ESM + décorateurs : `ts-node` pur pose problème, donc on compile puis on exécute : `nest build && node dist/commands/cv.seeder.js`.
-- [ ] **A3.3** — Le seed doit être **idempotent** (ne pas dupliquer si la base est déjà remplie) et, après le merge d'Amine, hasher les mots de passe générés.
+- [x] **A3.3** — Seed **idempotent** (ignoré si des users existent déjà) ; mots de passe hashés avec `bcryptjs`. Comptes créés : `admin` (ADMIN) et `user1` … `user5` (USER), mot de passe `password123`.
 
 ### Fichiers
 `package.json`, `package-lock.json`, `.env`, `src/app.module.ts`, `src/data-source.ts`, `src/main.ts`, `src/common/generic/**`, `src/commands/**`, `public/**`.
 
-Exception : après le merge de Dalcon, ajouter le header `auth-user` dans `public/api.js` pour que le tableau de bord `/ui` continue de fonctionner.
+- [x] **A4** — Après le merge de Dalcon : le tableau de bord `/ui` envoie le header `auth-user` (`public/api.js`, token gardé dans le `localStorage`) et le demande à l'utilisateur en cas de 403. Pour obtenir un token valide : `npm run token -- <userId>` (`scripts/make-token.ts`, signé avec `JWT_SECRET`).
 
 ### À préparer pour la validation
 Qu'est-ce qu'une standalone application et pourquoi les imports doivent être relatifs. Le service générique : héritage + génériques TypeScript, et en quoi il évite la duplication (DRY / template method).

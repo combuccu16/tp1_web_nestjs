@@ -1,6 +1,6 @@
 
 
-import { ApiError, api } from './api.js';
+import { ApiError, api, authToken } from './api.js';
 
 
 const STATUSES = ['TODO', 'IN_PROGRESS', 'DONE'];
@@ -202,8 +202,23 @@ async function refresh() {
 		renderPager();
 		renderTrash();
 	} catch (error) {
+		if (error instanceof ApiError && error.status === 403 && askForToken()) {
+			await refresh();
+			return;
+		}
 		reportError(error);
 	}
+}
+
+
+function askForToken() {
+	const token = prompt(
+		"L'API exige un header auth-user (JWT).\nGénérez-en un avec : npm run token -- <userId>\nPuis collez-le ici :",
+		authToken.get() ?? '',
+	);
+	if (token === null || token.trim() === '') return false;
+	authToken.set(token.trim());
+	return true;
 }
 
 
