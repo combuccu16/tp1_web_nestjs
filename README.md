@@ -109,7 +109,7 @@ Qu'est-ce qu'une standalone application et pourquoi les imports doivent être re
 ## Ben Fraj — Entités et relations *(exercice 2, partie entités + exercice 4, entité User)*
 
 ### Tâches
-- [ ] **B1** — `RoleEnum` (`ADMIN`, `USER`) dans `src/user/enums/role.enum.ts`. Penser **extensible** : ajouter un rôle = ajouter une ligne.
+- [x] **B1** — `RoleEnum` (`ADMIN`, `USER`) dans `src/user/enums/role.enum.ts`. Penser **extensible** : ajouter un rôle = ajouter une ligne.
 - [ ] **B2** — `UserEntity` : `id`, `username` (**unique**), `email` (**unique**), `password` (ne jamais le renvoyer : `select: false` ou `@Exclude`), `role` (défaut `USER`), étend `TimestampEntity`.
 - [ ] **B3** — `SkillEntity` : `id`, `designation`.
 - [ ] **B4** — `CvEntity` : `id`, `name`, `firstname`, `age`, `cin`, `job`, `path`, étend `TimestampEntity`.
