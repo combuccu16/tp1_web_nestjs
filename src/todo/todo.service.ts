@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Like, Not, Repository } from 'typeorm';
 import { CreateTodoDto } from './dto/create-todo.dto.js';
@@ -52,9 +52,13 @@ export class TodoService {
         }
         return todo;
     }
-     addTodo(dto: CreateTodoDto): Promise<TodoEntity> {
-        //const todo = this.todoRepository.create(dto);
-        return  this.todoRepository.save(dto);
+    addTodo(dto: CreateTodoDto, userId: number): Promise<TodoEntity> {
+        return this.todoRepository.save(Object.assign({}, dto, { userId }));
+    }
+    private assertOwnership(todo: TodoEntity, userId: number): void {
+        if (todo.userId !== userId) {
+            throw new ForbiddenException(`You are not allowed to modify todo #${todo.id}`);
+        }
     }
     async addTodoWithQueryBuilder(dto: CreateTodoDto): Promise<TodoEntity> {
         const { identifiers } = await this.todoRepository
@@ -70,38 +74,57 @@ export class TodoService {
         }
         return created;
     }
-    async updateTodo(id: number, dto: UpdateTodoDto): Promise<TodoEntity> {
+    async updateTodo(id: number, dto: UpdateTodoDto, userId: number): Promise<TodoEntity> {
         const todo = await this.todoRepository.findOne({ where: { id } });
         if (!todo) {
             throw new NotFoundException(`Todo #${id} not found`);
         }
+        this.assertOwnership(todo, userId);
         Object.assign(todo, dto);
         return this.todoRepository.save(todo);
     }
-    async deleteTodo(id: number): Promise<{
+    async deleteTodo(id: number, userId: number): Promise<{
         deleted: true;
         id: number;
     }> {
+        const todo = await this.todoRepository.findOne({ where: { id } });
+        if (!todo) {
+            throw new NotFoundException(`Todo #${id} not found`);
+        }
+        this.assertOwnership(todo, userId);
         const { affected } = await this.todoRepository.delete(id);
         if (!affected) {
             throw new NotFoundException(`Todo #${id} not found`);
         }
         return { deleted: true, id };
     }
-    async softDeleteTodo(id: number): Promise<{
+    async softDeleteTodo(id: number, userId: number): Promise<{
         softDeleted: true;
         id: number;
     }> {
+        const todo = await this.todoRepository.findOne({ where: { id } });
+        if (!todo) {
+            throw new NotFoundException(`Todo #${id} not found`);
+        }
+        this.assertOwnership(todo, userId);
         const { affected } = await this.todoRepository.softDelete(id);
         if (!affected) {
             throw new NotFoundException(`Todo #${id} not found`);
         }
         return { softDeleted: true, id };
     }
-    async restoreTodo(id: number): Promise<{
+    async restoreTodo(id: number, userId: number): Promise<{
         restored: true;
         id: number;
     }> {
+        const todo = await this.todoRepository.findOne({
+            where: { id },
+            withDeleted: true,
+        });
+        if (!todo) {
+            throw new NotFoundException(`Todo #${id} not found`);
+        }
+        this.assertOwnership(todo, userId);
         const { affected } = await this.todoRepository.restore(id);
         if (!affected) {
             throw new NotFoundException(`Todo #${id} not found`);

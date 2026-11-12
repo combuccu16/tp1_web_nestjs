@@ -1,11 +1,12 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Like, type Repository } from 'typeorm';
+import { CreateTodoDto } from './dto/create-todo.dto.js';
 import { StatusEnum } from './entity/status.enum.js';
 import { TodoEntity } from './entity/todo.entity.js';
 import { TodoService } from './todo.service.js';
 describe('TodoService read operations', () => {
-    const todo = { id: 7, name: 'Read me' } as TodoEntity;
-    let repository: Pick<Repository<TodoEntity>, 'findAndCount' | 'findOne' | 'find' | 'createQueryBuilder' | 'restore'>;
+    const todo = { id: 7, name: 'Read me', userId: 1 } as TodoEntity;
+    let repository: Pick<Repository<TodoEntity>, 'findAndCount' | 'findOne' | 'find' | 'createQueryBuilder' | 'restore' | 'save' | 'delete' | 'softDelete'>;
     let queryBuilder: {
         select: ReturnType<typeof vi.fn>;
         addSelect: ReturnType<typeof vi.fn>;
@@ -28,6 +29,9 @@ describe('TodoService read operations', () => {
             find: vi.fn().mockResolvedValue([]),
             createQueryBuilder: vi.fn().mockReturnValue(queryBuilder),
             restore: vi.fn().mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] }),
+            save: vi.fn().mockResolvedValue(todo),
+            delete: vi.fn().mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] }),
+            softDelete: vi.fn().mockResolvedValue({ affected: 1, raw: [], generatedMaps: [] }),
         };
         service = new TodoService(repository as Repository<TodoEntity>);
     });
@@ -78,12 +82,26 @@ describe('TodoService read operations', () => {
         });
     });
     it('restores a soft-deleted todo', async () => {
-        await expect(service.restoreTodo(7)).resolves.toEqual({ restored: true, id: 7 });
+        await expect(service.restoreTodo(7, 1)).resolves.toEqual({ restored: true, id: 7 });
         expect(repository.restore).toHaveBeenCalledWith(7);
     });
     it('returns 404 when restoring a todo that is not soft-deleted', async () => {
         vi.mocked(repository.restore).mockResolvedValue({ affected: 0, raw: [], generatedMaps: [] });
-        await expect(service.restoreTodo(7)).rejects.toBeInstanceOf(NotFoundException);
+        await expect(service.restoreTodo(7, 1)).rejects.toBeInstanceOf(NotFoundException);
+    });
+    it('stores the creator on a new todo', async () => {
+        await service.addTodo({ name: 'New', description: 'Created' } as CreateTodoDto, 42);
+        expect(repository.save).toHaveBeenCalledWith({ name: 'New', description: 'Created', userId: 42 });
+    });
+    it('only lets the creator update, delete, soft-delete or restore a todo', async () => {
+        await expect(service.updateTodo(7, { name: 'Mine' }, 2)).rejects.toBeInstanceOf(ForbiddenException);
+        await expect(service.deleteTodo(7, 2)).rejects.toBeInstanceOf(ForbiddenException);
+        await expect(service.softDeleteTodo(7, 2)).rejects.toBeInstanceOf(ForbiddenException);
+        await expect(service.restoreTodo(7, 2)).rejects.toBeInstanceOf(ForbiddenException);
+        expect(repository.save).not.toHaveBeenCalled();
+        expect(repository.delete).not.toHaveBeenCalled();
+        expect(repository.softDelete).not.toHaveBeenCalled();
+        expect(repository.restore).not.toHaveBeenCalled();
     });
     it('lists the soft-deleted todos, including the rows normal reads hide', async () => {
         const trashed = { id: 9, name: 'Trashed' } as TodoEntity;
