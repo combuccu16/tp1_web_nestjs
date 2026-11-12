@@ -31,6 +31,10 @@ describe('TodoController read routes', () => {
             providers: [{ provide: TodoService, useValue: todoService }],
         }).compile();
         app = moduleRef.createNestApplication();
+        app.use((req: { userId?: number }, _res: unknown, next: () => void) => {
+            req.userId = 1;
+            next();
+        });
         await app.init();
     });
     afterEach(async () => app.close());
@@ -72,6 +76,6 @@ describe('TodoController read routes', () => {
             .post('/todos/7/restore')
             .expect(200)
             .expect({ restored: true, id: 7 });
-        expect(todoService.restoreTodo).toHaveBeenCalledWith(7);
+        expect(todoService.restoreTodo).toHaveBeenCalledWith(7, 1);
     });
 });

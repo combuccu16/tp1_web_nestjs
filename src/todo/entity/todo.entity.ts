@@ -15,4 +15,7 @@ export class TodoEntity extends TimestampEntity {
         default: StatusEnum.TODO,
     })
     status: StatusEnum;
+    // Nullable so rows created before authentication was introduced stay valid.
+    @Column({ type: 'integer', nullable: true })
+    userId: number | null;
 }
