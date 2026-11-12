@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TimestampEntity } from '../../common/entities/timestamp.entity.js';
+import { CvEntity } from '../../cv/entities/cv.entity.js';
 import { RoleEnum } from '../enums/role.enum.js';
 
 @Entity('users')
@@ -19,4 +20,8 @@ export class UserEntity extends TimestampEntity {
 
 	@Column({ type: 'simple-enum', enum: RoleEnum, default: RoleEnum.USER })
 	role: RoleEnum;
+
+	// Inverse side of CvEntity.user: no column here, the FK lives on cvs.userId.
+	@OneToMany(() => CvEntity, (cv) => cv.user)
+	cvs: CvEntity[];
 }
