@@ -113,11 +113,12 @@ Qu'est-ce qu'une standalone application et pourquoi les imports doivent être re
 - [x] **B2** — `UserEntity` : `id`, `username` (**unique**), `email` (**unique**), `password` (ne jamais le renvoyer : `select: false` ou `@Exclude`), `role` (défaut `USER`), étend `TimestampEntity`.
 - [x] **B3** — `SkillEntity` : `id`, `designation`.
 - [x] **B4** — `CvEntity` : `id`, `lastname` (le `name` du sujet, renommé), `firstname`, `age`, `cin`, `job`, `path`, étend `TimestampEntity`.
-- [ ] **B5** — Relations :
+- [x] **B5** — Relations :
   - `CvEntity` `@ManyToOne` → `UserEntity` (le propriétaire) / `UserEntity` `@OneToMany` → `cvs`.
-  - `CvEntity` `@ManyToMany` ↔ `SkillEntity` avec `@JoinTable` côté Cv.
+  - `CvEntity` `@ManyToMany` ↔ `SkillEntity` avec `@JoinTable` côté Cv (table de jointure `cvs_skills`).
   - Choisir et justifier `eager`, `cascade`, `onDelete`.
-- [ ] **B6** — Vérifier avec `synchronize` que les tables + la table de jointure sont créées correctement (ne pas committer `db.sqlite`).
+- [x] **B6** — Vérifier avec `synchronize` que les tables + la table de jointure sont créées correctement (ne pas committer `db.sqlite`).
+  - Vérifié par `src/cv/entities/cv.entity.spec.ts` (7 tests) + `PRAGMA` sur la base réelle.
 
 ### Fichiers
 `src/user/entities/**`, `src/user/enums/**`, `src/cv/entities/**`, `src/skill/entities/**`.
