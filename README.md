@@ -40,7 +40,7 @@ Le front de la plateforme de recrutement dont l'API a été faite au TP2 NestJS.
 
 ## Règles de collaboration Angular
 
-1. **Akram passe en premier** : il crée le projet, installe **toutes** les dépendances (`bootstrap`, `ngx-toastr`), génère **tous** les squelettes et déclare **toutes** les routes. Ensuite, personne d'autre ne touche à `package.json`, `angular.json`, `app.config.ts`, `app.routes.ts` ni `app.component.*`.
+1. **Akram passe en premier** : il crée le projet, installe **toutes** les dépendances (`bootstrap`), génère **tous** les squelettes et déclare **toutes** les routes. Ensuite, personne d'autre ne touche à `package.json`, `angular.json`, `app.config.ts`, `app.routes.ts` ni `app.{ts,html,css}`.
 2. **Un dossier = un propriétaire** (tableau « Propriété des fichiers » de [tasks.md](./tasks.md)).
 3. Amine, Alaa, Dalcon et Ben Fraj travaillent **en parallèle** dès la fin d'Akram. **Adab** commence après le merge de Ben Fraj.
 4. Une branche par personne : `feat/<prenom>-ng-<sujet>`, merge dans `main` après relecture.
@@ -53,13 +53,13 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 ```
 
 ## Akram — Mise en place + navigation *(étape 0 + ex. 10)*
-- [ ] **A1** — `ng new frontend --routing --style=css --skip-git --ssr=false`
-- [ ] **A2** — Installer `bootstrap`, `ngx-toastr`, `@angular/animations` ; les configurer (`angular.json`, `app.config.ts`)
-- [ ] **A3** — Générer les squelettes de tous les composants / services / directive de l'équipe
-- [ ] **A4** — Déclarer toutes les routes (`''`, `cv`, `todo`, `week-todo`, `word`, `color`, `ttc`, `**`)
-- [ ] **A5** — Navbar **CvTech** (`routerLink`, `routerLinkActive`), footer, page d'accueil
-- [ ] **A6** — Exclure `frontend` du `tsconfig.json` racine ; l'API NestJS compile et ses tests passent toujours
-- [ ] **A7** — Script racine `npm run front` ; `ng build` passe ; merge et prévenir l'équipe
+- [x] **A1** — `ng new frontend --routing --style=css --skip-git --ssr=false` (Angular 22)
+- [x] **A2** — Installer `bootstrap` et le charger dans `angular.json` (pas de `ngx-toastr` : incompatible avec Angular 22, toast fait maison par Adab)
+- [x] **A3** — Générer les squelettes de tous les composants / services / directive de l'équipe
+- [x] **A4** — Déclarer toutes les routes (`''`, `cv`, `todo`, `week-todo`, `word`, `color`, `ttc`, `**`)
+- [x] **A5** — Navbar **CvTech** (`routerLink`, `routerLinkActive`), footer, page d'accueil
+- [x] **A6** — Exclure `frontend` du `tsconfig.json` et de Vitest racine ; l'API NestJS compile et ses tests passent toujours
+- [x] **A7** — Script racine `npm run front` ; `ng build` passe ; merge et prévenir l'équipe
 
 **Fichiers :** configuration du projet Angular, `src/app/app.*`, `src/app/layout/**`, `src/app/home/**`.
 
@@ -106,16 +106,16 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 - [ ] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
 - [ ] **E3** — `EmbaucheComponent` : liste des embauchés, visible seulement si non vide *(exception : `<app-embauche />` dans `cv.component.html`)*
 - [ ] **E4** — Brancher le bouton « embaucher » de la carte de détail *(exception : `cv-detail.component.*`)*
-- [ ] **E5** — Toasts `ngx-toastr` : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
+- [ ] **E5** — Toasts maison (`ToastService` + `ToastComponent`, styles Bootstrap) : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
 
-**Fichiers :** `src/app/cv/services/**`, `src/app/cv/embauche/**`.
+**Fichiers :** `src/app/cv/services/**`, `src/app/cv/embauche/**`, `src/app/shared/toast/**`.
 
 ## Lancer le front
 
 ```bash
 cd frontend
 npm install
-npx ng serve          # http://localhost:4200
+npx ng serve          # http://localhost:4200   (ou, depuis la racine : npm run front)
 ```
 
 ## Checklist finale Angular TP1 (équipe entière)
