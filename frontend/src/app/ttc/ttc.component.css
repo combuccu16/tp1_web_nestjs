@@ -1,0 +1,16 @@
+.ttc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 20rem;
+}
+
+.ttc label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ttc input {
+  padding: 0.4rem 0.5rem;
+}
