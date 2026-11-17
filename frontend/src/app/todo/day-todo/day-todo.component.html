@@ -1,1 +1,41 @@
-<p>day-todo works!</p>
+<div class="card h-100">
+  <div class="card-header text-center fw-semibold">{{ day() }}</div>
+
+  <div class="card-body">
+    <form (ngSubmit)="addTodo()">
+      <label class="form-label small" [attr.for]="'name-' + day()">Name</label>
+      <input
+        [id]="'name-' + day()"
+        class="form-control form-control-sm mb-2"
+        name="name"
+        [(ngModel)]="name"
+      />
+
+      <label class="form-label small" [attr.for]="'content-' + day()">Content</label>
+      <input
+        [id]="'content-' + day()"
+        class="form-control form-control-sm mb-2"
+        name="content"
+        [(ngModel)]="content"
+      />
+
+      <button class="btn btn-sm btn-primary w-100" type="submit">Add</button>
+    </form>
+
+    @if (todos.length) {
+      <ul class="list-group list-group-flush mt-3">
+        @for (todo of todos; track todo.id) {
+          <li class="list-group-item px-0 d-flex justify-content-between align-items-start gap-2">
+            <div class="small">
+              <strong class="d-block">{{ todo.name }}</strong>
+              <span class="text-body-secondary">{{ todo.content }}</span>
+            </div>
+            <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteTodo(todo)">
+              &times;
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

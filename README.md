@@ -93,11 +93,11 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 **Fichiers :** `src/app/cv/model/**`, `src/app/cv/{cv,cv-list,cv-item,cv-detail}/**`, `public/images/**`.
 
 ## Dalcon — Todo + WeekTodo *(ex. 7 et 8)*
-- [ ] **D1** — Modèle `Todo` (name, content)
-- [ ] **D2** — `TodoService` : `getTodos`, `addTodo`, `deleteTodo`, `logTodos` (liste privée)
-- [ ] **D3** — `TodoComponent` : formulaire Name / Content, Add Todo, liste avec suppression
-- [ ] **D4** — `WeekTodoComponent` : 5 colonnes `DayTodoComponent`
-- [ ] **D5** — `providers: [TodoService]` dans `DayTodoComponent` → une instance par jour, listes indépendantes
+- [x] **D1** — Modèle `Todo` (name, content)
+- [x] **D2** — `TodoService` : `getTodos`, `addTodo`, `deleteTodo`, `logTodos` (liste privée)
+- [x] **D3** — `TodoComponent` : formulaire Name / Content, Add Todo, liste avec suppression
+- [x] **D4** — `WeekTodoComponent` : 5 colonnes `DayTodoComponent`
+- [x] **D5** — `providers: [TodoService]` dans `DayTodoComponent` → une instance par jour, listes indépendantes
 
 **Fichiers :** `src/app/todo/**`.
 

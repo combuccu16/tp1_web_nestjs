@@ -273,8 +273,8 @@ Pourquoi l'état est dans le parent (**une seule source de vérité**), flux de 
 
 ### Ex. 7 — Service, modèle, composant (diapo 8)
 
-- [ ] **D1 — Modèle** `src/app/todo/model/todo.ts` : `Todo { name: string; content: string }` (+ un `id` si besoin pour la suppression et `track`).
-- [ ] **D2 — `TodoService`** (`@Injectable({ providedIn: 'root' })`) :
+- [x] **D1 — Modèle** `src/app/todo/model/todo.ts` : `Todo { name: string; content: string }` (+ un `id` si besoin pour la suppression et `track`).
+- [x] **D2 — `TodoService`** (`@Injectable({ providedIn: 'root' })`) :
 
   | Méthode | Rôle |
   | --- | --- |
@@ -284,15 +284,15 @@ Pourquoi l'état est dans le parent (**une seule source de vérité**), flux de 
   | `logTodos(): void` | afficher la liste dans la console (`console.log`) |
 
   La liste est **privée** dans le service : les composants passent par les méthodes.
-- [ ] **D3 — `TodoComponent`** (capture) : champs **Name** et **Content**, bouton **Add Todo**, liste des todos avec un bouton de suppression pour chacun, bouton « Logger ».
+- [x] **D3 — `TodoComponent`** (capture) : champs **Name** et **Content**, bouton **Add Todo**, liste des todos avec un bouton de suppression pour chacun, bouton « Logger ».
   - Le service est **injecté** (`inject(TodoService)` ou constructeur), jamais instancié avec `new`.
   - Après l'ajout, le formulaire est vidé ; on n'ajoute pas un todo vide.
 
 ### Ex. 8 — WeekTodo (diapo 9)
 
-- [ ] **D4** — `WeekTodoComponent` affiche **5 colonnes** (lundi → vendredi), chacune = un `DayTodoComponent` (`@for` sur un tableau de jours).
-- [ ] **D5** — Chaque colonne a son formulaire (name, content, add) et **sa propre liste** : ajouter un todo le lundi ne l'ajoute pas le mardi.
-- [ ] **D6** — **Le point clé de l'exercice** : réutiliser le **même** `TodoService`, mais avec **une instance par colonne**, en le déclarant dans le composant :
+- [x] **D4** — `WeekTodoComponent` affiche **5 colonnes** (lundi → vendredi), chacune = un `DayTodoComponent` (`@for` sur un tableau de jours).
+- [x] **D5** — Chaque colonne a son formulaire (name, content, add) et **sa propre liste** : ajouter un todo le lundi ne l'ajoute pas le mardi.
+- [x] **D6** — **Le point clé de l'exercice** : réutiliser le **même** `TodoService`, mais avec **une instance par colonne**, en le déclarant dans le composant :
   ```ts
   @Component({ selector: 'app-day-todo', providers: [TodoService], … })
   export class DayTodoComponent { … }
