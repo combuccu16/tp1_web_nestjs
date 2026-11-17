@@ -1,7 +1,10 @@
-# NestJS – TP RT4 : Todo API + gestionnaire de CVs
+# TP RT4 : API NestJS + front Angular « CvTech »
 
-Projet réalisé en équipe dans le cadre des TP NestJS RT4 – année universitaire 2026 / 2027.
-Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP2 → [tasks2.md](./tasks2.md) (en cours, résumé ci-dessous).
+Projet réalisé en équipe dans le cadre des TP NestJS et Angular RT4 – année universitaire 2026 / 2027.
+Sujets par **Aymen Sellaouti** :
+- NestJS TP1 → [topic.md](./topic.md) (terminé)
+- NestJS TP2 → [tasks2.md](./tasks2.md) (terminé)
+- **Angular TP1 → [tasks.md](./tasks.md) (en cours, résumé ci-dessous)**
 
 ---
 
@@ -14,7 +17,115 @@ Sujets par **Aymen Sellaouti** : TP1 → [topic.md](./topic.md) (terminé) · TP
 
 ---
 
-# TP2 — Middleware, gestionnaire de CVs, seed, authentification
+# Angular TP1 — front « CvTech » *(en cours)*
+
+Le front de la plateforme de recrutement dont l'API a été faite au TP2 NestJS. L'application Angular est créée dans **`frontend/`** ; dans ce TP les données restent en mémoire (pas encore d'appels à l'API).
+**Détail de chaque tâche, fichiers et critères « terminé quand » : [tasks.md](./tasks.md).**
+
+## Sujet (résumé du PDF)
+
+| Ex. | Exercice | Responsable |
+| --- | --- | --- |
+| 0 | Projet Angular, dépendances, routes, squelettes | Akram |
+| 1 | Div dont la couleur suit un input + bouton de réinitialisation | Amine Brahim |
+| 2 | Calculateur de prix TTC avec remises (20 % / 30 %) | Alaa |
+| 3 | CvTech : liste des CVs + détail au clic (gestion de l'état) | Ben Fraj |
+| 4 | Mini Word avec `ngStyle` (couleur, taille, police) | Alaa |
+| 5 | Liste des CVs aux couleurs alternées | Ben Fraj |
+| 6 | Directive « écriture arc-en-ciel » (`HostBinding`, `keyup`) | Amine Brahim |
+| 7 | Service de Todo + modèle + composant | Dalcon |
+| 8 | WeekTodo : 5 colonnes, une instance de service par colonne | Dalcon |
+| 9 | `CvService`, `EmbaucheService`, liste des embauchés, toast « budget dépassé » | Adab |
+| 10 | Mise en page CvTech : navbar, footer, carte de détail | Akram + Ben Fraj |
+
+## Règles de collaboration Angular
+
+1. **Akram passe en premier** : il crée le projet, installe **toutes** les dépendances (`bootstrap`, `ngx-toastr`), génère **tous** les squelettes et déclare **toutes** les routes. Ensuite, personne d'autre ne touche à `package.json`, `angular.json`, `app.config.ts`, `app.routes.ts` ni `app.component.*`.
+2. **Un dossier = un propriétaire** (tableau « Propriété des fichiers » de [tasks.md](./tasks.md)).
+3. Amine, Alaa, Dalcon et Ben Fraj travaillent **en parallèle** dès la fin d'Akram. **Adab** commence après le merge de Ben Fraj.
+4. Une branche par personne : `feat/<prenom>-ng-<sujet>`, merge dans `main` après relecture.
+
+```
+Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
+                 ├─► Alaa   (ex. 2, 4)
+                 ├─► Dalcon (ex. 7, 8)
+                 └─► Ben Fraj (ex. 3, 5, carte ex. 10) ─► Adab (ex. 9)
+```
+
+## Akram — Mise en place + navigation *(étape 0 + ex. 10)*
+- [ ] **A1** — `ng new frontend --routing --style=css --skip-git --ssr=false`
+- [ ] **A2** — Installer `bootstrap`, `ngx-toastr`, `@angular/animations` ; les configurer (`angular.json`, `app.config.ts`)
+- [ ] **A3** — Générer les squelettes de tous les composants / services / directive de l'équipe
+- [ ] **A4** — Déclarer toutes les routes (`''`, `cv`, `todo`, `week-todo`, `word`, `color`, `ttc`, `**`)
+- [ ] **A5** — Navbar **CvTech** (`routerLink`, `routerLinkActive`), footer, page d'accueil
+- [ ] **A6** — Exclure `frontend` du `tsconfig.json` racine ; l'API NestJS compile et ses tests passent toujours
+- [ ] **A7** — Script racine `npm run front` ; `ng build` passe ; merge et prévenir l'équipe
+
+**Fichiers :** configuration du projet Angular, `src/app/app.*`, `src/app/layout/**`, `src/app/home/**`.
+
+## Amine Brahim — Couleur du Div + directive arc-en-ciel *(ex. 1 et 6)*
+- [ ] **M1** — `ColorComponent` : un `div` + un `input` texte
+- [ ] **M2** — La couleur tapée devient le fond du div (`#ref` + `[style.backgroundColor]`)
+- [ ] **M3** — Bouton qui remet la couleur par défaut (constante)
+- [ ] **M4** — `RainbowDirective` : `@HostBinding` sur `style.color` et `style.borderColor`
+- [ ] **M5** — Méthode `randomColor()` + `@HostListener('keyup')`
+- [ ] **M6** — Sélecteur `input[appRainbow], textarea[appRainbow]` : la directive ne s'instancie pas ailleurs
+- [ ] **M7** — Démonstration sur l'input du `ColorComponent`
+
+**Fichiers :** `src/app/color/**`, `src/app/rainbow/**`.
+
+## Alaa — Calculateur TTC + Mini Word *(ex. 2 et 4)*
+- [ ] **C1** — `TtcComponent` : prix HT (0), quantité (1), TVA (18) modifiables
+- [ ] **C2** — Prix unitaire TTC, remise et prix total TTC calculés en direct (getter / `computed`), pipe `currency`
+- [ ] **C3** — Remise 20 % entre 10 et 15 pièces, 30 % au-delà de 15 (seuils en constantes ; trancher le cas « 10 »)
+- [ ] **C4** — `MiniWordComponent` : `input color`, `input number`, `select` de polices
+- [ ] **C5** — Style du paragraphe via **un seul** `[ngStyle]` (couleur, `font-size.px`, `font-family`)
+
+**Fichiers :** `src/app/ttc/**`, `src/app/mini-word/**`.
+
+## Ben Fraj — CvTech : liste, détail, couleurs alternées *(ex. 3, 5 + carte de l'ex. 10)*
+- [ ] **B1** — Modèle `Cv` (id, name, firstname, age, cin, job, path)
+- [ ] **B2** — `CvComponent` (état : `cvs` + `selectedCv`) → `CvListComponent` → `CvItemComponent`, et `CvDetailComponent`
+- [ ] **B3** — Clic sur un CV → son détail s'affiche (`input` / `output`, état uniquement dans le parent)
+- [ ] **B4** — Couleurs alternées dans la liste (`$odd` dans `@for`)
+- [ ] **B5** — Carte de détail de la capture, avec les boutons « embaucher » et « détails » ; images dans `public/images/`
+
+**Fichiers :** `src/app/cv/model/**`, `src/app/cv/{cv,cv-list,cv-item,cv-detail}/**`, `public/images/**`.
+
+## Dalcon — Todo + WeekTodo *(ex. 7 et 8)*
+- [ ] **D1** — Modèle `Todo` (name, content)
+- [ ] **D2** — `TodoService` : `getTodos`, `addTodo`, `deleteTodo`, `logTodos` (liste privée)
+- [ ] **D3** — `TodoComponent` : formulaire Name / Content, Add Todo, liste avec suppression
+- [ ] **D4** — `WeekTodoComponent` : 5 colonnes `DayTodoComponent`
+- [ ] **D5** — `providers: [TodoService]` dans `DayTodoComponent` → une instance par jour, listes indépendantes
+
+**Fichiers :** `src/app/todo/**`.
+
+## Adab — Embauches *(ex. 9)* — après Ben Fraj
+- [ ] **E1** — `CvService` détient la liste des CVs (`getCvs`, `getCvById`) ; `CvComponent` l'utilise *(exception : 1 ligne dans `cv.component.ts`)*
+- [ ] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
+- [ ] **E3** — `EmbaucheComponent` : liste des embauchés, visible seulement si non vide *(exception : `<app-embauche />` dans `cv.component.html`)*
+- [ ] **E4** — Brancher le bouton « embaucher » de la carte de détail *(exception : `cv-detail.component.*`)*
+- [ ] **E5** — Toasts `ngx-toastr` : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
+
+**Fichiers :** `src/app/cv/services/**`, `src/app/cv/embauche/**`.
+
+## Lancer le front
+
+```bash
+cd frontend
+npm install
+npx ng serve          # http://localhost:4200
+```
+
+## Checklist finale Angular TP1 (équipe entière)
+- [ ] Les 10 exercices sont implémentés et accessibles depuis la navbar
+- [ ] `ng build` passe dans `frontend/` ; l'API NestJS compile et ses tests passent toujours
+- [ ] Chaque membre présente sa partie aux autres — **tout le monde sait défendre l'ensemble du projet**
+
+---
+
+# TP2 — Middleware, gestionnaire de CVs, seed, authentification *(terminé)*
 
 ## Sujet (résumé — énoncé complet dans [tasks2.md](./tasks2.md))
 
