@@ -1,1 +1,28 @@
-<p>mini-word works!</p>
+<section class="mini-word">
+  <h2>Mini word</h2>
+
+  <div class="mini-word__controls">
+    <label>
+      Color
+      <input type="color" name="color" [(ngModel)]="color" />
+    </label>
+
+    <label>
+      Size (px)
+      <input type="number" min="1" name="size" [(ngModel)]="size" />
+    </label>
+
+    <label>
+      Font
+      <select name="font" [(ngModel)]="font">
+        @for (fontName of fonts; track fontName) {
+          <option [value]="fontName">{{ fontName }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  <p [ngStyle]="{ color: color, 'font-size.px': size, 'font-family': font }">
+    CvTech — Mini Word
+  </p>
+</section>
