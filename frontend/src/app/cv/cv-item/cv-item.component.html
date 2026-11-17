@@ -1,1 +1,4 @@
-<p>cv-item works!</p>
+<button type="button" class="cv-item w-100 text-start" (click)="selected.emit(cv())">
+  <img [src]="cv().path || 'images/cv.png'" [alt]="cv().firstname + ' ' + cv().name" />
+  <span>{{ cv().firstname }} {{ cv().name }}</span>
+</button>

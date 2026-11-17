@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { Cv } from '../model/cv';
 
 @Component({
   imports: [],
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './cv-detail.component.css',
   templateUrl: './cv-detail.component.html',
 })
-export class CvDetailComponent {}
+export class CvDetailComponent {
+  readonly cv = input<Cv | undefined>(undefined);
+}

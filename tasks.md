@@ -215,7 +215,7 @@ Two-way binding `[(ngModel)]` = `[ngModel]` + `(ngModelChange)`, valeurs dériv�
 
 ### Ex. 3 — Liste + détail (diapo 4) — « Réfléchissez bien à la gestion de l'état »
 
-- [ ] **B1 — Modèle** `src/app/cv/model/cv.ts` :
+- [x] **B1 — Modèle** `src/app/cv/model/cv.ts` :
   ```ts
   export class Cv {
       constructor(
@@ -230,7 +230,7 @@ Two-way binding `[(ngModel)]` = `[ngModel]` + `(ngModelChange)`, valeurs dériv�
   }
   ```
   Mêmes champs que le TP2 (le `name` du sujet ; côté API le champ s'appelle `lastname`).
-- [ ] **B2 — Architecture imposée** (4 composants) :
+- [x] **B2 — Architecture imposée** (4 composants) :
   ```
   CvComponent            ← parent : détient la liste ET le CV sélectionné (l'état)
   ├── CvListComponent    ← reçoit cvs (input), remonte la sélection (output)
@@ -239,13 +239,13 @@ Two-way binding `[(ngModel)]` = `[ngModel]` + `(ngModelChange)`, valeurs dériv�
   ```
   - **L'état n'est stocké qu'à un seul endroit** : `CvComponent` (`cvs` et `selectedCv`). Les enfants n'ont que des `input` / `output`.
   - Clic sur un item → `CvItemComponent` émet → `CvListComponent` ré-émet → `CvComponent` met à jour `selectedCv` → `CvDetailComponent` le reçoit.
-- [ ] **B3** — Commencer par **un seul CV** affiché et son détail au clic (consigne), puis passer à une liste de 3-4 CVs (`@for … track cv.id`).
-- [ ] **B4** — Aucun CV sélectionné → `CvDetailComponent` n'affiche rien (`@if`).
-- [ ] **B5** — Images dans `frontend/public/images/` ; si `path` est vide, afficher une image par défaut (`cv.png`).
+- [x] **B3** — Commencer par **un seul CV** affiché et son détail au clic (consigne), puis passer à une liste de 3-4 CVs (`@for … track cv.id`).
+- [x] **B4** — Aucun CV sélectionné → `CvDetailComponent` n'affiche rien (`@if`).
+- [x] **B5** — Images dans `frontend/public/images/` ; si `path` est vide, afficher une image par défaut (`cv.png`).
 
 ### Ex. 5 — Couleurs alternées (diapo 6)
 
-- [ ] **B6** — Dans `CvListComponent`, les éléments successifs alternent entre **deux couleurs** :
+- [x] **B6** — Dans `CvListComponent`, les éléments successifs alternent entre **deux couleurs** :
   ```html
   @for (cv of cvs(); track cv.id; let odd = $odd) {
       <app-cv-item [cv]="cv" [class.odd]="odd" … />

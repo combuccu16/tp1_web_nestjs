@@ -84,10 +84,10 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 **Fichiers :** `src/app/ttc/**`, `src/app/mini-word/**`.
 
 ## Ben Fraj — CvTech : liste, détail, couleurs alternées *(ex. 3, 5 + carte de l'ex. 10)*
-- [ ] **B1** — Modèle `Cv` (id, name, firstname, age, cin, job, path)
-- [ ] **B2** — `CvComponent` (état : `cvs` + `selectedCv`) → `CvListComponent` → `CvItemComponent`, et `CvDetailComponent`
-- [ ] **B3** — Clic sur un CV → son détail s'affiche (`input` / `output`, état uniquement dans le parent)
-- [ ] **B4** — Couleurs alternées dans la liste (`$odd` dans `@for`)
+- [x] **B1** — Modèle `Cv` (id, name, firstname, age, cin, job, path)
+- [x] **B2** — `CvComponent` (état : `cvs` + `selectedCv`) → `CvListComponent` → `CvItemComponent`, et `CvDetailComponent`
+- [x] **B3** — Clic sur un CV → son détail s'affiche (`input` / `output`, état uniquement dans le parent)
+- [x] **B4** — Couleurs alternées dans la liste (`$odd` dans `@for`)
 - [ ] **B5** — Carte de détail de la capture, avec les boutons « embaucher » et « détails » ; images dans `public/images/`
 
 **Fichiers :** `src/app/cv/model/**`, `src/app/cv/{cv,cv-list,cv-item,cv-detail}/**`, `public/images/**`.

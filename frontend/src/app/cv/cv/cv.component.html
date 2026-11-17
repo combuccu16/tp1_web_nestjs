@@ -1,1 +1,9 @@
-<p>cv works!</p>
+<div class="row g-3">
+  <app-cv-list
+    class="col-12 col-md-5"
+    [cvs]="cvs"
+    [selectedCv]="selectedCv()"
+    (cvSelected)="selectCv($event)"
+  />
+  <app-cv-detail class="col-12 col-md-7" [cv]="selectedCv()" />
+</div>

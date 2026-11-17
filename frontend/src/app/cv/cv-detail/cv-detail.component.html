@@ -1,1 +1,11 @@
-<p>cv-detail works!</p>
+@if (cv(); as cv) {
+<div class="card">
+  <img class="card-img-top" [src]="cv.path || 'images/cv.png'" [alt]="cv.firstname + ' ' + cv.name" />
+  <div class="card-body">
+    <h5 class="card-title">{{ cv.firstname }} {{ cv.name }}</h5>
+    <p class="card-text mb-1">Âge : {{ cv.age }}</p>
+    <p class="card-text mb-1">CIN : {{ cv.cin }}</p>
+    <p class="card-text mb-0">Métier : {{ cv.job }}</p>
+  </div>
+</div>
+}
