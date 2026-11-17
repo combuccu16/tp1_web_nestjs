@@ -14,3 +14,21 @@
 .ttc input {
   padding: 0.4rem 0.5rem;
 }
+
+.ttc__results {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.ttc__result {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ttc__result--total {
+  font-weight: 600;
+}

@@ -15,4 +15,19 @@
     TVA (%)
     <input type="number" min="0" name="tva" [(ngModel)]="tva" />
   </label>
+
+  <div class="ttc__results">
+    <div class="ttc__result">
+      <span>Prix unitaire TTC</span>
+      <strong>{{ prixUnitaireTtc | currency }}</strong>
+    </div>
+    <div class="ttc__result">
+      <span>Remise ({{ tauxRemise * 100 }} %)</span>
+      <strong>{{ remise | currency }}</strong>
+    </div>
+    <div class="ttc__result ttc__result--total">
+      <span>Prix total TTC</span>
+      <strong>{{ prixTotalTtc | currency }}</strong>
+    </div>
+  </div>
 </div>
