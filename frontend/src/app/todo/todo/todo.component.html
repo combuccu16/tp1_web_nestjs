@@ -1,1 +1,36 @@
-<p>todo works!</p>
+<section class="container py-4">
+  <h1 class="h3 mb-3">Todo</h1>
+
+  <form class="row g-2 align-items-end mb-4" (ngSubmit)="addTodo()">
+    <div class="col-md-4">
+      <label class="form-label" for="todo-name">Name</label>
+      <input id="todo-name" class="form-control" name="name" [(ngModel)]="name" />
+    </div>
+    <div class="col-md-5">
+      <label class="form-label" for="todo-content">Content</label>
+      <input id="todo-content" class="form-control" name="content" [(ngModel)]="content" />
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Add Todo</button>
+      <button class="btn btn-outline-secondary" type="button" (click)="logTodos()">Logger</button>
+    </div>
+  </form>
+
+  @if (todos.length) {
+    <ul class="list-group">
+      @for (todo of todos; track todo.id) {
+        <li class="list-group-item d-flex justify-content-between align-items-start gap-3">
+          <div>
+            <strong class="d-block">{{ todo.name }}</strong>
+            <span class="text-body-secondary">{{ todo.content }}</span>
+          </div>
+          <button class="btn btn-sm btn-outline-danger" type="button" (click)="deleteTodo(todo)">
+            Delete
+          </button>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="text-body-secondary">No todo yet.</p>
+  }
+</section>
