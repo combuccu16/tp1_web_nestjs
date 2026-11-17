@@ -21,7 +21,8 @@
 		"test:debug": "vitest --inspect-brk --no-file-parallelism",
 		"test:e2e": "vitest run --config ./vitest.config.e2e.ts",
 		"seed:cvs": "nest build && node dist/commands/cv.seeder.js",
-		"token": "node scripts/make-token.ts"
+		"token": "node scripts/make-token.ts",
+		"front": "npm --prefix frontend start"
 	},
 	"dependencies": {
 		"@nestjs/common": "^12.0.1",

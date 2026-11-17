@@ -1,0 +1,16 @@
+<h1 class="h3 mb-1">CvTech</h1>
+<p class="text-body-secondary mb-4">Mini plateforme de recrutement — TP1 Angular RT4.</p>
+
+<div class="row g-3">
+  @for (link of links; track link.path) {
+    <div class="col-12 col-sm-6 col-lg-4">
+      <a class="card h-100 text-decoration-none" [routerLink]="link.path">
+        <div class="card-body">
+          <div class="small text-body-secondary">{{ link.exercise }}</div>
+          <div class="h5 card-title mb-1">{{ link.label }}</div>
+          <p class="card-text mb-0">{{ link.description }}</p>
+        </div>
+      </a>
+    </div>
+  }
+</div>
