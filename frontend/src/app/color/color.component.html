@@ -1,1 +1,23 @@
-<p>color works!</p>
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <label class="form-label" for="color-input">Couleur</label>
+      <input
+        appRainbow
+        [(ngModel)]="color"
+        id="color-input"
+        class="form-control shadow-none border-3 mb-3"
+        type="text"
+      />
+
+      <div
+        class="p-5 rounded mb-3"
+        [style.backgroundColor]="color || DEFAULT_COLOR"
+      ></div>
+
+      <button type="button" class="btn btn-primary" (click)="resetColor()">
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+</div>
