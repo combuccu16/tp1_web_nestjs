@@ -6,6 +6,10 @@
     <p class="card-text mb-1">Âge : {{ cv.age }}</p>
     <p class="card-text mb-1">CIN : {{ cv.cin }}</p>
     <p class="card-text mb-0">Métier : {{ cv.job }}</p>
+    <div class="d-flex gap-2 mt-3">
+      <button type="button" class="btn btn-success" (click)="embaucher()">Embaucher</button>
+      <button type="button" class="btn btn-outline-primary">Détails</button>
+    </div>
   </div>
 </div>
 }

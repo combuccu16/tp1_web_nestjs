@@ -102,11 +102,11 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 **Fichiers :** `src/app/todo/**`.
 
 ## Adab — Embauches *(ex. 9)* — après Ben Fraj
-- [ ] **E1** — `CvService` détient la liste des CVs (`getCvs`, `getCvById`) ; `CvComponent` l'utilise *(exception : 1 ligne dans `cv.component.ts`)*
-- [ ] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
-- [ ] **E3** — `EmbaucheComponent` : liste des embauchés, visible seulement si non vide *(exception : `<app-embauche />` dans `cv.component.html`)*
-- [ ] **E4** — Brancher le bouton « embaucher » de la carte de détail *(exception : `cv-detail.component.*`)*
-- [ ] **E5** — Toasts maison (`ToastService` + `ToastComponent`, styles Bootstrap) : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
+- [x] **E1** — `CvService` détient la liste des CVs (`getCvs`, `getCvById`) ; `CvComponent` l'utilise *(exception : 1 ligne dans `cv.component.ts`)*
+- [x] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
+- [x] **E3** — `EmbaucheComponent` : liste des embauchés, visible seulement si non vide *(exception : `<app-embauche />` dans `cv.component.html`)*
+- [x] **E4** — Brancher le bouton « embaucher » de la carte de détail *(exception : `cv-detail.component.*`)*
+- [x] **E5** — Toasts maison (`ToastService` + `ToastComponent`, styles Bootstrap) : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
 
 **Fichiers :** `src/app/cv/services/**`, `src/app/cv/embauche/**`, `src/app/shared/toast/**`.
 

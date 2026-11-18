@@ -5,5 +5,8 @@
     [selectedCv]="selectedCv()"
     (cvSelected)="selectCv($event)"
   />
-  <app-cv-detail class="col-12 col-md-7" [cv]="selectedCv()" />
+  <div class="col-12 col-md-7">
+    <app-cv-detail [cv]="selectedCv()" />
+    <app-embauche />
+  </div>
 </div>

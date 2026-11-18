@@ -41,13 +41,13 @@ describe('CvComponent — liste, détail, couleurs alternées', () => {
     fixture.detectChanges();
 
     const title: HTMLElement = fixture.nativeElement.querySelector('app-cv-detail .card-title');
-    expect(title.textContent).toContain('Muhyiddin Ben Fraj');
+    expect(title.textContent).toContain('Mohamed Amine Ben Fraj');
     expect(items[0].classList.contains('active')).toBe(true);
 
     items[1].querySelector('button')?.click();
     fixture.detectChanges();
 
-    expect(title.textContent).toContain('Aymen Sellaouti');
+    expect(title.textContent).toContain('Youssef Eladab');
     expect(items[0].classList.contains('active')).toBe(false);
     expect(items[1].classList.contains('active')).toBe(true);
   });
