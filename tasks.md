@@ -170,8 +170,8 @@ Variable de référence `#nom`, property binding `[style.x]`, event binding `(cl
 
 ### Ex. 2 — `TtcComponent` (diapo 3)
 
-- [ ] **C1** — Trois champs modifiables : **Prix HT** (défaut `0`), **Quantité** (défaut `1`), **TVA** en % (défaut `18`). Liaison bidirectionnelle `[(ngModel)]` (`FormsModule`) ou signals.
-- [ ] **C2** — Trois résultats affichés en direct (capture du sujet) :
+- [x] **C1** — Trois champs modifiables : **Prix HT** (défaut `0`), **Quantité** (défaut `1`), **TVA** en % (défaut `18`). Liaison bidirectionnelle `[(ngModel)]` (`FormsModule`) ou signals.
+- [x] **C2** — Trois résultats affichés en direct (capture du sujet) :
 
   | Valeur | Formule |
   | --- | --- |
@@ -179,24 +179,24 @@ Variable de référence `#nom`, property binding `[style.x]`, event binding `(cl
   | Remise | taux selon la quantité × (prix unitaire TTC × quantité) |
   | Prix total TTC | `prix unitaire TTC × quantité − remise` |
 
-- [ ] **C3** — Règles de remise :
+- [x] **C3** — Règles de remise :
   - quantité **entre 10 et 15** → **20 %** ;
   - quantité **> 15** → **30 %** ;
   - sinon 0 %.
   > ⚠️ Ambigu : la capture affiche « Discount : $0.00 » pour une quantité de **10**. Décider si 10 est inclus (texte) ou exclu (capture), l'écrire en commentaire, et savoir le justifier.
-- [ ] **C4** — Les taux et seuils sont des **constantes nommées** (pas de `0.2` ni de `15` en dur dans le calcul).
-- [ ] **C5** — Calculs **dérivés** (getter ou `computed()`) : jamais stockés à la main, ils se recalculent quand une entrée change.
-- [ ] **C6** — Affichage avec le pipe **`currency`**. Refuser les valeurs négatives (`min="0"` + garde dans le calcul).
+- [x] **C4** — Les taux et seuils sont des **constantes nommées** (pas de `0.2` ni de `15` en dur dans le calcul).
+- [x] **C5** — Calculs **dérivés** (getter ou `computed()`) : jamais stockés à la main, ils se recalculent quand une entrée change.
+- [x] **C6** — Affichage avec le pipe **`currency`**. Refuser les valeurs négatives (`min="0"` + garde dans le calcul).
 
 ### Ex. 4 — `MiniWordComponent` (diapo 5)
 
-- [ ] **C7** — Un paragraphe de texte + trois contrôles : `input type="color"`, `input type="number"` (taille en px), `select` de polices.
-- [ ] **C8** — Tout le style du paragraphe passe par **un seul `[ngStyle]`** :
+- [x] **C7** — Un paragraphe de texte + trois contrôles : `input type="color"`, `input type="number"` (taille en px), `select` de polices.
+- [x] **C8** — Tout le style du paragraphe passe par **un seul `[ngStyle]`** :
   ```html
   <p [ngStyle]="{ color: color, 'font-size.px': size, 'font-family': font }">…</p>
   ```
-- [ ] **C9** — La liste des polices est un **tableau** dans le composant (`['Arial', 'Verdana', 'Times New Roman', 'Courier New', …]`), affichée avec `@for`.
-- [ ] **C10** — Valeurs par défaut cohérentes avec la capture (couleur, taille 30, police Arial).
+- [x] **C9** — La liste des polices est un **tableau** dans le composant (`['Arial', 'Verdana', 'Times New Roman', 'Courier New', …]`), affichée avec `@for`.
+- [x] **C10** — Valeurs par défaut cohérentes avec la capture (couleur, taille 30, police Arial).
 
 ### Fichiers
 `frontend/src/app/ttc/**`, `frontend/src/app/mini-word/**`.

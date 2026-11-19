@@ -75,11 +75,11 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 **Fichiers :** `src/app/color/**`, `src/app/rainbow/**`.
 
 ## Alaa — Calculateur TTC + Mini Word *(ex. 2 et 4)*
-- [ ] **C1** — `TtcComponent` : prix HT (0), quantité (1), TVA (18) modifiables
-- [ ] **C2** — Prix unitaire TTC, remise et prix total TTC calculés en direct (getter / `computed`), pipe `currency`
-- [ ] **C3** — Remise 20 % entre 10 et 15 pièces, 30 % au-delà de 15 (seuils en constantes ; trancher le cas « 10 »)
-- [ ] **C4** — `MiniWordComponent` : `input color`, `input number`, `select` de polices
-- [ ] **C5** — Style du paragraphe via **un seul** `[ngStyle]` (couleur, `font-size.px`, `font-family`)
+- [x] **C1** — `TtcComponent` : prix HT (0), quantité (1), TVA (18) modifiables
+- [x] **C2** — Prix unitaire TTC, remise et prix total TTC calculés en direct (getter / `computed`), pipe `currency`
+- [x] **C3** — Remise 20 % entre 10 et 15 pièces, 30 % au-delà de 15 (seuils en constantes ; trancher le cas « 10 »)
+- [x] **C4** — `MiniWordComponent` : `input color`, `input number`, `select` de polices
+- [x] **C5** — Style du paragraphe via **un seul** `[ngStyle]` (couleur, `font-size.px`, `font-family`)
 
 **Fichiers :** `src/app/ttc/**`, `src/app/mini-word/**`.
 
