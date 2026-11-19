@@ -133,25 +133,25 @@ Composant standalone vs `NgModule`, rôle de `app.config.ts` (providers globaux)
 
 ### Ex. 1 — `ColorComponent` (diapo 2)
 
-- [ ] **M1** — Un `div` (taille visible, ex. 200 × 100 px) et un `input type="text"`.
-- [ ] **M2** — Quand on écrit une couleur dans l'input (`red`, `#ff0`, `rgb(0,128,0)`), elle devient la couleur de fond du div.
+- [x] **M1** — Un `div` (taille visible, ex. 200 × 100 px) et un `input type="text"`.
+- [x] **M2** — Quand on écrit une couleur dans l'input (`red`, `#ff0`, `rgb(0,128,0)`), elle devient la couleur de fond du div.
   - Utiliser une **variable de référence de template** : `<input #colorInput …>` puis lire `colorInput.value` (indice du sujet).
   - Lier le style : `[style.backgroundColor]="color"`.
-- [ ] **M3** — Un bouton « Réinitialiser » : le div reprend sa **couleur par défaut** et l'input est vidé.
+- [x] **M3** — Un bouton « Réinitialiser » : le div reprend sa **couleur par défaut** et l'input est vidé.
   - La couleur par défaut est une **constante** du composant (`DEFAULT_COLOR`), pas une valeur répétée dans le HTML.
 
 ### Ex. 6 — `RainbowDirective` (diapo 7)
 
-- [ ] **M4** — Compléter la directive `rainbow/rainbow.directive.ts` (squelette créé par Akram).
-- [ ] **M5** — `@HostBinding('style.color')` et `@HostBinding('style.borderColor')` sur deux propriétés de la directive.
-- [ ] **M6** — Une méthode privée `randomColor(): string` qui renvoie une couleur aléatoire (ex. `rgb(r, g, b)` avec 3 entiers entre 0 et 255).
-- [ ] **M7** — `@HostListener('keyup')` : à chaque lettre tapée, la couleur du texte **et** de la bordure changent.
-- [ ] **M8** — « La directive ne doit pas s'instancier sur des balises où elle n'a pas de sens » → **restreindre le sélecteur** :
+- [x] **M4** — Compléter la directive `rainbow/rainbow.directive.ts` (squelette créé par Akram).
+- [x] **M5** — `@HostBinding('style.color')` et `@HostBinding('style.borderColor')` sur deux propriétés de la directive.
+- [x] **M6** — Une méthode privée `randomColor(): string` qui renvoie une couleur aléatoire (ex. `rgb(r, g, b)` avec 3 entiers entre 0 et 255).
+- [x] **M7** — `@HostListener('keyup')` : à chaque lettre tapée, la couleur du texte **et** de la bordure changent.
+- [x] **M8** — « La directive ne doit pas s'instancier sur des balises où elle n'a pas de sens » → **restreindre le sélecteur** :
   ```ts
   @Directive({ selector: 'input[appRainbow], textarea[appRainbow]' })
   ```
   Ainsi `<div appRainbow>` n'instancie **rien**.
-- [ ] **M9** — L'appliquer sur l'input de ton `ColorComponent` (`<input appRainbow …>`) pour la démonstration.
+- [x] **M9** — L'appliquer sur l'input de ton `ColorComponent` (`<input appRainbow …>`) pour la démonstration.
 
 ### Fichiers
 `frontend/src/app/color/**`, `frontend/src/app/rainbow/**`.
@@ -357,6 +357,6 @@ Pourquoi déplacer la liste dans un service (état partagé, composants qui ne s
 
 ## 9. Checklist finale (équipe entière)
 
-- [ ] Les 10 exercices du PDF sont implémentés et accessibles depuis la navbar
-- [ ] `ng build` passe dans `frontend/` ; `npm run build` et `npm test` passent toujours à la racine (API NestJS)
+- [x] Les 10 exercices du PDF sont implémentés et accessibles depuis la navbar
+- [x] `ng build` passe dans `frontend/` ; `npm run build` et `npm test` passent toujours à la racine (API NestJS)
 - [ ] Chaque membre présente sa partie aux autres — **tout le monde sait défendre l'ensemble du projet**

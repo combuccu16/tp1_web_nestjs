@@ -64,13 +64,13 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 **Fichiers :** configuration du projet Angular, `src/app/app.*`, `src/app/layout/**`, `src/app/home/**`.
 
 ## Amine Brahim — Couleur du Div + directive arc-en-ciel *(ex. 1 et 6)*
-- [ ] **M1** — `ColorComponent` : un `div` + un `input` texte
-- [ ] **M2** — La couleur tapée devient le fond du div (`#ref` + `[style.backgroundColor]`)
-- [ ] **M3** — Bouton qui remet la couleur par défaut (constante)
-- [ ] **M4** — `RainbowDirective` : `@HostBinding` sur `style.color` et `style.borderColor`
-- [ ] **M5** — Méthode `randomColor()` + `@HostListener('keyup')`
-- [ ] **M6** — Sélecteur `input[appRainbow], textarea[appRainbow]` : la directive ne s'instancie pas ailleurs
-- [ ] **M7** — Démonstration sur l'input du `ColorComponent`
+- [x] **M1** — `ColorComponent` : un `div` + un `input` texte
+- [x] **M2** — La couleur tapée devient le fond du div (`#ref` + `[style.backgroundColor]`)
+- [x] **M3** — Bouton qui remet la couleur par défaut (constante)
+- [x] **M4** — `RainbowDirective` : `@HostBinding` sur `style.color` et `style.borderColor`
+- [x] **M5** — Méthode `randomColor()` + `@HostListener('keyup')`
+- [x] **M6** — Sélecteur `input[appRainbow], textarea[appRainbow]` : la directive ne s'instancie pas ailleurs
+- [x] **M7** — Démonstration sur l'input du `ColorComponent`
 
 **Fichiers :** `src/app/color/**`, `src/app/rainbow/**`.
 
@@ -119,8 +119,8 @@ npx ng serve          # http://localhost:4200   (ou, depuis la racine : npm run 
 ```
 
 ## Checklist finale Angular TP1 (équipe entière)
-- [ ] Les 10 exercices sont implémentés et accessibles depuis la navbar
-- [ ] `ng build` passe dans `frontend/` ; l'API NestJS compile et ses tests passent toujours
+- [x] Les 10 exercices sont implémentés et accessibles depuis la navbar
+- [x] `ng build` passe dans `frontend/` ; l'API NestJS compile et ses tests passent toujours
 - [ ] Chaque membre présente sa partie aux autres — **tout le monde sait défendre l'ensemble du projet**
 
 ---
