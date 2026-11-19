@@ -2,7 +2,7 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import { compare, hash } from 'bcryptjs';
+import { compare, genSalt, hash } from 'bcryptjs';
 import { UserEntity } from '../user/entities/user.entity.js';
 import { RoleEnum } from '../user/enums/role.enum.js';
 import type { RegisterDto } from './dto/register.dto.js';
@@ -23,10 +23,13 @@ export class AuthService {
             throw new ConflictException('Username or email is already in use');
         }
 
+        const salt = await genSalt();
+        const hashedPassword = await hash(dto.password, salt);
+
         const user = this.users.create({
             username: dto.username,
             email: dto.email,
-            password: await hash(dto.password, 12),
+            password: hashedPassword,
             role: RoleEnum.USER,
         });
         const saved = await this.users.save(user);
@@ -39,7 +42,6 @@ export class AuthService {
             .addSelect('user.password')
             .where('user.username = :identifier OR user.email = :identifier', { identifier: dto.identifier })
             .getOne();
-
         if (!user || !(await compare(dto.password, user.password))) {
             throw new UnauthorizedException('Invalid credentials');
         }
