@@ -32,6 +32,25 @@ describe('CvComponent — liste, détail, couleurs alternées', () => {
     expect(items[3].querySelector('img')?.getAttribute('src')).toBe('images/cv.png');
   });
 
+  it('renders the complete CV detail card when a CV is selected', () => {
+    const fixture = TestBed.createComponent(CvComponent);
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('app-cv-item button').click();
+    fixture.detectChanges();
+
+    const card: HTMLElement = fixture.nativeElement.querySelector('app-cv-detail .card');
+    expect(card.querySelector('img')?.getAttribute('src')).toBe('images/cv1.png');
+    expect(card.querySelector('blockquote')?.textContent?.trim()).toContain('curiosité');
+    expect(card.querySelector('h6')?.textContent).toBe('Job Description');
+    expect(card.textContent).toContain('Développeur');
+    expect(card.textContent).toContain('Âge : 21');
+    expect(card.textContent).toContain('CIN : 12345678');
+    expect(
+      [...card.querySelectorAll('button')].map((button) => button.textContent?.trim()),
+    ).toEqual(['Embaucher', 'Détails']);
+  });
+
   it('keeps the state in the parent: click selects, another click moves the selection', () => {
     const fixture = TestBed.createComponent(CvComponent);
     fixture.detectChanges();

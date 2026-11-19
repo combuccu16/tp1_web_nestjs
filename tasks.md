@@ -255,7 +255,7 @@ Two-way binding `[(ngModel)]` = `[ngModel]` + `(ngModelChange)`, valeurs dériv�
 
 ### Ex. 10 — Carte de détail (diapo 11)
 
-- [ ] **B7** — `CvDetailComponent` reprend la carte de la capture : photo, citation, « Job Description », nom, âge, CIN, métier, et deux boutons **« embaucher »** et **« détails »**.
+- [x] **B7** — `CvDetailComponent` reprend la carte de la capture : photo, citation, « Job Description », nom, âge, CIN, métier, et deux boutons **« embaucher »** et **« détails »**.
   - « embaucher » ne fait rien pour l'instant : c'est **Adab** qui le branchera (ex. 9).
 
 ### Fichiers
