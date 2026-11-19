@@ -6,16 +6,15 @@ import { Directive, HostBinding, HostListener } from '@angular/core';
 })
 export class RainbowDirective {
   @HostBinding('style.color')
-  color = '';
+  color = 'black';
 
   @HostBinding('style.borderColor')
-  borderColor = '';
+  borderColor = 'black';
 
   @HostListener('keyup')
   onKeyup(): void {
-    const color = this.randomColor();
-    this.color = color;
-    this.borderColor = color;
+    this.color = this.randomColor();
+    this.borderColor = this.randomColor();
   }
 
   private randomColor(): string {

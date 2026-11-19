@@ -36,6 +36,6 @@ describe('ColorComponent', () => {
     fixture.detectChanges();
 
     expect(input.style.color).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
-    expect(input.style.borderColor).toBe(input.style.color);
+    expect(input.style.borderColor).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
   });
 });

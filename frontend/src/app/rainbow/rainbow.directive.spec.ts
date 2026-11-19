@@ -27,9 +27,9 @@ describe('RainbowDirective', () => {
     fixture.detectChanges();
 
     expect(input.style.color).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
-    expect(input.style.borderColor).toBe(input.style.color);
+    expect(input.style.borderColor).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
     expect(textarea.style.color).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
-    expect(textarea.style.borderColor).toBe(textarea.style.color);
+    expect(textarea.style.borderColor).toMatch(/^rgb\(\d+, \d+, \d+\)$/);
     expect(div.style.color).toBe('');
     expect(div.style.borderColor).toBe('');
   });
