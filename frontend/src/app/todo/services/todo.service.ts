@@ -4,6 +4,8 @@ import { Todo } from '../model/todo';
 @Injectable({ providedIn: 'root' })
 export class TodoService {
   private readonly todos = signal<Todo[]>([]);
+  /** Version en lecture seule du signal : seul le service peut modifier la liste. */
+  readonly todosSignal = this.todos.asReadonly();
   private nextId = 1;
 
   getTodos(): Todo[] {

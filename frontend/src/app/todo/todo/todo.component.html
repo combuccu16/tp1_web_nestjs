@@ -1,14 +1,14 @@
 <section class="container py-4">
   <h1 class="h3 mb-3">Todo</h1>
 
-  <form class="row g-2 align-items-end mb-4" (ngSubmit)="addTodo()">
+  <form class="row g-2 align-items-end mb-4" [formRoot]="todoForm" (submit)="addTodo()">
     <div class="col-md-4">
       <label class="form-label" for="todo-name">Name</label>
-      <input id="todo-name" class="form-control" name="name" [(ngModel)]="name" />
+      <input id="todo-name" class="form-control" [formField]="todoForm.name" />
     </div>
     <div class="col-md-5">
       <label class="form-label" for="todo-content">Content</label>
-      <input id="todo-content" class="form-control" name="content" [(ngModel)]="content" />
+      <input id="todo-content" class="form-control" [formField]="todoForm.content" />
     </div>
     <div class="col-md-3 d-flex gap-2">
       <button class="btn btn-primary" type="submit">Add Todo</button>
@@ -16,9 +16,9 @@
     </div>
   </form>
 
-  @if (todos.length) {
+  @if (todos().length) {
     <ul class="list-group">
-      @for (todo of todos; track todo.id) {
+      @for (todo of todos(); track todo.id) {
         <li class="list-group-item d-flex justify-content-between align-items-start gap-3">
           <div>
             <strong class="d-block">{{ todo.name }}</strong>

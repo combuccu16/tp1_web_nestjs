@@ -1,10 +1,10 @@
-import { Component, inject, input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, input, signal } from '@angular/core';
+import { form, FormField, FormRoot } from '@angular/forms/signals';
 import { Todo } from '../model/todo';
 import { TodoService } from '../services/todo.service';
 
 @Component({
-  imports: [FormsModule],
+  imports: [FormRoot, FormField],
   selector: 'app-day-todo',
   styleUrl: './day-todo.component.css',
   templateUrl: './day-todo.component.html',
@@ -15,23 +15,21 @@ export class DayTodoComponent {
 
   private readonly todoService = inject(TodoService);
 
-  protected name = '';
-  protected content = '';
+  protected readonly todos = this.todoService.todosSignal;
 
-  protected get todos(): Todo[] {
-    return this.todoService.getTodos();
-  }
+  private readonly newTodo = signal({ name: '', content: '' });
+  protected readonly todoForm = form(this.newTodo);
 
   protected addTodo(): void {
-    const name = this.name.trim();
-    const content = this.content.trim();
+    const name = this.newTodo().name.trim();
+    const content = this.newTodo().content.trim();
     if (!name || !content) {
       return;
     }
 
     this.todoService.addTodo({ name, content });
-    this.name = '';
-    this.content = '';
+    this.newTodo.set({ name: '', content: '' });
+    this.todoForm().reset();
   }
 
   protected deleteTodo(todo: Todo): void {

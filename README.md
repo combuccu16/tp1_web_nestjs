@@ -101,6 +101,17 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 
 **Fichiers :** `src/app/todo/**`.
 
+### Mise à jour : passage aux signaux et aux Signal Forms (Angular 22.2)
+Le Todo utilisait encore des variables classiques et `[(ngModel)]`. Il utilise maintenant uniquement les API vues dans le support de cours *Angular 22 – La maturité* (chapitres « Les signaux » et « Les Signal Forms ») :
+- **`TodoService`** : la liste reste un `signal<Todo[]>` privé, modifié seulement via `update()`. Le service expose en plus `todosSignal = this.todos.asReadonly()`, pour que les composants lisent la liste sans pouvoir la modifier. `getTodos()` est conservé (utilisé par les tests).
+- **`TodoComponent` et `DayTodoComponent`** :
+  - `name` / `content` (variables simples + `[(ngModel)]`) → un signal `newTodo = signal({ name: '', content: '' })` et son FieldTree `todoForm = form(this.newTodo)` (`@angular/forms/signals`).
+  - Le getter `todos` → `todos = this.todoService.todosSignal`, lu dans le template avec `todos()` (`@if` / `@for`).
+  - Template : `<form [formRoot]="todoForm" (submit)="addTodo()">` et `<input [formField]="todoForm.name">` / `[formField]="todoForm.content"`.
+  - Après l'ajout : `this.newTodo.set(...)` remet la valeur à vide et `this.todoForm().reset()` remet l'état du formulaire.
+  - `FormsModule` est remplacé par `FormRoot` et `FormField` dans `imports`.
+- Vérifié : `ng build` passe et les 5 tests passent (`ng test`).
+
 ## Adab — Embauches *(ex. 9)* — après Ben Fraj
 - [ ] **E1** — `CvService` détient la liste des CVs (`getCvs`, `getCvById`) ; `CvComponent` l'utilise *(exception : 1 ligne dans `cv.component.ts`)*
 - [ ] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
