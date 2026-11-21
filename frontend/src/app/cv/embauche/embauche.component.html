@@ -1,1 +1,10 @@
-<p>embauche works!</p>
+@if (embauchees().length) {
+<section class="card mt-3">
+  <div class="card-header">CVs embauchés</div>
+  <ul class="list-group list-group-flush">
+    @for (cv of embauchees(); track cv.id) {
+    <li class="list-group-item">{{ cv.firstname }} {{ cv.name }} — {{ cv.job }}</li>
+    }
+  </ul>
+</section>
+}

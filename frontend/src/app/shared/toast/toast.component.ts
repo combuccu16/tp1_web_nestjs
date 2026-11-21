@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ToastService } from './toast.service';
 
 @Component({
   imports: [],
@@ -6,4 +7,11 @@ import { Component } from '@angular/core';
   styleUrl: './toast.component.css',
   templateUrl: './toast.component.html',
 })
-export class ToastComponent {}
+export class ToastComponent {
+  private readonly toastService = inject(ToastService);
+  protected readonly toasts = this.toastService.toasts;
+
+  protected dismiss(id: number): void {
+    this.toastService.dismiss(id);
+  }
+}

@@ -64,30 +64,30 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 **Fichiers :** configuration du projet Angular, `src/app/app.*`, `src/app/layout/**`, `src/app/home/**`.
 
 ## Amine Brahim — Couleur du Div + directive arc-en-ciel *(ex. 1 et 6)*
-- [ ] **M1** — `ColorComponent` : un `div` + un `input` texte
-- [ ] **M2** — La couleur tapée devient le fond du div (`#ref` + `[style.backgroundColor]`)
-- [ ] **M3** — Bouton qui remet la couleur par défaut (constante)
-- [ ] **M4** — `RainbowDirective` : `@HostBinding` sur `style.color` et `style.borderColor`
-- [ ] **M5** — Méthode `randomColor()` + `@HostListener('keyup')`
-- [ ] **M6** — Sélecteur `input[appRainbow], textarea[appRainbow]` : la directive ne s'instancie pas ailleurs
-- [ ] **M7** — Démonstration sur l'input du `ColorComponent`
+- [x] **M1** — `ColorComponent` : un `div` + un `input` texte
+- [x] **M2** — La couleur tapée devient le fond du div (`#ref` + `[style.backgroundColor]`)
+- [x] **M3** — Bouton qui remet la couleur par défaut (constante)
+- [x] **M4** — `RainbowDirective` : `@HostBinding` sur `style.color` et `style.borderColor`
+- [x] **M5** — Méthode `randomColor()` + `@HostListener('keyup')`
+- [x] **M6** — Sélecteur `input[appRainbow], textarea[appRainbow]` : la directive ne s'instancie pas ailleurs
+- [x] **M7** — Démonstration sur l'input du `ColorComponent`
 
 **Fichiers :** `src/app/color/**`, `src/app/rainbow/**`.
 
 ## Alaa — Calculateur TTC + Mini Word *(ex. 2 et 4)*
-- [ ] **C1** — `TtcComponent` : prix HT (0), quantité (1), TVA (18) modifiables
-- [ ] **C2** — Prix unitaire TTC, remise et prix total TTC calculés en direct (getter / `computed`), pipe `currency`
-- [ ] **C3** — Remise 20 % entre 10 et 15 pièces, 30 % au-delà de 15 (seuils en constantes ; trancher le cas « 10 »)
-- [ ] **C4** — `MiniWordComponent` : `input color`, `input number`, `select` de polices
-- [ ] **C5** — Style du paragraphe via **un seul** `[ngStyle]` (couleur, `font-size.px`, `font-family`)
+- [x] **C1** — `TtcComponent` : prix HT (0), quantité (1), TVA (18) modifiables
+- [x] **C2** — Prix unitaire TTC, remise et prix total TTC calculés en direct (getter / `computed`), pipe `currency`
+- [x] **C3** — Remise 20 % entre 10 et 15 pièces, 30 % au-delà de 15 (seuils en constantes ; trancher le cas « 10 »)
+- [x] **C4** — `MiniWordComponent` : `input color`, `input number`, `select` de polices
+- [x] **C5** — Style du paragraphe via **un seul** `[ngStyle]` (couleur, `font-size.px`, `font-family`)
 
 **Fichiers :** `src/app/ttc/**`, `src/app/mini-word/**`.
 
 ## Ben Fraj — CvTech : liste, détail, couleurs alternées *(ex. 3, 5 + carte de l'ex. 10)*
-- [ ] **B1** — Modèle `Cv` (id, name, firstname, age, cin, job, path)
-- [ ] **B2** — `CvComponent` (état : `cvs` + `selectedCv`) → `CvListComponent` → `CvItemComponent`, et `CvDetailComponent`
-- [ ] **B3** — Clic sur un CV → son détail s'affiche (`input` / `output`, état uniquement dans le parent)
-- [ ] **B4** — Couleurs alternées dans la liste (`$odd` dans `@for`)
+- [x] **B1** — Modèle `Cv` (id, name, firstname, age, cin, job, path)
+- [x] **B2** — `CvComponent` (état : `cvs` + `selectedCv`) → `CvListComponent` → `CvItemComponent`, et `CvDetailComponent`
+- [x] **B3** — Clic sur un CV → son détail s'affiche (`input` / `output`, état uniquement dans le parent)
+- [x] **B4** — Couleurs alternées dans la liste (`$odd` dans `@for`)
 - [ ] **B5** — Carte de détail de la capture, avec les boutons « embaucher » et « détails » ; images dans `public/images/`
 
 **Fichiers :** `src/app/cv/model/**`, `src/app/cv/{cv,cv-list,cv-item,cv-detail}/**`, `public/images/**`.
@@ -113,11 +113,11 @@ Le Todo utilisait encore des variables classiques et `[(ngModel)]`. Il utilise m
 - Vérifié : `ng build` passe et les 5 tests passent (`ng test`).
 
 ## Adab — Embauches *(ex. 9)* — après Ben Fraj
-- [ ] **E1** — `CvService` détient la liste des CVs (`getCvs`, `getCvById`) ; `CvComponent` l'utilise *(exception : 1 ligne dans `cv.component.ts`)*
-- [ ] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
-- [ ] **E3** — `EmbaucheComponent` : liste des embauchés, visible seulement si non vide *(exception : `<app-embauche />` dans `cv.component.html`)*
-- [ ] **E4** — Brancher le bouton « embaucher » de la carte de détail *(exception : `cv-detail.component.*`)*
-- [ ] **E5** — Toasts maison (`ToastService` + `ToastComponent`, styles Bootstrap) : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
+- [x] **E1** — `CvService` détient la liste des CVs (`getCvs`, `getCvById`) ; `CvComponent` l'utilise *(exception : 1 ligne dans `cv.component.ts`)*
+- [x] **E2** — `EmbaucheService` : `embaucher(cv)` sans doublon, `getEmbauchees()`
+- [x] **E3** — `EmbaucheComponent` : liste des embauchés, visible seulement si non vide *(exception : `<app-embauche />` dans `cv.component.html`)*
+- [x] **E4** — Brancher le bouton « embaucher » de la carte de détail *(exception : `cv-detail.component.*`)*
+- [x] **E5** — Toasts maison (`ToastService` + `ToastComponent`, styles Bootstrap) : « déjà embauché », et « budget dépassé » au-delà de 3 (constante dans le service)
 
 **Fichiers :** `src/app/cv/services/**`, `src/app/cv/embauche/**`, `src/app/shared/toast/**`.
 
@@ -130,8 +130,8 @@ npx ng serve          # http://localhost:4200   (ou, depuis la racine : npm run 
 ```
 
 ## Checklist finale Angular TP1 (équipe entière)
-- [ ] Les 10 exercices sont implémentés et accessibles depuis la navbar
-- [ ] `ng build` passe dans `frontend/` ; l'API NestJS compile et ses tests passent toujours
+- [x] Les 10 exercices sont implémentés et accessibles depuis la navbar
+- [x] `ng build` passe dans `frontend/` ; l'API NestJS compile et ses tests passent toujours
 - [ ] Chaque membre présente sa partie aux autres — **tout le monde sait défendre l'ensemble du projet**
 
 ---

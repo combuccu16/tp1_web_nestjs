@@ -1,0 +1,32 @@
+.mini-word {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 40rem;
+}
+
+.mini-word__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+}
+
+.mini-word__controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mini-word__controls input,
+.mini-word__controls select {
+  padding: 0.4rem 0.5rem;
+}
+
+.mini-word p {
+  min-height: 4rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}

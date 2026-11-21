@@ -1,1 +1,21 @@
-<p>color works!</p>
+<section class="color-demo">
+  <h1>Couleur du div</h1>
+  <label for="color-input" class="form-label">Couleur (nom, hexadécimal ou rgb)</label>
+  <input
+    #colorInput
+    id="color-input"
+    type="text"
+    class="form-control"
+    appRainbow
+    (input)="color = colorInput.value"
+    placeholder="Ex. blue ou #ff0000"
+  />
+  <div
+    class="color-preview"
+    [style.backgroundColor]="color"
+    aria-label="Aperçu de la couleur"
+  ></div>
+  <button type="button" class="btn btn-secondary" (click)="resetColor(colorInput)">
+    Réinitialiser
+  </button>
+</section>

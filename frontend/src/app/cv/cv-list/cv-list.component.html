@@ -1,1 +1,10 @@
-<p>cv-list works!</p>
+<div class="cv-list">
+  @for (cv of cvs(); track cv.id; let odd = $odd) {
+  <app-cv-item
+    [cv]="cv"
+    [class.odd]="odd"
+    [class.active]="cv.id === selectedCv()?.id"
+    (selected)="cvSelected.emit($event)"
+  />
+  }
+</div>

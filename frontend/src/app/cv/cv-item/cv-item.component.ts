@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import { Cv } from '../model/cv';
 
 @Component({
   imports: [],
@@ -6,4 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './cv-item.component.css',
   templateUrl: './cv-item.component.html',
 })
-export class CvItemComponent {}
+export class CvItemComponent {
+  readonly cv = input.required<Cv>();
+  readonly selected = output<Cv>();
+}
