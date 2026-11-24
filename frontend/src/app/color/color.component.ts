@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RainbowDirective } from '../rainbow/rainbow.directive';
 
 @Component({
-  imports: [RainbowDirective],
+  imports: [FormsModule, RainbowDirective],
   selector: 'app-color',
   styleUrl: './color.component.css',
   templateUrl: './color.component.html',
 })
 export class ColorComponent {
-  readonly DEFAULT_COLOR = '#ffffff';
-  color = this.DEFAULT_COLOR;
+  readonly DEFAULT_COLOR = 'red';
+  color = signal(this.DEFAULT_COLOR);
 
-  resetColor(input: HTMLInputElement): void {
-    this.color = this.DEFAULT_COLOR;
-    input.value = '';
+  resetColor(): void {
+    this.color.set(this.DEFAULT_COLOR);
   }
 }

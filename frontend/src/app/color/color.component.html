@@ -1,21 +1,23 @@
-<section class="color-demo">
-  <h1>Couleur du div</h1>
-  <label for="color-input" class="form-label">Couleur (nom, hexadécimal ou rgb)</label>
-  <input
-    #colorInput
-    id="color-input"
-    type="text"
-    class="form-control"
-    appRainbow
-    (input)="color = colorInput.value"
-    placeholder="Ex. blue ou #ff0000"
-  />
-  <div
-    class="color-preview"
-    [style.backgroundColor]="color"
-    aria-label="Aperçu de la couleur"
-  ></div>
-  <button type="button" class="btn btn-secondary" (click)="resetColor(colorInput)">
-    Réinitialiser
-  </button>
-</section>
+<div class="container py-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <label class="form-label" for="color-input">Couleur</label>
+      <input
+        appRainbow
+        [(ngModel)]="color"
+        id="color-input"
+        class="form-control mb-3 border-4 shadow-none"
+        type="text"
+      />
+
+      <div
+        class="ratio p-5 border rounded mb-3"
+        [style.backgroundColor]="color()"
+      ></div>
+
+      <button type="button" class="btn btn-primary" (click)="resetColor()">
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+</div>
