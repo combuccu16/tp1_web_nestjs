@@ -23,7 +23,7 @@ export const NAV_LINKS: readonly NavLink[] = [
     path: '/word',
     label: 'Mini word',
     exercise: 'Ex. 4',
-    description: 'Mise en forme avec ngStyle',
+    description: 'Mise en forme avec des style bindings',
   },
   {
     path: '/color',

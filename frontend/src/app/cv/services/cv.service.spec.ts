@@ -46,7 +46,9 @@ describe('CvService (API + repli sur les FakeCvs)', () => {
 
   it('falls back to the matching FakeCv for the details too', async () => {
     const cv = firstValueFrom(service.getCvById(2));
-    httpMock.expectOne(`${API_ENDPOINTS.personnes}/2`).flush(null, { status: 404, statusText: 'Not Found' });
+    httpMock
+      .expectOne(`${API_ENDPOINTS.personnes}/2`)
+      .flush(null, { status: 404, statusText: 'Not Found' });
 
     expect((await cv)?.firstname).toBe('Youssef');
     expect(toastService.toasts()).toHaveLength(1);

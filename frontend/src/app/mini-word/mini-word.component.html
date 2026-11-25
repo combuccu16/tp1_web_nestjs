@@ -4,17 +4,17 @@
   <div class="mini-word__controls">
     <label>
       Color
-      <input type="color" name="color" [(ngModel)]="color" />
+      <input type="color" [formField]="styleForm.color" />
     </label>
 
     <label>
       Size (px)
-      <input type="number" min="1" name="size" [(ngModel)]="size" />
+      <input type="number" [formField]="styleForm.size" />
     </label>
 
     <label>
       Font
-      <select name="font" [(ngModel)]="font">
+      <select [formField]="styleForm.font">
         @for (fontName of fonts; track fontName) {
           <option [value]="fontName">{{ fontName }}</option>
         }
@@ -22,7 +22,11 @@
     </label>
   </div>
 
-  <p [ngStyle]="{ color: color, 'font-size.px': size, 'font-family': font }">
+  <p
+    [style.color]="style().color"
+    [style.font-size.px]="style().size"
+    [style.font-family]="style().font"
+  >
     CvTech — Mini Word
   </p>
 </section>

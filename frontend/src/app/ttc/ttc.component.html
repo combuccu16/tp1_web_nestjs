@@ -3,31 +3,35 @@
 
   <label>
     Prix HT
-    <input type="number" min="0" name="prixHT" [(ngModel)]="prixHT" />
+    <input type="number" [formField]="ttcForm.prixHT" />
   </label>
 
   <label>
     Quantité
-    <input type="number" min="0" name="quantite" [(ngModel)]="quantite" />
+    <input type="number" [formField]="ttcForm.quantite" />
   </label>
 
   <label>
     TVA (%)
-    <input type="number" min="0" name="tva" [(ngModel)]="tva" />
+    <input type="number" [formField]="ttcForm.tva" />
   </label>
+
+  @if (ttcForm().invalid()) {
+    <p class="text-danger mb-0" role="alert">{{ ttcForm().errorSummary()[0].message }}</p>
+  }
 
   <div class="ttc__results">
     <div class="ttc__result">
       <span>Prix unitaire TTC</span>
-      <strong>{{ prixUnitaireTtc | currency }}</strong>
+      <strong>{{ prixUnitaireTtc() | currency }}</strong>
     </div>
     <div class="ttc__result">
-      <span>Remise ({{ tauxRemise * 100 }} %)</span>
-      <strong>{{ remise | currency }}</strong>
+      <span>Remise ({{ tauxRemise() * 100 }} %)</span>
+      <strong>{{ remise() | currency }}</strong>
     </div>
     <div class="ttc__result ttc__result--total">
       <span>Prix total TTC</span>
-      <strong>{{ prixTotalTtc | currency }}</strong>
+      <strong>{{ prixTotalTtc() | currency }}</strong>
     </div>
   </div>
 </div>

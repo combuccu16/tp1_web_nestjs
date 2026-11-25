@@ -1,9 +1,9 @@
-import { Injectable, signal } from '@angular/core';
+import { Service, signal } from '@angular/core';
 import { Cv } from '../model/cv';
 
 export const MAX_EMBAUCHES = 3;
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class EmbaucheService {
   private readonly embauchees = signal<Cv[]>([]);
   readonly embaucheesState = this.embauchees.asReadonly();

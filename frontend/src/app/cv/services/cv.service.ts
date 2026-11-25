@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 import { API_ENDPOINTS } from '../../config/api.config';
 import { ToastService } from '../../shared/toast/toast.service';
@@ -41,7 +41,7 @@ function toCv(cv: ApiCv): Cv {
   );
 }
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CvService {
   private readonly http = inject(HttpClient);
   private readonly toastService = inject(ToastService);

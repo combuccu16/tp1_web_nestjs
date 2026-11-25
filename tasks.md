@@ -15,7 +15,7 @@
 | **1** | 2 | Div dont la couleur suit un input + bouton « couleur par défaut » | **Amine Brahim** |
 | **2** | 3 | Calculateur de prix TTC avec remises | **Alaa** |
 | **3** | 4 | CvTech : liste des CVs + détail au clic (gestion de l'état) | **Ben Fraj** |
-| **4** | 5 | Mini Word avec `ngStyle` (couleur, taille, police) | **Alaa** |
+| **4** | 5 | Mini Word : couleur, taille, police (le sujet cite `ngStyle` ; on utilise `[style.x]`, recommandé en Angular 22) | **Alaa** |
 | **5** | 6 | Liste des CVs aux couleurs alternées | **Ben Fraj** |
 | **6** | 7 | Directive « écriture arc-en-ciel » (`HostBinding` / `HostListener`) | **Amine Brahim** |
 | **7** | 8 | Service de Todo + modèle + composant | **Dalcon** |
@@ -63,8 +63,8 @@ Seul **Adab** doit attendre quelqu'un (Ben Fraj) : son exercice transforme la li
 ### 1.4 Conventions Angular du projet
 
 - Composants **standalone** (pas de `NgModule`), syntaxe de contrôle **`@if` / `@for`** (avec `track`).
-- Communication parent ↔ enfant : `input()` / `output()` (ou `@Input()` / `@Output()` — choisir l'un et s'y tenir dans toute l'équipe).
-- État partagé entre composants non liés : un **service** `providedIn: 'root'`.
+- Communication parent ↔ enfant : `input()` / `output()` (pas de `@Input()` / `@Output()`).
+- État partagé entre composants non liés : un **service** `@Service()` (singleton global, Angular 22) dont l'état est un **signal**.
 - Un dossier par fonctionnalité : `src/app/<feature>/…`. Les modèles dans `src/app/<feature>/model/`.
 
 ---
@@ -95,7 +95,7 @@ Créer le projet et **tout ce qui est partagé**, une seule fois, pour que les c
   | `todo/todo/` · `todo/services/todo.service.ts` · `todo/week-todo/` · `todo/day-todo/` | Dalcon |
   | `layout/navbar/` · `layout/footer/` · `layout/nav-links.ts` · `home/` | Akram |
 
-  Les services utilisent `@Injectable({ providedIn: 'root' })` (syntaxe du cours). Angular 22 génère par défaut le nouveau `@Service()`, équivalent (singleton global) : à savoir citer.
+  Les services utilisent `@Service()` (Angular 22), équivalent moderne de `@Injectable({ providedIn: 'root' })` (singleton global) : savoir citer les deux.
 - [x] **A4 — Routes** (`app.routes.ts`) — chaque route a aussi un `title` (titre de l'onglet) :
 
   | Chemin | Composant | Lien de la navbar |
@@ -143,9 +143,9 @@ Composant standalone vs `NgModule`, rôle de `app.config.ts` (providers globaux)
 ### Ex. 6 — `RainbowDirective` (diapo 7)
 
 - [x] **M4** — Compléter la directive `rainbow/rainbow.directive.ts` (squelette créé par Akram).
-- [x] **M5** — `@HostBinding('style.color')` et `@HostBinding('style.borderColor')` sur deux propriétés de la directive.
+- [x] **M5** — Objet `host` de `@Directive` : `'[style.color]': 'color()'` et `'[style.border-color]': 'borderColor()'`, liés à deux **signals** (plus de `@HostBinding`).
 - [x] **M6** — Une méthode privée `randomColor(): string` qui renvoie une couleur aléatoire (ex. `rgb(r, g, b)` avec 3 entiers entre 0 et 255).
-- [x] **M7** — `@HostListener('keyup')` : à chaque lettre tapée, la couleur du texte **et** de la bordure changent.
+- [x] **M7** — `'(keyup)': 'onKeyup()'` dans l'objet `host` : à chaque lettre tapée, la couleur du texte **et** de la bordure changent (plus de `@HostListener`).
 - [x] **M8** — « La directive ne doit pas s'instancier sur des balises où elle n'a pas de sens » → **restreindre le sélecteur** :
   ```ts
   @Directive({ selector: 'input[appRainbow], textarea[appRainbow]' })
@@ -170,7 +170,7 @@ Variable de référence `#nom`, property binding `[style.x]`, event binding `(cl
 
 ### Ex. 2 — `TtcComponent` (diapo 3)
 
-- [x] **C1** — Trois champs modifiables : **Prix HT** (défaut `0`), **Quantité** (défaut `1`), **TVA** en % (défaut `18`). Liaison bidirectionnelle `[(ngModel)]` (`FormsModule`) ou signals.
+- [x] **C1** — Trois champs modifiables : **Prix HT** (défaut `0`), **Quantité** (défaut `1`), **TVA** en % (défaut `18`). Valeurs dans un **signal**, liées par **Signal Forms** (`form()`, `[formField]`, `min()`), résultats en `computed()` (pas de `ngModel`).
 - [x] **C2** — Trois résultats affichés en direct (capture du sujet) :
 
   | Valeur | Formule |
@@ -191,9 +191,9 @@ Variable de référence `#nom`, property binding `[style.x]`, event binding `(cl
 ### Ex. 4 — `MiniWordComponent` (diapo 5)
 
 - [x] **C7** — Un paragraphe de texte + trois contrôles : `input type="color"`, `input type="number"` (taille en px), `select` de polices.
-- [x] **C8** — Tout le style du paragraphe passe par **un seul `[ngStyle]`** :
+- [x] **C8** — Valeurs dans un signal + Signal Forms ; le style du paragraphe passe par des **style bindings** (`ngStyle` est déconseillé en Angular 22) :
   ```html
-  <p [ngStyle]="{ color: color, 'font-size.px': size, 'font-family': font }">…</p>
+  <p [style.color]="style().color" [style.font-size.px]="style().size" [style.font-family]="style().font">…</p>
   ```
 - [x] **C9** — La liste des polices est un **tableau** dans le composant (`['Arial', 'Verdana', 'Times New Roman', 'Courier New', …]`), affichée avec `@for`.
 - [x] **C10** — Valeurs par défaut cohérentes avec la capture (couleur, taille 30, police Arial).
@@ -207,7 +207,7 @@ Variable de référence `#nom`, property binding `[style.x]`, event binding `(cl
 - changer couleur / taille / police modifie immédiatement le paragraphe.
 
 ### À préparer pour la validation
-Two-way binding `[(ngModel)]` = `[ngModel]` + `(ngModelChange)`, valeurs dérivées (getter / `computed`), pipes (`currency`), `ngStyle` vs `[style.x]` (plusieurs styles d'un coup vs un seul), unités `'font-size.px'`.
+Signal Forms (`form()`, `[formField]`, validateurs), signals et valeurs dérivées `computed()`, pipes (`currency`), `[style.x]` et unités `'font-size.px'` — et pourquoi `ngModel` / `ngStyle` sont remplacés en Angular 22.
 
 ---
 
@@ -274,7 +274,7 @@ Pourquoi l'état est dans le parent (**une seule source de vérité**), flux de 
 ### Ex. 7 — Service, modèle, composant (diapo 8)
 
 - [x] **D1 — Modèle** `src/app/todo/model/todo.ts` : `Todo { name: string; content: string }` (+ un `id` si besoin pour la suppression et `track`).
-- [x] **D2 — `TodoService`** (`@Injectable({ providedIn: 'root' })`) :
+- [x] **D2 — `TodoService`** (`@Service()`, état dans un signal) :
 
   | Méthode | Rôle |
   | --- | --- |
@@ -313,10 +313,10 @@ Injection de dépendances, `providedIn: 'root'` (singleton) vs `providers: [...]
 
 ## 7. Adab — CvService, EmbaucheService, liste des embauchés *(ex. 9)* — **après Ben Fraj**
 
-- [ ] **E1 — `CvService`** (`providedIn: 'root'`) : il **devient le propriétaire de la liste des CVs**.
+- [ ] **E1 — `CvService`** (`@Service()`) : il **devient le propriétaire de la liste des CVs**.
   - `getCvs(): Cv[]`, `getCvById(id: number): Cv | undefined`.
   - **Exception** (après le merge de Ben Fraj) : dans `cv.component.ts`, remplacer le tableau en dur par `this.cvService.getCvs()`. Une seule ligne, prévenir Ben Fraj.
-- [ ] **E2 — `EmbaucheService`** (`providedIn: 'root'`) :
+- [ ] **E2 — `EmbaucheService`** (`@Service()`) :
   - liste **privée** des CVs embauchés ;
   - `getEmbauchees(): Cv[]` ;
   - `embaucher(cv: Cv): boolean` → `false` si le CV est **déjà** embauché (pas de doublon), sinon l'ajoute et renvoie `true`.

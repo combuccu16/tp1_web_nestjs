@@ -1,20 +1,20 @@
-import { Directive, HostBinding, HostListener } from '@angular/core';
+import { Directive, signal } from '@angular/core';
 
 @Directive({
   selector: 'input[appRainbow], textarea[appRainbow]',
-  standalone: true,
+  host: {
+    '[style.color]': 'color()',
+    '[style.border-color]': 'borderColor()',
+    '(keyup)': 'onKeyup()',
+  },
 })
 export class RainbowDirective {
-  @HostBinding('style.color')
-  color = 'black';
+  protected readonly color = signal('black');
+  protected readonly borderColor = signal('black');
 
-  @HostBinding('style.borderColor')
-  borderColor = 'black';
-
-  @HostListener('keyup')
-  onKeyup(): void {
-    this.color = this.randomColor();
-    this.borderColor = this.randomColor();
+  protected onKeyup(): void {
+    this.color.set(this.randomColor());
+    this.borderColor.set(this.randomColor());
   }
 
   private randomColor(): string {

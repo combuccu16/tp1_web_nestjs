@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Service, signal } from '@angular/core';
 import { Todo } from '../model/todo';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class TodoService {
   private readonly todos = signal<Todo[]>([]);
   /** Version en lecture seule du signal : seul le service peut modifier la liste. */

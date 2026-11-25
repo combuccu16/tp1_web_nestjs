@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RainbowDirective } from '../rainbow/rainbow.directive';
+
+export const DEFAULT_COLOR = '#ffffff';
 
 @Component({
   imports: [RainbowDirective],
@@ -8,11 +10,10 @@ import { RainbowDirective } from '../rainbow/rainbow.directive';
   templateUrl: './color.component.html',
 })
 export class ColorComponent {
-  readonly DEFAULT_COLOR = '#ffffff';
-  color = this.DEFAULT_COLOR;
+  protected readonly color = signal(DEFAULT_COLOR);
 
-  resetColor(input: HTMLInputElement): void {
-    this.color = this.DEFAULT_COLOR;
+  protected resetColor(input: HTMLInputElement): void {
+    this.color.set(DEFAULT_COLOR);
     input.value = '';
   }
 }

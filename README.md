@@ -114,7 +114,7 @@ Le front de la plateforme de recrutement dont l'API a été faite au TP2 NestJS.
 | 1 | Div dont la couleur suit un input + bouton de réinitialisation | Amine Brahim |
 | 2 | Calculateur de prix TTC avec remises (20 % / 30 %) | Alaa |
 | 3 | CvTech : liste des CVs + détail au clic (gestion de l'état) | Ben Fraj |
-| 4 | Mini Word avec `ngStyle` (couleur, taille, police) | Alaa |
+| 4 | Mini Word : couleur, taille, police (Signal Forms + `[style.x]`) | Alaa |
 | 5 | Liste des CVs aux couleurs alternées | Ben Fraj |
 | 6 | Directive « écriture arc-en-ciel » (`HostBinding`, `keyup`) | Amine Brahim |
 | 7 | Service de Todo + modèle + composant | Dalcon |
@@ -151,8 +151,8 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 - [x] **M1** — `ColorComponent` : un `div` + un `input` texte
 - [x] **M2** — La couleur tapée devient le fond du div (`#ref` + `[style.backgroundColor]`)
 - [x] **M3** — Bouton qui remet la couleur par défaut (constante)
-- [x] **M4** — `RainbowDirective` : `@HostBinding` sur `style.color` et `style.borderColor`
-- [x] **M5** — Méthode `randomColor()` + `@HostListener('keyup')`
+- [x] **M4** — `RainbowDirective` : objet `host` (`'[style.color]'`, `'[style.border-color]'`) lié à deux **signals**
+- [x] **M5** — Méthode `randomColor()` + `'(keyup)'` dans l'objet `host` (plus de `@HostBinding` / `@HostListener`, déconseillés en Angular 22)
 - [x] **M6** — Sélecteur `input[appRainbow], textarea[appRainbow]` : la directive ne s'instancie pas ailleurs
 - [x] **M7** — Démonstration sur l'input du `ColorComponent`
 
@@ -163,7 +163,7 @@ Akram (étape 0) ─┬─► Amine  (ex. 1, 6)
 - [x] **C2** — Prix unitaire TTC, remise et prix total TTC calculés en direct (getter / `computed`), pipe `currency`
 - [x] **C3** — Remise 20 % entre 10 et 15 pièces, 30 % au-delà de 15 (seuils en constantes ; trancher le cas « 10 »)
 - [x] **C4** — `MiniWordComponent` : `input color`, `input number`, `select` de polices
-- [x] **C5** — Style du paragraphe via **un seul** `[ngStyle]` (couleur, `font-size.px`, `font-family`)
+- [x] **C5** — Valeurs dans un signal + Signal Forms (`[formField]`) ; style du paragraphe via `[style.color]`, `[style.font-size.px]`, `[style.font-family]` (`ngStyle` est déconseillé en Angular 22)
 
 **Fichiers :** `src/app/ttc/**`, `src/app/mini-word/**`.
 
