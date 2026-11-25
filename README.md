@@ -72,7 +72,7 @@ Akram (config HTTP, routes, navbar) ─┬─► Adab (CvService API) ─► Ben
 - [x] **E2** — En cas d'erreur : `catchError` → **FakeCvs** + toast d'erreur (`ToastService`)
 - [x] **E3** — `getCvById(id)` : même principe (repli sur le FakeCv correspondant)
 - [x] **E4** — `deleteCv(id)` : `DELETE /personnes/:id` (le token est ajouté par l'intercepteur)
-- [x] **E5** — `CvComponent` lit la liste avec `toSignal(...)`
+- [x] **E5** — `CvComponent` lit la liste avec `toSignal(...)` *(exception : une ligne dans `cv/cv/cv.component.ts` + son test, fichiers de Ben Fraj, car `getCvs()` renvoie maintenant un `Observable`)*
 
 ## Alaa — Formulaire de login et validateur *(ex. 4 et 5)*
 - [x] **C1** — `LoginComponent` en **Signal Forms** : `form()`, `[formRoot]`, `[formField]`
