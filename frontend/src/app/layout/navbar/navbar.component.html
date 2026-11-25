@@ -27,6 +27,15 @@
     </ul>
 
     <div class="d-flex gap-2">
+      @if (isAuthenticated()) {
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="logout()">
+          Logout
+        </button>
+      } @else {
+        <a class="btn btn-sm btn-outline-primary" routerLink="/login" routerLinkActive="active"
+          >Login</a
+        >
+      }
       @for (language of languages; track language) {
         <button type="button" class="btn btn-sm btn-outline-secondary" disabled>
           {{ language }}

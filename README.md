@@ -4,7 +4,8 @@ Projet réalisé en équipe dans le cadre des TP NestJS et Angular RT4 – anné
 Sujets par **Aymen Sellaouti** :
 - NestJS TP1 → [topic.md](./topic.md) (terminé)
 - NestJS TP2 → [tasks2.md](./tasks2.md) (terminé)
-- **Angular TP1 → [tasks.md](./tasks.md) (en cours, résumé ci-dessous)**
+- Angular TP1 → [tasks.md](./tasks.md)
+- **Angular TP2 → PDF « Angular TP 2 RT4 2026 2027 » (résumé et répartition ci-dessous)**
 
 ---
 
@@ -17,7 +18,90 @@ Sujets par **Aymen Sellaouti** :
 
 ---
 
-# Angular TP1 — front « CvTech » *(en cours)*
+# Angular TP2 — routage, API, formulaire de login, authentification
+
+CvTech récupère maintenant ses CVs depuis une vraie API (LoopBack, Swagger : <https://apilb.tridevs.net/explorer/>), affiche une page de détail, et la suppression passe par un login (token JWT-like stocké dans le `localStorage`, ajouté par un intercepteur, routes protégées par des guards).
+
+**Style de code : Angular 22 moderne**, vérifié avec le serveur MCP Angular (`get_best_practices`, documentation officielle) : composants standalone, `inject()`, `input()`, signals, **Signal Forms** (`@angular/forms/signals`), intercepteur et guards **fonctionnels**, routes **lazy-loaded** (`loadComponent`), `rxResource`, `withComponentInputBinding()`. Les nouveaux services utilisent `@Service()` (Angular 22).
+
+## Sujet (résumé du PDF)
+
+| Ex. | Diapo | Exercice | Responsable |
+| --- | --- | --- | --- |
+| 1 | 2 | Composant Header affichant tous les liens ; un clic affiche le composant associé | Akram |
+| 2 | 3 | Page détail d'un CV, bouton « Détails » dans chaque CV, bouton **Delete** qui supprime et renvoie à la liste | Ben Fraj |
+| 3 | 4 | CVs récupérés via l'API ; en cas d'erreur : FakeCvs + toast d'erreur ; idem pour le détail | Adab |
+| 4 | 5–7 | Formulaire de login (email, password, envoyer) : bordure rouge si invalide et touché, champs obligatoires, password ≥ 4, bouton désactivé via `[disabled]`, message d'erreur sous l'email, zone d'erreur | Alaa |
+| 5 | 8 | Validateur personnalisé refusant une liste d'emails blacklistés | Alaa |
+| 6 | 12 | Login via `POST /api/Users/login`, token stocké dans le `localStorage`, utilisé pour la suppression | Amine Brahim |
+| 7 | 13 | Guards : sécuriser les routes ; un utilisateur connecté ne peut pas ouvrir la page de login | Amine Brahim |
+| 8 | 14 | Intercepteur qui ajoute le token aux requêtes si l'utilisateur est authentifié | Dalcon |
+
+## Ordre et fichiers (un fichier = un propriétaire)
+
+```
+Akram (config HTTP, routes, navbar) ─┬─► Adab (CvService API) ─► Ben Fraj (page détail + delete)
+                                     ├─► Amine (AuthService + guards) ─┬─► Alaa (formulaire de login)
+                                     │                                 └─► Dalcon (intercepteur)
+```
+
+| Fichier(s) dans `frontend/src/app/` | Propriétaire |
+| --- | --- |
+| `app.config.ts`, `app.routes.ts`, `config/api.config.ts`, `layout/**`, `angular.json` | Akram |
+| `cv/services/cv.service.ts` (+ spec) | Adab |
+| `cv/cv-details-page/**`, `cv/cv-detail/*` (bouton Détails), `cv/cv/*` | Ben Fraj |
+| `auth/login/**`, `auth/validators/**` | Alaa |
+| `auth/services/**`, `auth/guards/**`, `auth/auth.spec.ts` | Amine Brahim |
+| `auth/interceptors/**` | Dalcon |
+
+## Akram — Header, routes et configuration *(ex. 1)*
+- [x] **A1** — `config/api.config.ts` : URL de l'API en **une seule** constante (`API_URL`, `API_ENDPOINTS.personnes`, `API_ENDPOINTS.login`)
+- [x] **A2** — `app.config.ts` : `provideHttpClient(withInterceptors([authInterceptor]))` et `provideRouter(routes, withComponentInputBinding())` (les paramètres de route arrivent dans des `input()`)
+- [x] **A3** — Routes `cv/:id` (avec `authGuard`) et `login` (avec `guestGuard`) en **lazy loading** (`loadComponent`)
+- [x] **A4** — Header (`NavbarComponent`) : tous les liens (ex. 1, déjà en place depuis le TP1) + bouton **Login** si déconnecté, **Logout** si connecté
+- [x] **A5** — Budget du bundle initial relevé à 700 kB (Bootstrap + HttpClient)
+
+## Ben Fraj — Page détail et suppression *(ex. 2)*
+- [x] **B1** — `CvDetailsPageComponent` sur `cv/:id` : l'`id` arrive par `input.required({ transform: numberAttribute })`
+- [x] **B2** — Chargement du CV avec `rxResource` (états *chargement* / *trouvé* / *introuvable*)
+- [x] **B3** — Bouton **Détails** dans la carte d'un CV → `routerLink` vers `/cv/:id`
+- [x] **B4** — Bouton **Delete** : `CvService.deleteCv(id)` → toast de succès et retour à `/cv` ; toast d'erreur si la suppression échoue
+
+## Adab — CVs depuis l'API *(ex. 3)*
+- [x] **E1** — `CvService.getCvs()` : `GET /personnes`, conversion vers le modèle `Cv` (`cin` en texte, images inconnues remplacées par l'image par défaut)
+- [x] **E2** — En cas d'erreur : `catchError` → **FakeCvs** + toast d'erreur (`ToastService`)
+- [x] **E3** — `getCvById(id)` : même principe (repli sur le FakeCv correspondant)
+- [x] **E4** — `deleteCv(id)` : `DELETE /personnes/:id` (le token est ajouté par l'intercepteur)
+- [x] **E5** — `CvComponent` lit la liste avec `toSignal(...)`
+
+## Alaa — Formulaire de login et validateur *(ex. 4 et 5)*
+- [x] **C1** — `LoginComponent` en **Signal Forms** : `form()`, `[formRoot]`, `[formField]`
+- [x] **C2** — Règles : `required` (email, password), `email`, `minLength(password, 4)`
+- [x] **C3** — Bordure rouge (`is-invalid`) seulement si le champ est invalide **et** touché ou modifié
+- [x] **C4** — Message d'erreur sous l'email (et le password) ; zone d'erreur en haut si le login échoue
+- [x] **C5** — Bouton **Envoyer** : `[disabled]="loginForm().invalid() || sending()"`
+- [x] **C6** — Validateur personnalisé `blacklistedEmail()` (`validate()`), liste `BLACKLISTED_EMAILS`
+- [x] **C7** — Après login : redirection vers `returnUrl` (page demandée avant le guard) ou `/cv`
+
+## Amine Brahim — Login API et guards *(ex. 6 et 7)*
+- [x] **M1** — `AuthService.login()` : `POST /Users/login`, le token (`id` de la réponse) est stocké dans le `localStorage`
+- [x] **M2** — État de connexion en signals : `token`, `isAuthenticated` (`computed`) ; `logout()` efface le token
+- [x] **M3** — `authGuard` (`CanActivateFn`) : page détail réservée aux connectés, sinon redirection `/login?returnUrl=…`
+- [x] **M4** — `guestGuard` : un utilisateur connecté qui ouvre `/login` est renvoyé vers `/cv`
+
+## Dalcon — Intercepteur *(ex. 8)*
+- [x] **D1** — `authInterceptor` (`HttpInterceptorFn`) : si un token existe **et** que la requête vise l'API, clone la requête avec le header `Authorization` (`req.clone`, `HttpHeaders` immuables)
+- [x] **D2** — Réponse **401** → `logout()` (token expiré ou invalide)
+
+## Tests
+
+`npm test` dans `frontend/` : 28 tests (dont repli sur les FakeCvs, intercepteur, guards, validation du formulaire, validateur blacklist). Vérifié aussi dans le navigateur contre la vraie API.
+
+> **Pour tester la suppression**, il faut un compte valide sur l'API de l'enseignant (`POST /api/Users/login`) : la suppression agit sur des données **partagées** par toute la promo.
+
+---
+
+# Angular TP1 — front « CvTech » *(terminé)*
 
 Le front de la plateforme de recrutement dont l'API a été faite au TP2 NestJS. L'application Angular est créée dans **`frontend/`** ; dans ce TP les données restent en mémoire (pas encore d'appels à l'API).
 **Détail de chaque tâche, fichiers et critères « terminé quand » : [tasks.md](./tasks.md).**

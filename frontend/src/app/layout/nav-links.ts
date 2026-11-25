@@ -34,4 +34,4 @@ export const NAV_LINKS: readonly NavLink[] = [
   { path: '/ttc', label: 'TTC', exercise: 'Ex. 2', description: 'Calculateur de prix TTC' },
 ];
 
-export const UPCOMING_LINKS: readonly string[] = ['Add Cv', 'Rxjs', 'Logout'];
+export const UPCOMING_LINKS: readonly string[] = ['Add Cv', 'Rxjs'];

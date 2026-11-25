@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CvDetailComponent } from '../cv-detail/cv-detail.component';
 import { CvListComponent } from '../cv-list/cv-list.component';
 import { EmbaucheComponent } from '../embauche/embauche.component';
@@ -13,7 +14,7 @@ import { CvService } from '../services/cv.service';
 })
 export class CvComponent {
   private readonly cvService = inject(CvService);
-  protected readonly cvs = this.cvService.getCvs();
+  protected readonly cvs = toSignal(this.cvService.getCvs(), { initialValue: [] });
 
   protected readonly selectedCv = signal<Cv | undefined>(undefined);
 

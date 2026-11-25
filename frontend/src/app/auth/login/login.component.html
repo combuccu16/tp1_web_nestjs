@@ -1,0 +1,59 @@
+<section class="login mx-auto">
+  <h1 class="h3 mb-3">Login</h1>
+
+  @if (loginError(); as message) {
+    <div class="alert alert-danger" role="alert">{{ message }}</div>
+  }
+
+  <form [formRoot]="loginForm">
+    <div class="mb-3">
+      <label class="form-label" for="login-email">Email</label>
+      <input
+        id="login-email"
+        type="email"
+        class="form-control"
+        autocomplete="email"
+        [formField]="loginForm.email"
+        [class.is-invalid]="
+          loginForm.email().invalid() && (loginForm.email().touched() || loginForm.email().dirty())
+        "
+        aria-describedby="login-email-error"
+      />
+      @if (
+        loginForm.email().invalid() && (loginForm.email().touched() || loginForm.email().dirty())
+      ) {
+        <div id="login-email-error" class="invalid-feedback d-block">
+          {{ loginForm.email().errors()[0].message }}
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="login-password">Password</label>
+      <input
+        id="login-password"
+        type="password"
+        class="form-control"
+        autocomplete="current-password"
+        [formField]="loginForm.password"
+        [class.is-invalid]="
+          loginForm.password().invalid() &&
+          (loginForm.password().touched() || loginForm.password().dirty())
+        "
+        aria-describedby="login-password-error"
+      />
+      @if (
+        loginForm.password().invalid() &&
+        (loginForm.password().touched() || loginForm.password().dirty())
+      ) {
+        <div id="login-password-error" class="invalid-feedback d-block">
+          {{ loginForm.password().errors()[0].message }}
+        </div>
+      }
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="loginForm().invalid() || sending()">
+      Envoyer
+    </button>
+  </form>
+</section>

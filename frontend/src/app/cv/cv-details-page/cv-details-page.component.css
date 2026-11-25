@@ -1,0 +1,10 @@
+.details {
+  max-width: 720px;
+}
+
+.details__photo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+}

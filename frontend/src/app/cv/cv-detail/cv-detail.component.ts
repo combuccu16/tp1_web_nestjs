@@ -1,10 +1,11 @@
 import { Component, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Cv } from '../model/cv';
 import { EmbaucheService } from '../../cv/services/embauche.service';
 import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-cv-detail',
   styleUrl: './cv-detail.component.css',
   templateUrl: './cv-detail.component.html',

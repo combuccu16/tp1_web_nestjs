@@ -1,0 +1,36 @@
+<a class="btn btn-link px-0 mb-3" routerLink="/cv">&larr; Retour à la liste</a>
+
+@if (cvResource.isLoading()) {
+  <p class="text-body-secondary" role="status">Chargement du CV…</p>
+} @else if (cvResource.value(); as cv) {
+  <article class="card details">
+    <div class="card-body d-flex flex-column flex-sm-row gap-4">
+      <img
+        class="details__photo"
+        [src]="cv.path || 'images/cv.png'"
+        [alt]="cv.firstname + ' ' + cv.name"
+      />
+      <div class="flex-grow-1">
+        <h1 class="h4 card-title">{{ cv.firstname }} {{ cv.name }}</h1>
+        <dl class="row mb-0">
+          <dt class="col-4">Métier</dt>
+          <dd class="col-8">{{ cv.job }}</dd>
+          <dt class="col-4">Âge</dt>
+          <dd class="col-8">{{ cv.age }}</dd>
+          <dt class="col-4">CIN</dt>
+          <dd class="col-8">{{ cv.cin }}</dd>
+        </dl>
+        <button
+          type="button"
+          class="btn btn-danger mt-3"
+          [disabled]="deleting()"
+          (click)="deleteCv(cv)"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </article>
+} @else {
+  <div class="alert alert-warning" role="alert">Ce CV n'existe pas.</div>
+}

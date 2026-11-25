@@ -1,7 +1,7 @@
 <div class="row g-3">
   <app-cv-list
     class="col-12 col-md-5"
-    [cvs]="cvs"
+    [cvs]="cvs()"
     [selectedCv]="selectedCv()"
     (cvSelected)="selectCv($event)"
   />

@@ -17,7 +17,7 @@
       <p class="card-text mb-0">Métier : {{ cv.job }}</p>
       <div class="d-flex gap-2 mt-3">
         <button type="button" class="btn btn-success" (click)="embaucher()">Embaucher</button>
-        <button type="button" class="btn btn-outline-primary">Détails</button>
+        <a class="btn btn-outline-primary" [routerLink]="['/cv', cv.id]">Détails</a>
       </div>
     </div>
   </div>
